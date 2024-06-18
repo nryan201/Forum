@@ -1,19 +1,35 @@
 package back
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 )
 
-func Server() {
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintf(w, "Hello, %q", r.URL.Path)
-    })
+func Server(){
+    // Create a file server to serve static files
+	htmlFs := http.FileServer(http.Dir("./web/html")) 
+	http.Handle("/html/",http.StripPrefix("/html/",htmlFs))
 
-    err := http.ListenAndServe(":8080", nil)
+    cssFs := http.FileServer(http.Dir("./web/css")) 
+    http.Handle("/css/",http.StripPrefix("/css/",cssFs)) 
+
+    jsFs := http.FileServer(http.Dir("./web/js")) 
+    http.Handle("/js/",http.StripPrefix("/js/",jsFs)) 
+
+    // Handle the routes
+
+    http.HandleFunc("/", HomeHandle) // Handle the home page
+
+
+    // Start the server
+    log.Println("Hello there !")
+    log.Println("Server started on http://localhost:8080/")
+    log.Println("Press Ctrl+C to stop the server")
+
+    err := http.ListenAndServe(":8080", nil) // Start the server
     if err != nil {
-        fmt.Println("Error starting server:", err)
-        return
+        log.Fatalf("Could not start the server: %v", err)
     }
-    fmt.Println("Server started on http://localhost:8080/")
+
+
 }
