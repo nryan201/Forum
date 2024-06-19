@@ -1,0 +1,125 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #9e8174;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.profile-section {
+    background-color: #b49b8f;
+    border-radius: 15px;
+    width: 20%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile {
+    background-color: #d3c4bc;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.filters {
+    width: 100%;
+}
+
+.search {
+    display: block;
+    background-color: #b49b8f;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.search input {
+    border-radius: 15px;
+    width: 100%;
+    padding: 7px;
+    margin-bottom: 5px;
+}
+
+.search button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #337ab7;
+    border-radius: 15px;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.side-section {
+    background-color: #b49b8f;
+    border-radius: 15px;
+    width: 20%;
+    padding: 10px;
+}
+
+.categories, .hashtags {
+    background-color: #b49b8f;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.categories h3, .hashtags h3 {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.categories ul, .hashtags ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.categories li, .hashtags li {
+    margin-bottom: 5px;
+}
+
+.main-section {
+    background-color: #9e8174;
+    width: 60%;
+    padding: 10px;
+    text-align: center;
+}
+
+.title {
+    background-color: #d3c4bc;
+    font-size: 40px;
+    font-weight: bold;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 10px;
+}
+
+.posts {
+    text-align: left;
+}
+
+.post {
+    display: block;
+    background-color: #e8dcd7;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 30px;
+    margin-bottom: 35px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid #d3c4bc;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.post:hover {
+    background-color: #d3c4bc;
+    transform: scale(1.05);
+}
