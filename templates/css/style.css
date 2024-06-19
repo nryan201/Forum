@@ -1,0 +1,71 @@
+body {
+    background-color: #1A1A1A;
+    color: #FFFFFF;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.header {
+    background-color: #D3D3D3;
+    color: #000000;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.profile-section {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 50px;
+}
+.profile-pic {
+    background-color: #E0E0E0;
+    color: #000000;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    margin-right: 50px;
+}
+.info-section {
+    background-color: #D3D3D3;
+    color: #000000;
+    padding: 20px;
+    margin: 20px;
+    width: 300px;
+    flex-shrink: 0;
+    margin-top: 500px;
+    margin-right: 500px;
+}
+.info-section div {
+    margin: 10px 0;
+}
+.links-section {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+.links-section a {
+    background-color: #0000FF;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.birthdate-section {
+    background-color: #D3D3D3;
+    color: #000000;
+    padding: 20px;
+    margin: 20px;
+    text-align: center;
+    width: 200px;
+    flex-shrink: 0;
+    margin-left: 1500px;
+    margin-top: -250px;
+}
