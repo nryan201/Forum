@@ -20,6 +20,31 @@ func Server(){
 
     http.HandleFunc("/", HomeHandle) // Handle the home page
 
+    // Handle the topic page
+    http.HandleFunc("/topic", CreateTopic) // Handle the topic page
+    http.HandleFunc("/topic/{id}", GetTopic) // Handle the view topic page
+    http.HandleFunc("/topic/{id}", UpdateTopic) // Handle the update topic page
+    http.HandleFunc("/topic/{id}", DeleteTopic) // Handle the delete topic page
+
+    // Handle the comment page
+    http.HandleFunc("/comment", CreateComment) // Handle the comment page
+    http.HandleFunc("/comment/{id}", GetComment) // Handle the view comment page
+    http.HandleFunc("/comment/{id}", UpdateComment) // Handle the update comment page
+    http.HandleFunc("/comment/{id}", DeleteComment) // Handle the delete comment page
+
+    // Handle the user page
+    http.HandleFunc("/user", CreateUser) // Handle the user page
+    http.HandleFunc("/user/{id}", GetUser) // Handle the view user page
+    http.HandleFunc("/user/{id}", UpdateUser) // Handle the update user page
+    http.HandleFunc("/user/{id}", DeleteUser) // Handle the delete user page
+
+    // Handle the login page
+    http.HandleFunc("/login", Login) // Handle the login page
+
+    // Handle the logout page
+    http.HandleFunc("/logout", Logout) // Handle the logout page
+    
+
 
     // Start the server
     log.Println("Hello there !")

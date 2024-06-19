@@ -38,7 +38,7 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Extract the data
-	
+
 	title := r.Form.Get("title")
 	description := r.FormValue("description")
 
@@ -85,6 +85,7 @@ func UpdateTopic(w http.ResponseWriter, r *http.Request) {
 
 func DeleteTopic(w http.ResponseWriter, r *http.Request) {
 	// Logic for deleting a topic
+
 }
 
 // Handle for comment
