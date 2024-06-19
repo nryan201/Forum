@@ -5,13 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/style/accueil.css">
+    <script src="/script/accueil.js"></script>
     <title>Le Forum</title>
 </head>
 
 <body>
     <h1>Bienvenue sur le Forum </h1>
     <h2>Les sujets du forum</h2>
-    
+        <form id="commentForm">
+            <textarea name="comment" required></textarea>
+            <input type="file" id="imageUpload" accept="/*"/>
+            <button type="submit">Post Comment</button>
+        </form>
 
 </body>
 
