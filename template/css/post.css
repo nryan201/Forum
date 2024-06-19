@@ -1,0 +1,163 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #9e8174;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.profile-section {
+    background-color: #b49b8f;
+    border-radius: 15px;
+    width: 20%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile {
+    background-color: #d3c4bc;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.filters {
+    width: 100%;
+}
+
+.search {
+    display: block;
+    background-color: #b49b8f;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.search input {
+    border-radius: 15px;
+    width: 100%;
+    padding: 7px;
+    margin-bottom: 5px;
+}
+
+.search button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #337ab7;
+    border-radius: 15px;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.side-section {
+    background-color: #b49b8f;
+    border-radius: 15px;
+    width: 20%;
+    padding: 10px;
+}
+
+.categories, .hashtags {
+    background-color: #b49b8f;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.categories h3, .hashtags h3 {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.categories ul, .hashtags ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.categories li, .hashtags li {
+    margin-bottom: 5px;
+}
+
+.main-section {
+    background-color: #9e8174;
+    width: 60%;
+    padding: 10px;
+    text-align: center;
+}
+
+.title {
+    background-color: #d3c4bc;
+    font-size: 40px;
+    font-weight: bold;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 10px;
+    overflow-wrap: break-word; /* Pour éviter que le texte ne dépasse */
+}
+
+.posts {
+    text-align: left;
+}
+
+.post-detail {
+    background-color: #e8dcd7;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 30px;
+    margin-bottom: 35px;
+    text-align: left;
+}
+
+.post-detail h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.post-detail .post-content {
+    padding-bottom: 30px; /* Taille prédéfinie pour la zone de description */
+    border-bottom: 1px solid #b49b8f;
+    margin-bottom: 20px;
+}
+
+.post-detail .post-content input{
+    width: 50%;
+    height: 30px; /* Hauteur prédéfinie de la boîte de description */
+    padding: 8px;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    resize: none; /* Empêcher le redimensionnement */
+}
+
+.post-detail .post-description {
+    width: 95%;
+    height: 220px; /* Hauteur prédéfinie de la boîte de description */
+    padding: 12px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    resize: none; /* Empêcher le redimensionnement */
+}
+
+.post-detail .comments {
+    padding-top: 20px;
+}
+
+.post-detail .comment {
+    margin-bottom: 15px;
+}
+
+.post-author {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
