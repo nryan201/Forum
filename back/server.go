@@ -3,7 +3,6 @@ package back
 import (
 	"log"
 	"net/http"
-
 	"github.com/gorilla/mux"
 )
 
@@ -13,30 +12,29 @@ func Server(){
     // Create a file server to serve static files
 	router.PathPrefix("/html/").Handler(http.StripPrefix("/html/", http.FileServer(http.Dir("./template/html"))))
 	router.PathPrefix("/css/").Handler(http.StripPrefix("/css/", http.FileServer(http.Dir("./template/css"))))
-	router.PathPrefix("/js/").Handler(http.StripPrefix("/js/", http.FileServer(http.Dir("./template/script"))))
-    router.PathPrefix("/img/").Handler(http.StripPrefix("/img/", http.FileServer(http.Dir("./template/ressource/image/img"))))
+	router.PathPrefix("/script/").Handler(http.StripPrefix("/script/", http.FileServer(http.Dir("./template/script"))))
+    router.PathPrefix("/image/").Handler(http.StripPrefix("/image/", http.FileServer(http.Dir("./template/ressource/image"))))
 
     // Handle the routes
-
-    router.HandleFunc("/", HomeHandle).Methods("Get") // Handle the home page
+    router.HandleFunc("/", HomeHandle).Methods("Get") 
 
     // Handle the topic page
-   /* router.HandleFunc("/topic", CreateTopic).Methods("POST") // Handle the topic page
-    router.HandleFunc("/topic/{id}", GetTopic).Methods("GET") // Handle the view topic page
-    router.HandleFunc("/topic/{id}", UpdateTopic).Methods("PUT") // Handle the update topic page
-    router.HandleFunc("/topic/{id}", DeleteTopic).Methods("DELETE") // Handle the delete topic page
+   /* router.HandleFunc("/topic", CreateTopic).Methods("POST") 
+    router.HandleFunc("/topic/{id}", GetTopic).Methods("GET")
+    router.HandleFunc("/topic/{id}", UpdateTopic).Methods("PUT") 
+    router.HandleFunc("/topic/{id}", DeleteTopic).Methods("DELETE") 
 
     // Handle the comment page
-    router.HandleFunc("/comment", CreateComment).Methods("POST") // Handle the comment page
-    router.HandleFunc("/comment/{id}", GetComment).Methods("GET") // Handle the view comment page
-    router.HandleFunc("/comment/{id}", UpdateComment).Methods("PUT") // Handle the update comment page
-    router.HandleFunc("/comment/{id}", DeleteComment).Methods("DELETE") // Handle the delete comment page
+    router.HandleFunc("/comment", CreateComment).Methods("POST")
+    router.HandleFunc("/comment/{id}", GetComment).Methods("GET")
+    router.HandleFunc("/comment/{id}", UpdateComment).Methods("PUT")
+    router.HandleFunc("/comment/{id}", DeleteComment).Methods("DELETE")
 
     // Handle the user page
-    router.HandleFunc("/user", CreateUser).Methods("POST") // Handle the user page
-    router.HandleFunc("/user/{id}", GetUser).Methods("GET") // Handle the view user page
-    router.HandleFunc("/user/{id}", UpdateUser).Methods("PUT") // Handle the update user page
-    router.HandleFunc("/user/{id}", DeleteUser).Methods("DELETE") // Handle the delete user page
+    router.HandleFunc("/user", CreateUser).Methods("POST") 
+    router.HandleFunc("/user/{id}", GetUser).Methods("GET") 
+    router.HandleFunc("/user/{id}", UpdateUser).Methods("PUT") 
+    router.HandleFunc("/user/{id}", DeleteUser).Methods("DELETE") 
 
     // Authentication routes
     router.HandleFunc("/login", Login).Methods("POST") 

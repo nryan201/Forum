@@ -2,13 +2,15 @@ package back
 
 import (
 	"database/sql"
+	"encoding/json"
 	"html/template"
 	"log"
+	"main/database"
 	"net/http"
-	"fmt"
-	"github.com/gorilla/mux"
-	"main/data"
+	"strconv"
 
+	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 )
 
 func HomeHandle (w http.ResponseWriter, r *http.Request) {
@@ -29,94 +31,139 @@ func HomeHandle (w http.ResponseWriter, r *http.Request) {
 // Handle for topic 
 func CreateTopic(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a topic
-	if r.Method == "POST" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	//Parse the form data
-	err := r.ParseForm()
+	var topic database.Topic 
+	err :=json.NewDecoder(r.Body).Decode(&topic)
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	//Extract the data
-
-	title := r.Form.Get("title")
-	description := r.FormValue("description")
-
-	//Validate the data
-	if title == "" || description == ""{
-		http.Error(w, "Title is required", http.StatusBadRequest)
-		return
-	
-	}
-
-	// Open the database
-	db, err := sql.Open("sqlite3", "./forum.db")
+	db, err := database.OpenDB()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	//prepare the statement
-	stmt, err := db.Prepare("INSERT INTO topics (title, description) VALUES (?, ?)")
+	statement, err := db.Prepare("INSERT INTO topics (title, description) VALUES ($1, $2)")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer stmt.Close()
+	defer statement.Close()
 
-	//Execute the statement
-	_, err = stmt.Exec(title, description)
+	_, err = statement.Exec(topic.Title, topic.Description)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, "/succesPage", http.StatusSeeOther)
+	w.WriteHeader(http.StatusCreated)
 }
 
 
 // GetTopic retrieves a single topic by ID from SQLite.
 func GetTopic(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	topicID := vars["id"]
+	// Logic for getting a topic
 
-	db := data.OpenDB()
+	vars := mux.Vars(r)
+	topicID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	db, err := database.OpenDB()
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer db.Close()
 
-	stmt, err := db.Prepare("SELECT id, title, description, created_at FROM topics WHERE id = ?")
-	if err != nil {
+	var topic database.Topic
+	err = db.QueryRow("SELECT id, title, description FROM topics WHERE id = $1", topicID).Scan(&topic.ID, &topic.Title, &topic.Description)
+	if err != nil{
+		if err == sql.ErrNoRows {
+			http.Error(w, "Topic not found", http.StatusNotFound)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer stmt.Close()
 
-	var topic data.Topic
-	err = stmt.QueryRow(topicID).Scan(&topic.ID, &topic.Title, &topic.Description, &topic.CreatedAt)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			http.NotFound(w, r)
-		} else {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-		return
-	}
-
-	fmt.Fprintf(w, "ID: %d\nTitle: %s\nDescription: %s\nCreated At: %s\n", topic.ID, topic.Title, topic.Description, topic.CreatedAt)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(topic)
 }
 
 
 
 
 func UpdateTopic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)	
+	topicID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var topic database.Topic
+	err = json.NewDecoder(r.Body).Decode(&topic)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	db, err := database.OpenDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer db.Close()
+	
+	statement, err := db.Prepare("UPDATE topics SET title = $1, description = $2 WHERE id = $3")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(topic.Title, topic.Description, topicID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 	
 }
 
 func DeleteTopic(w http.ResponseWriter, r *http.Request) {
 	// Logic for deleting a topic
+	vars := mux.Vars(r)
+	topicID, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	db, err := database.OpenDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	statement, err := db.Prepare("DELETE FROM topics WHERE id = $1")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(topicID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 
 }
 
