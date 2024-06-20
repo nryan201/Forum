@@ -5,67 +5,73 @@ body {
     margin: 0;
     padding: 0;
 }
+
 .header {
     background-color: #D3D3D3;
     color: #000000;
     padding: 20px;
     text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
 }
-.profile-section {
+
+.profile-wrapper {
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
     justify-content: center;
+    align-items: flex-start;
+    position: relative;
     margin-top: 50px;
 }
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
 .profile-pic {
-    background-color: #E0E0E0;
-    color: #000000;
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
+    background-color: #D3D3D3;
     border-radius: 50%;
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-size: 16px;
-    margin-right: 50px;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 20px;
 }
+
 .info-section {
-    background-color: #D3D3D3;
-    color: #000000;
+    background-color: #444444;
     padding: 20px;
-    margin: 20px;
+    border-radius: 10px;
     width: 300px;
-    flex-shrink: 0;
-    margin-top: 500px;
-    margin-right: 500px;
 }
+
 .info-section div {
-    margin: 10px 0;
+    margin-bottom: 10px;
 }
+
 .links-section {
     display: flex;
     justify-content: space-around;
-    margin-top: 20px;
+    margin-top: 10px;
 }
+
 .links-section a {
     background-color: #0000FF;
     color: #FFFFFF;
-    padding: 10px 20px;
-    text-decoration: none;
+    padding: 10px;
     border-radius: 5px;
+    text-decoration: none;
 }
+
 .birthdate-section {
     background-color: #D3D3D3;
     color: #000000;
-    padding: 20px;
-    margin: 20px;
+    padding: 10px;
+    width: 200px; /* Fixed width for the birthdate section */
+    position: absolute;
+    right: 0;
+    top: 50px; /* Align with profile-container */
     text-align: center;
-    width: 200px;
-    flex-shrink: 0;
-    margin-left: 1500px;
-    margin-top: -250px;
 }
