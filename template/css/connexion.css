@@ -34,6 +34,9 @@ body{
 .wrapper-register {
     display: none; /* Cache par défaut le formulaire de registre */
 }
+.forgot-password{
+    display: none;
+}
 
 .wrapper h1 {
     font-size: 36px;
@@ -188,3 +191,4 @@ body{
     color: white;
     height: 50px;
 }
+
