@@ -13,6 +13,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// Handle for home page
 func HomeHandle (w http.ResponseWriter, r *http.Request) {
 	
 	tmp, err := template.ParseFiles("template/html/accueil.html")
@@ -28,7 +29,7 @@ func HomeHandle (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Handle for topic 
+// Handle for  Create topic 
 func CreateTopic(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a topic
 	var topic database.Topic 
@@ -61,10 +62,9 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 }
 
 
-// GetTopic retrieves a single topic by ID from SQLite.
+// GetTopic retrieves a single topic by ID from PortgresSql
 func GetTopic(w http.ResponseWriter, r *http.Request) {
 	// Logic for getting a topic
-
 	vars := mux.Vars(r)
 	topicID, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -93,9 +93,7 @@ func GetTopic(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(topic)
 }
 
-
-
-
+// UpdateTopic updates a single topic by ID from PostgresSql
 func UpdateTopic(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)	
 	topicID, err := strconv.Atoi(vars["id"])
@@ -135,6 +133,7 @@ func UpdateTopic(w http.ResponseWriter, r *http.Request) {
 	
 }
 
+// DeleteTopic deletes a single topic by ID from PostgresSql
 func DeleteTopic(w http.ResponseWriter, r *http.Request) {
 	// Logic for deleting a topic
 	vars := mux.Vars(r)
@@ -170,6 +169,8 @@ func DeleteTopic(w http.ResponseWriter, r *http.Request) {
 // Handle for comment
 func CreateComment(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a comment
+
+
 }
 
 func GetComment(w http.ResponseWriter, r *http.Request) {
