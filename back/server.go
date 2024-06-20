@@ -3,47 +3,45 @@ package back
 import (
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func Server(){
+    router := mux.NewRouter()
+
     // Create a file server to serve static files
-	htmlFs := http.FileServer(http.Dir("./web/html")) 
-	http.Handle("/html/",http.StripPrefix("/html/",htmlFs))
-
-    cssFs := http.FileServer(http.Dir("./web/css")) 
-    http.Handle("/css/",http.StripPrefix("/css/",cssFs)) 
-
-    jsFs := http.FileServer(http.Dir("./web/js")) 
-    http.Handle("/js/",http.StripPrefix("/js/",jsFs)) 
+	router.PathPrefix("/html/").Handler(http.StripPrefix("/html/", http.FileServer(http.Dir("./template/html"))))
+	router.PathPrefix("/css/").Handler(http.StripPrefix("/css/", http.FileServer(http.Dir("./template/css"))))
+	router.PathPrefix("/js/").Handler(http.StripPrefix("/js/", http.FileServer(http.Dir("./template/script"))))
+    router.PathPrefix("/img/").Handler(http.StripPrefix("/img/", http.FileServer(http.Dir("./template/ressource/image/img"))))
 
     // Handle the routes
 
-    http.HandleFunc("/", HomeHandle) // Handle the home page
+    router.HandleFunc("/", HomeHandle).Methods("Get") // Handle the home page
 
     // Handle the topic page
-    http.HandleFunc("/topic", CreateTopic) // Handle the topic page
-    http.HandleFunc("/topic/{id}", GetTopic) // Handle the view topic page
-    http.HandleFunc("/topic/{id}", UpdateTopic) // Handle the update topic page
-    http.HandleFunc("/topic/{id}", DeleteTopic) // Handle the delete topic page
+   /* router.HandleFunc("/topic", CreateTopic).Methods("POST") // Handle the topic page
+    router.HandleFunc("/topic/{id}", GetTopic).Methods("GET") // Handle the view topic page
+    router.HandleFunc("/topic/{id}", UpdateTopic).Methods("PUT") // Handle the update topic page
+    router.HandleFunc("/topic/{id}", DeleteTopic).Methods("DELETE") // Handle the delete topic page
 
     // Handle the comment page
-    http.HandleFunc("/comment", CreateComment) // Handle the comment page
-    http.HandleFunc("/comment/{id}", GetComment) // Handle the view comment page
-    http.HandleFunc("/comment/{id}", UpdateComment) // Handle the update comment page
-    http.HandleFunc("/comment/{id}", DeleteComment) // Handle the delete comment page
+    router.HandleFunc("/comment", CreateComment).Methods("POST") // Handle the comment page
+    router.HandleFunc("/comment/{id}", GetComment).Methods("GET") // Handle the view comment page
+    router.HandleFunc("/comment/{id}", UpdateComment).Methods("PUT") // Handle the update comment page
+    router.HandleFunc("/comment/{id}", DeleteComment).Methods("DELETE") // Handle the delete comment page
 
     // Handle the user page
-    http.HandleFunc("/user", CreateUser) // Handle the user page
-    http.HandleFunc("/user/{id}", GetUser) // Handle the view user page
-    http.HandleFunc("/user/{id}", UpdateUser) // Handle the update user page
-    http.HandleFunc("/user/{id}", DeleteUser) // Handle the delete user page
+    router.HandleFunc("/user", CreateUser).Methods("POST") // Handle the user page
+    router.HandleFunc("/user/{id}", GetUser).Methods("GET") // Handle the view user page
+    router.HandleFunc("/user/{id}", UpdateUser).Methods("PUT") // Handle the update user page
+    router.HandleFunc("/user/{id}", DeleteUser).Methods("DELETE") // Handle the delete user page
 
-    // Handle the login page
-    http.HandleFunc("/login", Login) // Handle the login page
+    // Authentication routes
+    router.HandleFunc("/login", Login).Methods("POST") 
+    router.HandleFunc("/logout", Logout).Methods("POST") */
 
-    // Handle the logout page
-    http.HandleFunc("/logout", Logout) // Handle the logout page
-    
 
 
     // Start the server
@@ -51,7 +49,7 @@ func Server(){
     log.Println("Server started on http://localhost:8080/")
     log.Println("Press Ctrl+C to stop the server")
 
-    err := http.ListenAndServe(":8080", nil) // Start the server
+    err := http.ListenAndServe(":8080", router)
     if err != nil {
         log.Fatalf("Could not start the server: %v", err)
     }

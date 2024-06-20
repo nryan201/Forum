@@ -5,6 +5,10 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"fmt"
+	"github.com/gorilla/mux"
+	"main/data"
+
 )
 
 func HomeHandle (w http.ResponseWriter, r *http.Request) {
@@ -75,12 +79,40 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 }
 
 
+// GetTopic retrieves a single topic by ID from SQLite.
 func GetTopic(w http.ResponseWriter, r *http.Request) {
-	// Logic for getting a topic
+	vars := mux.Vars(r)
+	topicID := vars["id"]
+
+	db := data.OpenDB()
+	defer db.Close()
+
+	stmt, err := db.Prepare("SELECT id, title, description, created_at FROM topics WHERE id = ?")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer stmt.Close()
+
+	var topic data.Topic
+	err = stmt.QueryRow(topicID).Scan(&topic.ID, &topic.Title, &topic.Description, &topic.CreatedAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.NotFound(w, r)
+		} else {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	fmt.Fprintf(w, "ID: %d\nTitle: %s\nDescription: %s\nCreated At: %s\n", topic.ID, topic.Title, topic.Description, topic.CreatedAt)
 }
 
+
+
+
 func UpdateTopic(w http.ResponseWriter, r *http.Request) {
-	// Logic for updating a topic
+	
 }
 
 func DeleteTopic(w http.ResponseWriter, r *http.Request) {
