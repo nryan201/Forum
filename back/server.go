@@ -23,7 +23,7 @@ func Server(){
     router.HandleFunc("/topic/{id}", GetTopic).Methods("GET")
     router.HandleFunc("/topic/{id}", UpdateTopic).Methods("PUT") 
     router.HandleFunc("/topic/{id}", DeleteTopic).Methods("DELETE") 
-/*
+
     // Handle the comment page
     router.HandleFunc("/comment", CreateComment).Methods("POST")
     router.HandleFunc("/comment/{id}", GetComment).Methods("GET")
@@ -38,7 +38,7 @@ func Server(){
 
     // Authentication routes
     router.HandleFunc("/login", Login).Methods("POST") 
-    router.HandleFunc("/logout", Logout).Methods("POST") */
+    router.HandleFunc("/logout", Logout).Methods("POST") 
 
 
 

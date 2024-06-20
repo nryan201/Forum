@@ -1,17 +1,22 @@
 package back
 
 import (
-    "database/sql"
-    "encoding/json"
-    "html/template"
-    "log"
-    "net/http"
-    "strconv"
+	"database/sql"
+	"encoding/json"
+	"html/template"
+	"log"
 	"main/database"
+	"net/http"
+	"strconv"
 
-    "github.com/gorilla/mux"
-    _ "github.com/mattn/go-sqlite3" // SQLite driver
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
+	_ "github.com/mattn/go-sqlite3" // SQLite driver
+	"golang.org/x/crypto/bcrypt"
 )
+
+
+var store = sessions.NewCookieStore([]byte("secret-key"))
 
 // Handle for home page
 func HomeHandle (w http.ResponseWriter, r *http.Request) {
@@ -415,10 +420,80 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 // Handle for login
 func Login(w http.ResponseWriter, r *http.Request) {
 	// Logic for login
+	sessions, err := store.Get(r, "session-name")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+
+	// Check if the user exists
+	db, err := database.OpenDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	var user database.User
+	err = db.QueryRow("SELECT id, username, password FROM users WHERE username = ? AND password = ?", username, password).Scan(&user.ID, &user.Username, &user.Password)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+		var dbPassword, role string
+		err = db.QueryRow("SELECT password, role FROM users WHERE username = ?", username).Scan(&dbPassword, &role)
+		if err != nil {
+			if err == sql.ErrNoRows {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w," Database error", http.StatusInternalServerError)
+		return
+	}
+
+	// Check if the password is correct
+	err = bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(password))
+	if err != nil {
+		http.Error(w, "Invalid password", http.StatusUnauthorized)
+		return
+	}
+
+	sessions.Values["authentified"] = true
+	sessions.Values["username"] = username
+	sessions.Values["role"] = role
+	sessions.Save(r, w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if role == "admin" {
+		w.Write([]byte("You are an admin"))
+	} else {
+		w.Write([]byte("You are a user"))
+	}
+
 }
 
 // Handle for logout
 func Logout(w http.ResponseWriter, r *http.Request) {
 	// Logic for logout
+	sessions, err := store.Get(r, "session-name")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	sessions.Values["authentified"] = false
+	sessions.Save(r, w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte("You are logged out"))
 }
 
