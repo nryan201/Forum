@@ -19,11 +19,11 @@ func Server(){
     router.HandleFunc("/", HomeHandle).Methods("Get") 
 
     // Handle the topic page
-   /* router.HandleFunc("/topic", CreateTopic).Methods("POST") 
+    router.HandleFunc("/topic", CreateTopic).Methods("POST") 
     router.HandleFunc("/topic/{id}", GetTopic).Methods("GET")
     router.HandleFunc("/topic/{id}", UpdateTopic).Methods("PUT") 
     router.HandleFunc("/topic/{id}", DeleteTopic).Methods("DELETE") 
-
+/*
     // Handle the comment page
     router.HandleFunc("/comment", CreateComment).Methods("POST")
     router.HandleFunc("/comment/{id}", GetComment).Methods("GET")
