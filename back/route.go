@@ -1,16 +1,16 @@
 package back
 
 import (
-	"database/sql"
-	"encoding/json"
-	"html/template"
-	"log"
+    "database/sql"
+    "encoding/json"
+    "html/template"
+    "log"
+    "net/http"
+    "strconv"
 	"main/database"
-	"net/http"
-	"strconv"
 
-	"github.com/gorilla/mux"
-	_ "github.com/lib/pq"
+    "github.com/gorilla/mux"
+    _ "github.com/mattn/go-sqlite3" // SQLite driver
 )
 
 // Handle for home page
@@ -45,7 +45,7 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("INSERT INTO topics (title, description) VALUES ($1, $2)")
+	statement, err := db.Prepare("INSERT INTO topics (title, description) VALUES (?, ?)")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -79,7 +79,7 @@ func GetTopic(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	var topic database.Topic
-	err = db.QueryRow("SELECT id, title, description FROM topics WHERE id = $1", topicID).Scan(&topic.ID, &topic.Title, &topic.Description)
+	err = db.QueryRow("SELECT id, title, description FROM topics WHERE id = ?", topicID).Scan(&topic.ID, &topic.Title, &topic.Description)
 	if err != nil{
 		if err == sql.ErrNoRows {
 			http.Error(w, "Topic not found", http.StatusNotFound)
@@ -116,7 +116,7 @@ func UpdateTopic(w http.ResponseWriter, r *http.Request) {
 
 	defer db.Close()
 	
-	statement, err := db.Prepare("UPDATE topics SET title = $1, description = $2 WHERE id = $3")
+	statement, err := db.Prepare("UPDATE topics SET title = ?, description = ? WHERE id = ?")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -149,7 +149,7 @@ func DeleteTopic(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("DELETE FROM topics WHERE id = $1")
+	statement, err := db.Prepare("DELETE FROM topics WHERE id = ?")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -166,10 +166,9 @@ func DeleteTopic(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// Handle for comment
+// Handle for create commment 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a comment
-
 
 }
 
