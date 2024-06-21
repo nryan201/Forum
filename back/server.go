@@ -19,7 +19,8 @@ func Server() {
 	// Handle the routes
 
 	http.HandleFunc("/", HomeHandle) // Handle the home page
-
+	http.HandleFunc("/login", handleGoogleLogin)
+	http.HandleFunc("/callback", handleGoogleCallback)
 	// Start the server
 	log.Println("Hello there !")
 	log.Println("Server started on http://localhost:8080/")
