@@ -5,29 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil du Forum</title>
     <link rel="stylesheet" href="../css/style.css">
+    <script src="../JavaScript/profil.js"></script>
 </head>
 <body>
 <div class="header">Nom du forum</div>
 <div class="profile-wrapper">
     <div class="profile-container">
-        <div class="profile-pic">pp du profil</div>
+        <div class="profile-pic" id="profile-pic">pp du profil</div>
         <div class="info-section">
-            <div>username :</div>
-            <div>name :</div>
-            <div>firstname :</div>
-            <div>mail :</div>
-            <div>other link :</div>
+            <div id="username">Username :</div>
+            <div id="name">Name :</div>
+            <div id="firstname">Firstname :</div>
+            <div id="email">Mail :</div>
+            <div id="other-link">Other link :</div>
             <div class="links-section">
-                <a href="#">discord</a>
-                <a href="#">steam</a>
-                <a href="#">riot client</a>
-                <a href="#">psn</a>
+                <a href="#" id="discord-link">Discord</a>
+                <a href="#" id="steam-link">Steam</a>
+                <a href="#" id="riot-client-link">Riot Client</a>
+                <a href="#" id="psn-link">PSN</a>
             </div>
         </div>
     </div>
-    <div class="birthdate-section">
-        date de naissance
+    <div class="birthdate-section" id="birthdate-section">
+        Date de naissance
     </div>
 </div>
+
+<script>
+//    Ici, vous auriez du code JavaScript pour récupérer et afficher les données depuis le backend Go
+//    Par exemple, utiliser fetch() pour récupérer les données JSON depuis le backend
+//    et remplir les éléments HTML avec ces données
+</script>
+
 </body>
 </html>
