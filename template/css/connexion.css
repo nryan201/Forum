@@ -43,12 +43,13 @@ body{
     text-align: center;
 }
 
-.wrapper .input-box{
+.wrapper .input-boxPass, .input-boxUser, .input-boxPass2{
     position: relative;
     width: 100%;
     height: 50px;
     margin: 30px 0;
 }
+
 .wrapper:target {
     display: block;
 }
@@ -91,12 +92,75 @@ body{
     color: #fff;
     padding: 20px 45px 20px 20px;
 }
+.input-boxUser input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    outline: none;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    padding: 20px 45px 20px 20px;
+}
+.input-boxPass input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    outline: none;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    padding: 20px 45px 20px 20px;
+}
+.input-boxPass2 input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    outline: none;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    padding: 20px 45px 20px 20px;
+}
 
 .input-box input::placeholder{
     color: #fff;
 }
+.input-boxUser input::placeholder{
+    color: #fff;
+}
+.input-boxPass input::placeholder{
+    color: #fff;
+}
+.input-boxPass2 input::placeholder{
+    color: #fff;
+}
 
 .input-box i{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+.input-boxUser i{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+.input-boxPass i{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+.input-boxPass2 i{
     position: absolute;
     right: 20px;
     top: 50%;
@@ -190,5 +254,28 @@ body{
     left: 20px;
     color: white;
     height: 50px;
+}
+.eyePassword i{
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    cursor: pointer;
+}
+.eyePassword2 i{
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.eyePassword i.active::before{
+    content: '\f070';
+}
+.eyePassword2 i.active2::before{
+    content: '\f070';
 }
 
