@@ -11,7 +11,7 @@
     <script src="https://kit.fontawesome.com/d1a5a942fc.js" crossorigin="anonymous"></script>
 </head>
 
-<body>
+<body onload="getCookieData()">
     <div class="wrapper" id="loginForm">
         <form action="" method="get">
             <h1>Login</h1>
@@ -61,8 +61,24 @@
                     var u = document.getElementById('userName').value;
                     var p = document.getElementById('passWord').value;
 
-                    document.cookie="myusername"+u+";path=/";
-                    document.cookie="mypassWord"+p+";path=/";
+                    document.cookie="userName="+u+";path=/";
+                    document.cookie="passWord="+p+";path=/";
+                }
+
+                function getCookieData() {
+                    var cookies = document.cookie.split("; ");
+                    var userName = "";
+                    var passWord = "";
+
+                    cookies.forEach(cookie => {
+                        var [name, value] = cookie.split("=");
+                        if (name === "userName") {
+                            userName = value;
+                        } else if (name === "passWord") {
+                            passWord = value;
+                        }
+                    });
+                    console.log(document.cookie);
                 }
             </script>
         </form>
