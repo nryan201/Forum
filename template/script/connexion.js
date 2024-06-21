@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var registerLink = document.querySelector('a[href="#registerForm"]');
         var loginLink = document.querySelector('a[href="#loginForm"]');
         var forgotPasswordLink = document.querySelector('a[href="#ForgotPassword"]');
+        var loginLink2 = document.querySelector('a[href="#loginForm2"]');
 
         if (registerLink) {
             registerLink.addEventListener('click', showRegisterForm);
@@ -42,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (forgotPasswordLink) {
             forgotPasswordLink.addEventListener('click', showForgotPasswordForm);
         }
-        if (loginLink) {
-            loginLink.addEventListener('click', showLoginForm);
+        if (loginLink2) {
+            loginLink2.addEventListener('click', showLoginForm);
         }
     }
 
