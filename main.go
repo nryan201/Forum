@@ -4,7 +4,7 @@ import (
 	"main/back"
 )
 
-func main () {
+func main() {
 	back.Server()
-	
+
 }
