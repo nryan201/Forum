@@ -5,9 +5,11 @@ CREATE TABLE IF NOT EXISTS topics (
     user_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT, 
+    email TEXT UNIQUE,
+    google_id TEXT UNIQUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    likes INTEGER DEFAULT 0,
-    dislikes INTEGER DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
@@ -53,4 +55,12 @@ CREATE TABLE IF NOT EXISTS topic_categories (
     FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE,
     FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE,
     PRIMARY KEY (topic_id, category_id)
+);
+CREATE TABLE IF NOT EXISTS likes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    topic_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );

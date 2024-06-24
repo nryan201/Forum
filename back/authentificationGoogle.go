@@ -2,6 +2,8 @@ package back
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -47,7 +49,54 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	}
 	defer response.Body.Close()
 
-	var buf [512]byte
-	n, _ := response.Body.Read(buf[:])
-	fmt.Fprintf(w, "Response: %s", buf[:n])
+	var googleUser struct {
+		ID      string `json:"id"`
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Picture string `json:"picture"`
+	}
+
+	if err := json.NewDecoder(response.Body).Decode(&googleUser); err != nil {
+		log.Printf("Could not decode response: %s\n", err.Error())
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	db, err := sql.Open("sqlite3", "./mydatabase.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	var userID int
+	err = db.QueryRow("SELECT id FROM users WHERE google_id = ? OR email = ?", googleUser.ID, googleUser.Email).Scan(&userID)
+	if err == sql.ErrNoRows {
+		// User does not exist, create a new user
+		statement, err := db.Prepare("INSERT INTO users (username, email, google_id) VALUES (?, ?, ?)")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer statement.Close()
+		res, err := statement.Exec(googleUser.Name, googleUser.Email, googleUser.ID)
+		if err != nil {
+			log.Fatal(err)
+		}
+		userID64, err := res.LastInsertId()
+		if err != nil {
+			log.Fatal(err)
+		}
+		userID = int(userID64)
+	} else if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create session for user, etc.
+	fmt.Fprintf(w, "User ID: %d\n", userID)
+	fmt.Fprintf(w, "User Info: %s\n", googleUser.Name)
+}
+
+func main() {
+	http.HandleFunc("/login", handleGoogleLogin)
+	http.HandleFunc("/callback", handleGoogleCallback)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
