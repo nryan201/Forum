@@ -16,6 +16,9 @@ func Server() {
 	jsFs := http.FileServer(http.Dir("./template/script"))
 	http.Handle("/script/", http.StripPrefix("/script/", jsFs))
 
+	imgFs := http.FileServer(http.Dir("./template/images"))
+	http.Handle("/images/", http.StripPrefix("/images/", imgFs))
+
 	// Handle the routes
 
 	http.HandleFunc("/", HomeHandle) // Handle the home page

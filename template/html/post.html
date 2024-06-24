@@ -30,30 +30,34 @@
             </div>
         </div>
     </div>
+
     <div class="side-section">
         <div class="categories">
+            <form id="createCategoryForm" method="POST" action="/CreateCategory">
+                <input type="text" class="createCategory" name="categoryName" placeholder="Enter new category">
+                <button class="categoryBtn" type="submit">Create</button>
+            </form>
             <h3>Categories</h3>
-            <ul>
-                <li>Granny</li>
-                <li>Granny</li>
-                <li>Granny</li>
+            <ul id="categoriesList">
                 <li>Granny</li>
                 <li>Granny</li>
                 <li>Granny</li>
             </ul>
         </div>
         <div class="hashtags">
+            <form id="createHashtagForm" method="POST" action="/Create#">
+                <input type="text" class="createHashtags" name="hashtagsName" placeholder="Enter new hashtags">
+                <button class="hashtagsBtn" type="submit">Create</button>
+            </form>
             <h3>Hashtags</h3>
-            <ul>
-                <li>#mesboules</li>
-                <li>#mesboules</li>
-                <li>#mesboules</li>
-                <li>#mesboules</li>
+            <ul id="hashtagsList">
                 <li>#mesboules</li>
                 <li>#mesboules</li>
             </ul>
         </div>
     </div>
 </div>
+<script src="../script/category.js"></script>
+<script src="../script/hashtag.js"></script>
 </body>
 </html>

@@ -12,19 +12,33 @@ body{
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    background-image: url('../images/fond-ecran-forum.jpg');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
 }
 
 .wrapper, .wrapper-register, .forgot-password {
     width: 420px;
     background: #2443d7;
-    border: 2px solid rgba(255,255,255, .2);
-    backdrop-filter: blur(20px);
-    box-shadow: 0 0 80px  rgba(0, 0, 0, 0.412);
     color: #fff;
-    border-radius: 25px;
     padding: 30px 40px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 25px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    flex-shrink: 0; /* Empêche la réduction */
+    transform: perspective(1000px) rotateX(5deg) rotateY(-5deg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.wrapper:hover, .wrapper-register:hover, .forgot-password:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    transform: perspective(900px) rotateX(2deg) rotateY(2deg);
 }
 
 .wrapper{
