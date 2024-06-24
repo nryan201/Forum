@@ -3,9 +3,9 @@ package back
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"log"
-	"main/database"
 	"net/http"
 	"strconv"
 
@@ -15,8 +15,40 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Topic struct
+type Topic struct {
+	ID 			 int  		`json:"id"`
+	Title		 string		`json:"title"`
+	Description	 string		`json:"description"`
+}
+
+// Comment struct
+type Comment struct {
+    ID 			 int  		`json:"id"`
+    Content		 string		`json:"content"`
+    TopicID		 int		`json:"topic_id"`
+}
+
+// User struct
+type User struct {
+    ID 			 int  		`json:"id"`
+    Mail         string		`json:"mail"`
+    Username	 string		`json:"username"`
+    Password	 string		`json:"password"`
+}
+
+type Category struct {
+	ID 			 int  		`json:"id"`
+	Name		 string		`json:"name"`
+
+}
 
 var store = sessions.NewCookieStore([]byte("secret-key"))
+
+// Open data base 
+func OpenDB() (*sql.DB, error) {
+    return sql.Open("sqlite3", "chemin de la bdd")
+}
 
 // Handle for home page
 func HomeHandle (w http.ResponseWriter, r *http.Request) {
@@ -37,16 +69,18 @@ func HomeHandle (w http.ResponseWriter, r *http.Request) {
 // Handle for  Create topic 
 func CreateTopic(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a topic
-	var topic database.Topic 
+	var topic Topic 
 	err :=json.NewDecoder(r.Body).Decode(&topic)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
 	}
 	defer db.Close()
 
@@ -64,10 +98,11 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(topic)
 }
 
 
-// GetTopic retrieves a single topic by ID from PortgresSql
+// GetTopic retrieves a single topic by ID 
 func GetTopic(w http.ResponseWriter, r *http.Request) {
 	// Logic for getting a topic
 	vars := mux.Vars(r)
@@ -77,13 +112,15 @@ func GetTopic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
 	}
 	defer db.Close()
 
-	var topic database.Topic
+	var topic Topic
 	err = db.QueryRow("SELECT id, title, description FROM topics WHERE id = ?", topicID).Scan(&topic.ID, &topic.Title, &topic.Description)
 	if err != nil{
 		if err == sql.ErrNoRows {
@@ -107,16 +144,19 @@ func UpdateTopic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var topic database.Topic
+	var topic Topic
 	err = json.NewDecoder(r.Body).Decode(&topic)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
+
 	}
 
 	defer db.Close()
@@ -148,9 +188,11 @@ func DeleteTopic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
 	}
 	defer db.Close()
 
@@ -174,15 +216,16 @@ func DeleteTopic(w http.ResponseWriter, r *http.Request) {
 // Handle for create commment 
 func CreateComment(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a comment
-	var comment database.Comment
+	var comment Comment
 	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
 	}
 	defer db.Close()
 
@@ -204,15 +247,17 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 
 func GetComment(w http.ResponseWriter, r *http.Request) {
 	// Logic for getting a comment
-	var comment database.Comment
+	var comment Comment
 	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return 
 	}
 	defer db.Close()
 
@@ -235,15 +280,18 @@ func GetComment(w http.ResponseWriter, r *http.Request) {
 
 func UpdateComment(w http.ResponseWriter, r *http.Request) {
 	// Logic for updating a comment
-	var comment database.Comment
+	var comment Comment
 	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
+
 	}
 	defer db.Close()
 
@@ -265,15 +313,17 @@ func UpdateComment(w http.ResponseWriter, r *http.Request) {
 
 func DeleteComment(w http.ResponseWriter, r *http.Request) {
 	// Logic for deleting a comment
-	var comment database.Comment
+	var comment Comment
 	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
 	}
 	defer db.Close()
 
@@ -296,16 +346,18 @@ func DeleteComment(w http.ResponseWriter, r *http.Request) {
 // Handle for user
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a user
-	var user database.User
+	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
 	}
 
 	defer db.Close()
@@ -328,15 +380,17 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	// Logic for getting a user
-	var user database.User
+	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
 	}
 	defer db.Close()
 
@@ -359,15 +413,17 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	// Logic for updating a user
-	var user database.User
+	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
 	}
 	defer db.Close()
 
@@ -389,15 +445,17 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	// Logic for deleting a user
-	var user database.User
+	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
 	}
 	defer db.Close()
 
@@ -430,13 +488,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	// Check if the user exists
-	db, err := database.OpenDB()
+	db, err := OpenDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
 	}
 	defer db.Close()
 
-	var user database.User
+	var user User
 	err = db.QueryRow("SELECT id, username, password FROM users WHERE username = ? AND password = ?", username, password).Scan(&user.ID, &user.Username, &user.Password)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -497,3 +557,110 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("You are logged out"))
 }
 
+func CategoryHandler(w http.ResponseWriter, r *http.Request) {
+	// Logic for getting a category
+	vars := mux.Vars(r)
+	categoryID, err := strconv.Atoi(vars["id"]) // Get the category ID from the URL
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var category Category
+
+	db, err := OpenDB()
+	if err != nil {
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
+	}
+	defer db.Close()
+
+	statement, err := db.Prepare("SELECT id, name FROM categories WHERE id = ?")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer statement.Close()
+
+	err = statement.QueryRow(categoryID).Scan(&category.ID, &category.Name)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Category not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Error querring database"+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(category)
+
+}
+
+func CreateCategory(w http.ResponseWriter, r *http.Request) {
+	// Logic for creating a category
+	if r.Method != "POST"{
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	
+	}
+
+	categoryName := r.FormValue("categoryName") // Get the category name from the form
+
+	// Open the database
+	db, err := OpenDB()
+	if err != nil {
+		log.Println("Failed to open the database", err)
+		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		return
+	} 
+	defer db.Close()
+
+	statement, err := db.Prepare("INSERT INTO categories (name) VALUES (?)")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(categoryName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	fmt.Fprintf(w, "Category created: %s", categoryName)
+}
+
+func DeleteCategory (w http.ResponseWriter, r *http.Request) {
+	// Logic for deleting a category
+	vars := mux.Vars(r)
+	categoryID := vars["id"]
+
+	db, err := OpenDB()
+	if err != nil {
+		log.Println ("Failed to open the database", err) // print the error message without stopping the server
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	statement, err := db.Prepare("DELETE FROM categories WHERE id = ?")
+	if err != nil {
+		http.Error(w,"Failed to prepare statement" +err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(categoryID)
+	if err != nil {
+		http.Error(w, "Failed to execute statement" +err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+
+}

@@ -4,41 +4,48 @@ import (
 	"log"
 	"net/http"
 	"github.com/gorilla/mux"
+    
 )
 
 func Server(){
-    router := mux.NewRouter()
+    r := mux.NewRouter()
 
     // Create a file server to serve static files
-	router.PathPrefix("/html/").Handler(http.StripPrefix("/html/", http.FileServer(http.Dir("./template/html"))))
-	router.PathPrefix("/css/").Handler(http.StripPrefix("/css/", http.FileServer(http.Dir("./template/css"))))
-	router.PathPrefix("/script/").Handler(http.StripPrefix("/script/", http.FileServer(http.Dir("./template/script"))))
-    router.PathPrefix("/image/").Handler(http.StripPrefix("/image/", http.FileServer(http.Dir("./template/ressource/image"))))
+	r.PathPrefix("/html/").Handler(http.StripPrefix("/html/", http.FileServer(http.Dir("./template/html"))))
+	r.PathPrefix("/css/").Handler(http.StripPrefix("/css/", http.FileServer(http.Dir("./template/css"))))
+	r.PathPrefix("/script/").Handler(http.StripPrefix("/script/", http.FileServer(http.Dir("./template/script"))))
+    r.PathPrefix("/image/").Handler(http.StripPrefix("/image/", http.FileServer(http.Dir("./template/ressource/image"))))
 
     // Handle the routes
-    router.HandleFunc("/", HomeHandle).Methods("Get") 
+    r.HandleFunc("/", HomeHandle).Methods("Get") 
 
     // Handle the topic page
-    router.HandleFunc("/topic", CreateTopic).Methods("POST") 
-    router.HandleFunc("/topic/{id}", GetTopic).Methods("GET")
-    router.HandleFunc("/topic/{id}", UpdateTopic).Methods("PUT") 
-    router.HandleFunc("/topic/{id}", DeleteTopic).Methods("DELETE") 
+    r.HandleFunc("/topic", CreateTopic).Methods("POST") 
+    r.HandleFunc("/topic/{id}", GetTopic).Methods("GET")
+    r.HandleFunc("/topic/{id}", UpdateTopic).Methods("PUT") 
+    r.HandleFunc("/topic/{id}", DeleteTopic).Methods("DELETE") 
 
     // Handle the comment page
-    router.HandleFunc("/comment", CreateComment).Methods("POST")
-    router.HandleFunc("/comment/{id}", GetComment).Methods("GET")
-    router.HandleFunc("/comment/{id}", UpdateComment).Methods("PUT")
-    router.HandleFunc("/comment/{id}", DeleteComment).Methods("DELETE")
+    r.HandleFunc("/comment", CreateComment).Methods("POST")
+    r.HandleFunc("/comment/{id}", GetComment).Methods("GET")
+    r.HandleFunc("/comment/{id}", UpdateComment).Methods("PUT")
+    r.HandleFunc("/comment/{id}", DeleteComment).Methods("DELETE")
 
     // Handle the user page
-    router.HandleFunc("/user", CreateUser).Methods("POST") 
-    router.HandleFunc("/user/{id}", GetUser).Methods("GET") 
-    router.HandleFunc("/user/{id}", UpdateUser).Methods("PUT") 
-    router.HandleFunc("/user/{id}", DeleteUser).Methods("DELETE") 
+    r.HandleFunc("/user", CreateUser).Methods("POST") 
+    r.HandleFunc("/user/{id}", GetUser).Methods("GET") 
+    r.HandleFunc("/user/{id}", UpdateUser).Methods("PUT") 
+    r.HandleFunc("/user/{id}", DeleteUser).Methods("DELETE") 
+
+    // Handle for Catergory
+    r.HandleFunc("/category", CreateCategory).Methods("POST")
+    r.HandleFunc("/category/{id}", CategoryHandler).Methods("GET")
+    r.HandleFunc("/category/{id}", DeleteCategory).Methods("DELETE")
+
 
     // Authentication routes
-    router.HandleFunc("/login", Login).Methods("POST") 
-    router.HandleFunc("/logout", Logout).Methods("POST") 
+    r.HandleFunc("/login", Login).Methods("POST") 
+    r.HandleFunc("/logout", Logout).Methods("POST") 
 
 
 
@@ -47,7 +54,7 @@ func Server(){
     log.Println("Server started on http://localhost:8080/")
     log.Println("Press Ctrl+C to stop the server")
 
-    err := http.ListenAndServe(":8080", router)
+    err := http.ListenAndServe(":8080", r)
     if err != nil {
         log.Fatalf("Could not start the server: %v", err)
     }
