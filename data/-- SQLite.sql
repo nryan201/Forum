@@ -1,6 +1,5 @@
 -- SQLite
 
-
 CREATE TABLE IF NOT EXISTS topics (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
@@ -30,3 +29,28 @@ CREATE TABLE IF NOT EXISTS users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS hashtags (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS topic_hashtags (
+    topic_id INTEGER NOT NULL,
+    hashtag_id INTEGER NOT NULL,
+    FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE,
+    FOREIGN KEY (hashtag_id) REFERENCES hashtags (id) ON DELETE CASCADE,
+    PRIMARY KEY (topic_id, hashtag_id)
+);
+
+CREATE TABLE IF NOT EXISTS categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS topic_categories (
+    topic_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE,
+    PRIMARY KEY (topic_id, category_id)
+);
