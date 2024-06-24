@@ -1,5 +1,5 @@
 body {
-    background-color: #1A1A1A;
+    background-color: #1d469a;
     color: #FFFFFF;
     font-family: Arial, sans-serif;
     margin: 0;
@@ -7,7 +7,7 @@ body {
 }
 
 .header {
-    background-color: #D3D3D3;
+    background-color: #408EC6;
     color: #000000;
     padding: 20px;
     text-align: center;
@@ -41,7 +41,7 @@ body {
 }
 
 .info-section {
-    background-color: #444444;
+    background-color: #85aefa;
     padding: 20px;
     border-radius: 10px;
     width: 300px;
@@ -58,20 +58,20 @@ body {
 }
 
 .links-section a {
-    background-color: #0000FF;
+    background-color: #408EC6;
     color: #FFFFFF;
-    padding: 10px;
+    padding: 5px;
     border-radius: 5px;
     text-decoration: none;
 }
 
 .birthdate-section {
-    background-color: #D3D3D3;
+    background-color: #408EC6;
     color: #000000;
     padding: 10px;
-    width: 200px; /* Fixed width for the birthdate section */
+    width: 200px;
     position: absolute;
     right: 0;
-    top: 50px; /* Align with profile-container */
+    top: 50px;
     text-align: center;
 }
