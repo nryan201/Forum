@@ -34,6 +34,13 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.25);
     flex-shrink: 0; /* Empêche la réduction */
 }
+.star,.star1,.star2,.star3,.star4 {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: yellow;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
 .profile {
     background-color: #85aefa;
     border-radius: 10px;
@@ -245,8 +252,26 @@ body {
     position: relative;
     z-index: 2;
 }
+.profileBtn {
+    align-items: center;
+    padding: 15px 50px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+}
 
-.categoryBtn:hover, .hashtagsBtn:hover {
+.categoryBtn:hover, .hashtagsBtn:hover,.profileBtn:hover {
     background-color: #45a049;
     transform: translateY(-3px);
 }
