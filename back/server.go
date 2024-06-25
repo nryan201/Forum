@@ -43,7 +43,8 @@ func Server() {
 	// Authentication routes
 	r.HandleFunc("/login", Login).Methods("POST")
 	r.HandleFunc("/logout", Logout).Methods("POST")
-	// Option to login with ...
+
+	// Google and Facebook authentication routes
 	r.HandleFunc("/loginGoogle", handleGoogleLogin).Methods("GET")
 	r.HandleFunc("/callbackGoogle", handleGoogleCallback).Methods("GET")
 	r.HandleFunc("/loginFacebook", handleFacebookLogin).Methods("GET")
