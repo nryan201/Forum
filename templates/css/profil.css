@@ -25,7 +25,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-
 }
 
 .profile-pic {
@@ -47,8 +46,20 @@ body {
     width: 300px;
 }
 
-.info-section div {
+.info-section .info-item {
+    display: flex;
+    align-items: center;
     margin-bottom: 10px;
+}
+
+.info-section .info-item span {
+    font-weight: bold;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.info-section .info-item p {
+    margin: 0;
 }
 
 .links-section {
@@ -76,10 +87,12 @@ body {
     text-align: center;
 }
 
-.back-button{
+.back-button {
     background-color: #408EC6;
     color: #FFFFFF;
     padding: 5px;
     border-radius: 5px;
     text-decoration: none;
+    margin: 20px;
+    display: inline-block;
 }
