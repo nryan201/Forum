@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-image: url('/template/ressource/image/fond-ecran-forum.jpg');
+    background-image: url('/image/fond-ecran-forum.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
