@@ -2,7 +2,6 @@ package back
 
 import (
 	"log"
-	"log"
 	"net/http"
 	"github.com/gorilla/mux"
     
@@ -47,6 +46,12 @@ func Server(){
     // Authentication routes
     r.HandleFunc("/login", Login).Methods("POST") 
     r.HandleFunc("/logout", Logout).Methods("POST") 
+    // Option to login with ... 
+	r.HandleFunc("/loginGoogle", handleGoogleLogin).Methods("GET")
+	r.HandleFunc("/callbackGoogle", handleGoogleCallback).Methods("GET")
+	r.HandleFunc("/loginFacebook", handleFacebookLogin).Methods("GET")
+	r.HandleFunc("/callbackFacebook", handleFacebookCallback).Methods("GET")
+
 
 
 
