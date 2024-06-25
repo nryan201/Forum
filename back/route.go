@@ -635,6 +635,8 @@ func CreateCategory(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Category created: %s", categoryName)
 }
 
+
+// UpdateCategory updates a single category by ID  
 func DeleteCategory (w http.ResponseWriter, r *http.Request) {
 	// Logic for deleting a category
 	vars := mux.Vars(r)
