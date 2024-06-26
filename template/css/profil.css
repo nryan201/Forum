@@ -116,11 +116,13 @@ body {
 }
 
 .back-button {
+    font-size: 20px;
     color: #FFFFFF;
-    padding: 5px;
+    padding: 10px;
     text-decoration: none;
     margin: 20px;
     display: inline-block;
+    cursor: pointer;
 
     background: rgba(255, 255, 255, 0.31);
     border-radius: 16px;
