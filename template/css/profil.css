@@ -86,20 +86,22 @@ body {
     display: flex;
     justify-content: space-around;
     margin-top: 10px;
-    background: rgba(255, 255, 255, 0.31);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(6.5px);
-    -webkit-backdrop-filter: blur(6.5px);
-    border: 1px solid rgba(255, 255, 255, 0.55);
+
 }
 
 .links-section a {
 
     color: #FFFFFF;
     padding: 5px;
-    border-radius: 5px;
     text-decoration: none;
+    margin: 0 5px;
+
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
 .birthdate-section {
