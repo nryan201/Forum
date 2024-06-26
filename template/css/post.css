@@ -277,7 +277,7 @@ body {
     position: relative;
     z-index: 2;
 }
-.comment-Button, .post-Button{
+.comment-Button{
     align-items: center;
     padding: 5px 20px;
     font-size: 15px;
@@ -294,6 +294,26 @@ body {
     position: relative;
     margin-top: auto;
     margin-left: 680px;
+    margin-bottom: auto;
+    z-index: 2;
+}
+.post-Button{
+    align-items: center;
+    padding: 5px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    position: relative;
+    margin-top: auto;
+    margin-left: 700px;
     margin-bottom: auto;
     z-index: 2;
 }
