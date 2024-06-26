@@ -131,3 +131,16 @@ body {
     -webkit-backdrop-filter: blur(6.5px);
     border: 1px solid rgba(255, 255, 255, 0.55);
 }
+
+.post-detail{
+    padding: 10px;
+    margin: 20px;
+
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    flex-shrink: 0; /* Empêche la réduction */
+}
