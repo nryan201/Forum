@@ -523,9 +523,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	sessions.Values["username"] = username
 	sessions.Values["role"] = role
 	sessions.Save(r, w)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return 
 	}
 
 	if role == "admin" {

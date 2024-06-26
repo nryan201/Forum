@@ -28,3 +28,7 @@ document.getElementById("commentForm").onsubmit = function(event){
         alert("Erreur lors de l'ajout du commentaire");
     });
 };
+
+
+// possbility to scroll 
+

@@ -1,10 +1,9 @@
-version: '3'
 services:
   web:
     build: .
-    image: maga:latest
+    image: fondecranforum:latest
     ports:
       - "8080:8080"
     volumes:
-      - ./db:/app/db
-      
+      - ./template/ressource/images:/app/template/ressource/images
+      - ./data:/data

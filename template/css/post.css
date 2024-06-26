@@ -19,7 +19,15 @@ body {
     justify-content: space-between; /* Équilibre les sections */
 }
 
+.profile-section,
+.side-section {
+    position: fixed;
+    width: 20%;
+    height: 100vh;
+    overflow-y: auto;
+}
 .profile-section {
+    left: 0;
     width: 10%;
     height: auto;
     padding: 15px;
@@ -46,6 +54,7 @@ body {
 }
 
 .side-section {
+    right: 0;
     width: 20%;
     padding: 10px;
     background: rgba(255, 255, 255, 0.15);
@@ -58,6 +67,10 @@ body {
 }
 
 .main-section {
+    margin-left: 20%;
+    margin-right: 20%;
+    height: 100vh;
+    overflow: auto;
     flex-grow: 1; /* Prend tout l'espace restant */
     padding: 10px;
     text-align: center;
