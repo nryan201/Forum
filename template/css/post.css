@@ -63,6 +63,13 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.25);
     flex-shrink: 0; /* Empêche la réduction */
 }
+.star5,.star6,.star7,.star8,.star9 {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: yellow;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
 
 .main-section {
     flex-grow: 1; /* Prend tout l'espace restant */
@@ -103,6 +110,7 @@ body {
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
     border: 1px solid rgba(255, 255, 255, 0.55);
+    justify-content: flex-start;
 }
 
 .post-detail h2 {
@@ -113,9 +121,8 @@ body {
 }
 
 .post-detail .post-content {
-    padding-bottom: 30px;
+    padding-bottom: 20px;
     border-bottom: 1px solid #85aefa;
-    margin-bottom: 20px;
     position: relative;
     z-index: 2;
 }
@@ -270,6 +277,26 @@ body {
     position: relative;
     z-index: 2;
 }
+.comment-Button, .post-Button{
+    align-items: center;
+    padding: 5px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    position: relative;
+    margin-top: auto;
+    margin-left: 680px;
+    margin-bottom: auto;
+    z-index: 2;
+}
 
 .categoryBtn:hover, .hashtagsBtn:hover,.profileBtn:hover {
     background-color: #45a049;
@@ -278,6 +305,16 @@ body {
 
 .categoryBtn:active, .hashtagsBtn:active {
     background-color: #3e8e41;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(0);
+}
+.post-Button:hover,.comment-Button:hover {
+    background-color: #8e004e;
+    transform: translateY(-3px);
+}
+
+.post-Button:active, .comment-Button:active {
+    background-color: #8e004e;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }

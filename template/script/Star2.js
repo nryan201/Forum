@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const stars = document.querySelectorAll('.star, .star1, .star2, .star3, .star4');
-    const container = document.querySelector('.profile-section');
+    const stars = document.querySelectorAll('.star5, .star6, .star7, .star8, .star9');
+    const container = document.querySelector('.side-section');
 
     stars.forEach(star => {
         let posX = Math.random() * container.clientWidth - 1;
