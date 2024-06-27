@@ -3,96 +3,109 @@ package back
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 
-	"github.com/gorilla/mux"
-	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Topic struct
+// Topic represents a topic
 type Topic struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
 
-// Comment struct
+// Comment represents a comment
 type Comment struct {
 	ID      int    `json:"id"`
 	Content string `json:"content"`
 	TopicID int    `json:"topic_id"`
 }
 
-// User struct
+// User represents a user
 type User struct {
 	ID       int    `json:"id"`
-	Mail     string `json:"mail"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Mail     string `json:"mail"`
 }
 
+// Category represents a category
 type Category struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
+}	
+
+var (
+	db *sql.DB
+	idRegex = regexp.MustCompile(`^/(\d+)$`) // Regular expression to match an ID in the URL
+
+
+)
+
+// OpenDB initializes the database connection
+func OpenDB() {
+	var err error
+	db, err = sql.Open("sqlite3", "./db.sqlite")
+	if err != nil {
+		log.Fatal("Failed to open database:", err)
+	}
 }
 
-var store = sessions.NewCookieStore([]byte("secret-key"))
-
-// Open data base
-func OpenDB() (*sql.DB, error) {
-	return sql.Open("sqlite3", "chemin de la bdd")
+// CloseDB closes the database connection
+func CloseDB() {
+	db.Close()
 }
 
-// Handle for home page
+// HomeHandle handles the home page
 func HomeHandle(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
 
-	tmp, err := template.ParseFiles("template/html/accueil.html")
+	tmpl, err := template.ParseFiles("template/html/accueil.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	err = tmp.Execute(w, nil)
+	err = tmpl.Execute(w, nil)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
 	}
 }
 
-// Handle for  Create topic
-func CreateTopic(w http.ResponseWriter, r *http.Request) {
-	// Logic for creating a topic
+// CreateTopic handles topic creation
+func CreateTopic(w http.ResponseWriter, r *http.Request, idStr string) {
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
 	var topic Topic
 	err := json.NewDecoder(r.Body).Decode(&topic)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
 
 	statement, err := db.Prepare("INSERT INTO topics (title, description) VALUES (?, ?)")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer statement.Close()
 
 	_, err = statement.Exec(topic.Title, topic.Description)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -101,31 +114,32 @@ func CreateTopic(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetTopic retrieves a single topic by ID
-func GetTopic(w http.ResponseWriter, r *http.Request) {
-	// Logic for getting a topic
-	vars := mux.Vars(r)
-	topicID, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+func GetTopic(w http.ResponseWriter, r *http.Request, idStr string) {
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	match := idRegex.FindStringSubmatch(r.URL.Path)
+	if match == nil {
+		http.NotFound(w, r)
 		return
 	}
-	defer db.Close()
+
+	topicID, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	var topic Topic
 	err = db.QueryRow("SELECT id, title, description FROM topics WHERE id = ?", topicID).Scan(&topic.ID, &topic.Title, &topic.Description)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			http.Error(w, "Topic not found", http.StatusNotFound)
+			http.Error(w, "Not found", http.StatusNotFound)
 			return
 		}
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -133,101 +147,89 @@ func GetTopic(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(topic)
 }
 
-// UpdateTopic updates a single topic by ID from PostgresSql
-func UpdateTopic(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	topicID, err := strconv.Atoi(vars["id"])
+// UpdateTopic updates a single topic
+func UpdateTopic(w http.ResponseWriter, r *http.Request, idStr string) {
+	if r.Method != "PUT" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	topicID, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	var topic Topic
 	err = json.NewDecoder(r.Body).Decode(&topic)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
-		return
-
-	}
-
-	defer db.Close()
 
 	statement, err := db.Prepare("UPDATE topics SET title = ?, description = ? WHERE id = ?")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer statement.Close()
 
 	_, err = statement.Exec(topic.Title, topic.Description, topicID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-
 }
 
-// DeleteTopic deletes a single topic by ID from PostgresSql
-func DeleteTopic(w http.ResponseWriter, r *http.Request) {
-	// Logic for deleting a topic
-	vars := mux.Vars(r)
-	topicID, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+// DeleteTopic deletes a topic
+func DeleteTopic(w http.ResponseWriter, r *http.Request, idStr string) {
+	if r.Method != "DELETE" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	db, err := OpenDB()
+
+
+	topicID, err := strconv.Atoi(idStr)
 	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-	defer db.Close()
 
 	statement, err := db.Prepare("DELETE FROM topics WHERE id = ?")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer statement.Close()
 
 	_, err = statement.Exec(topicID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-
 }
+
 
 // Handle for create commment
 func CreateComment(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a comment
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
 	var comment Comment
 	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
-	}
-	defer db.Close()
-
-	statement, err := db.Prepare("INSERT INTO comments (content, topic_id) VALUES (?, ?)")
+	statement , err := db.Prepare("INSERT INTO comments (content, topic_id) VALUES (?, ?)")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -241,34 +243,36 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(comment)
 }
 
-func GetComment(w http.ResponseWriter, r *http.Request) {
+func GetComment(w http.ResponseWriter, r *http.Request, idStr string) {
 	// Logic for getting a comment
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	match := idRegex.FindStringSubmatch(r.URL.Path)
+	if match == nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	commentID, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	var comment Comment
-	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	db, err := OpenDB()
+	err = db.QueryRow("SELECT id, content, topic_id FROM comments WHERE id = ?", commentID).Scan(&comment.ID, &comment.Content, &comment.TopicID)
 	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
-		return
-	}
-	defer db.Close()
-
-	statement, err := db.Prepare("SELECT id, content, topic_id FROM comments WHERE id = ?")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer statement.Close()
-
-	err = statement.QueryRow(comment.ID).Scan(&comment.ID, &comment.Content, &comment.TopicID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		if err == sql.ErrNoRows {
+			http.Error(w, "Not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -276,29 +280,27 @@ func GetComment(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(comment)
 }
 
-func UpdateComment(w http.ResponseWriter, r *http.Request) {
+func UpdateComment(w http.ResponseWriter, r *http.Request, idStr string) {
 	// Logic for updating a comment
+	if r.Method != "PUT" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
 	var comment Comment
 	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
-		return
-
-	}
-	defer db.Close()
-
 	statement, err := db.Prepare("UPDATE comments SET content = ?, topic_id = ? WHERE id = ?")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	defer statement.Close()
+
 
 	_, err = statement.Exec(comment.Content, comment.TopicID, comment.ID)
 	if err != nil {
@@ -307,102 +309,107 @@ func UpdateComment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+
 }
 
-func DeleteComment(w http.ResponseWriter, r *http.Request) {
+func DeleteComment(w http.ResponseWriter, r *http.Request , idStr string) {
 	// Logic for deleting a comment
-	var comment Comment
-	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if r.Method != "DELETE" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+	match := idRegex.FindStringSubmatch(r.URL.Path)
+	if match == nil {
+		http.NotFound(w, r)
 		return
 	}
-	defer db.Close()
+
+	commentID, err := strconv.Atoi(match[1])
+	if err != nil {
+		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	statement, err := db.Prepare("DELETE FROM comments WHERE id = ?")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(comment.ID)
+	_, err = statement.Exec(commentID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+
 }
 
 // Handle for user
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a user
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
 	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := OpenDB()
-
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
-		return
-	}
-
-	defer db.Close()
-
-	statement, err := db.Prepare("INSERT INTO users (username, mail, password) VALUES (?, ?, ?)")
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	statement, err := db.Prepare("INSERT INTO users (username, password, mail) VALUES (?, ?, ?)")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	defer statement.Close()
 
-	_, err = statement.Exec(user.Username, user.Password)
+	_, err = statement.Exec(user.Username, hashedPassword, user.Mail)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
+
+
 }
 
 // GetUser retrieves a single user by ID
-func GetUser(w http.ResponseWriter, r *http.Request) {
+func GetUser(w http.ResponseWriter, r *http.Request, isStr string) {
 	// Logic for getting a user
-	var user User
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+
+	userID, err := strconv.Atoi(isStr)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := OpenDB()
+	var user User
+	err = db.QueryRow("SELECT id, username, password, mail FROM users WHERE id = ?", userID).Scan(&user.ID, &user.Username, &user.Password, &user.Mail)
 	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
-		return
-	}
-	defer db.Close()
-
-	statement, err := db.Prepare("SELECT id, username, mail, password FROM users WHERE id = ?")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer statement.Close()
-
-	err = statement.QueryRow(user.ID).Scan(&user.ID, &user.Username, &user.Password, &user.Mail)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		if err == sql.ErrNoRows {
+			http.Error(w, "User not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Error querying database"+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -411,30 +418,34 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // UpdateUser updates a single user by ID
-func UpdateUser(w http.ResponseWriter, r *http.Request) {
+func UpdateUser(w http.ResponseWriter, r *http.Request, idStr string) {
 	// Logic for updating a user
+	if r.Method != "PUT" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+
+	userID, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
-		return
-	}
-	defer db.Close()
-
-	statement, err := db.Prepare("UPDATE users SET username = ?, password = ?, mail = ?, WHERE id = ?")
+	statement, err := db.Prepare("UPDATE users SET username = ?, password = ?, mail = ? WHERE id = ?")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(user.Username, user.Password, user.ID, user.Mail)
+	_, err = statement.Exec(user.Username, user.Password, user.Mail, userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -444,21 +455,18 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteUser deletes a single user by ID
-func DeleteUser(w http.ResponseWriter, r *http.Request) {
+func DeleteUser(w http.ResponseWriter, r *http.Request, idStr string) {
 	// Logic for deleting a user
-	var user User
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if r.Method != "DELETE" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	db, err := OpenDB()
+	userID, err := strconv.Atoi(idStr)
 	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	defer db.Close()
 
 	statement, err := db.Prepare("DELETE FROM users WHERE id = ?")
 	if err != nil {
@@ -467,196 +475,214 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(user.ID)
+	_, err = statement.Exec(userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+
 }
 
 // Handle for login
 func Login(w http.ResponseWriter, r *http.Request) {
-	// Logic for login
-	session, err := store.Get(r, "session-name")
-	if err != nil {
-		http.Error(w, "Erreur lors de la connexion " +err.Error(), http.StatusInternalServerError)
+	// Check if the correct HTTP method is used
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
-	// Open the database
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Erreur lors de la connexion à la base de données", http.StatusInternalServerError)
-		return
-	}
-	defer db.Close()
-	
 	var dbPassword, role string
-	err = db.QueryRow("SELECT password, role FROM users WHERE username = ?", username).Scan(&dbPassword, &role)
+	// Query the database for the user's hashed password and role based on the username
+	err := db.QueryRow("SELECT password, role FROM users WHERE username = ?", username).Scan(&dbPassword, &role)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			http.Error(w, "Utilisateur non trouvé", http.StatusNotFound)
+			http.Error(w, "User not found", http.StatusNotFound)
 			return
 		}
-		http.Error(w, "Erreur lors de la requête à la base de données"+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error querying database: " + err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	// Compare the provided password with the hashed password from the database
 	err = bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(password))
 	if err != nil {
-		http.Error(w, "Mot de passe incorrect", http.StatusUnauthorized)
+		http.Error(w, "Invalid password", http.StatusUnauthorized)
 		return
 	}
 
-	session.Values["authenticated"] = true
-	session.Values["username"] = username
-	session.Values["role"] = role
-	err = session.Save(r, w)
-	if err != nil {
-		http.Error(w, "Erreur lors de la sauvegarde de la session"+err.Error(), http.StatusInternalServerError)
-		return
-	}
+	// Set the authentication cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:     "authenticated",
+		Value:    "true",
+		Path:     "/",
+		HttpOnly: true,
+	})
 
+	// Construct a welcome message depending on the user's role
+	responseMessage := "Welcome " + username
 	if role == "admin" {
-		w.Write([]byte("Welcome home Sir !!"))
-	} else {
-		w.Write([]byte("Welcome Guys !!"))
+		responseMessage = "Welcome home sir " + username
 	}
+
+	w.Write([]byte(responseMessage))
 }
+
 
 // Handle for logout
 func Logout(w http.ResponseWriter, r *http.Request) {
 	// Logic for logout
-	session, err := store.Get(r, "session-name")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	session.Values["authentified"] = false
-	
-	if err := session.Save(r, w); err != nil {
-		http.Error(w, "Erreur lors de la sauvegarde de la session" +err.Error(), http.StatusInternalServerError)
-		return
-	}
+	// Delete the cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:   "authentificated",
+		Value:  "",
+		Path:  "/",
+		HttpOnly: true,
+		MaxAge: -1,
+	})
 
-	// Send response to the client
-	w.Write([]byte("You are logged out"))
+	w.Write([]byte("You have been logged out"))
 }
 
 // Handle for category
-func CategoryHandler(w http.ResponseWriter, r *http.Request) {
-	// Logic for getting a category
-	vars := mux.Vars(r)
-	categoryID, err := strconv.Atoi(vars["id"]) // Get the category ID from the URL
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
 
-	var category Category
-
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
-		return
-	}
-	defer db.Close()
-
-	statement, err := db.Prepare("SELECT id, name FROM categories WHERE id = ?") // Prepare the SQL statement
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	defer statement.Close()
-
-	err = statement.QueryRow(categoryID).Scan(&category.ID, &category.Name)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			http.Error(w, "Category not found", http.StatusNotFound)
-			return
-		}
-		http.Error(w, "Error querring database"+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(category)
-
-}
-
-// CreateCategory creates a single category
-func CreateCategory(w http.ResponseWriter, r *http.Request) {
+// CreateCategory creates a new category
+func CreateCategory (w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a category
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
-
 	}
 
-	categoryName := r.FormValue("categoryName") // Get the category name from the form
-
-	// Open the database
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+	var category Category
+	if err := json.NewDecoder(r.Body).Decode(&category); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	defer db.Close()
 
-	statement, err := db.Prepare("INSERT INTO categories (name) VALUES (?)")
+	statement , err := db.Prepare("INSERT INTO categories (name) VALUES (?)")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(categoryName)
+	_, err = statement.Exec(category.Name)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	fmt.Fprintf(w, "Category created: %s", categoryName)
+	json.NewEncoder(w).Encode(category)
+}
+
+// GetCategory retrieves a single category by ID
+func GetCategory(w http.ResponseWriter, r *http.Request , idStr string) {
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	match := idRegex.FindStringSubmatch(r.URL.Path)
+	if match == nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	categoryID, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var category Category
+	err = db.QueryRow("SELECT id, name FROM categories WHERE id = ?", categoryID).Scan(&category.ID, &category.Name)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Category not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Error querying database"+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(category)
 }
 
 // UpdateCategory updates a single category by ID
-func DeleteCategory(w http.ResponseWriter, r *http.Request) {
-	// Logic for deleting a category
-	vars := mux.Vars(r)
-	categoryID := vars["id"]
+func UpdateCategory(w http.ResponseWriter, r *http.Request, idStr string) {
+    if r.Method != "PUT" {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
 
-	db, err := OpenDB()
-	if err != nil {
-		log.Println("Failed to open the database", err) // print the error message without stopping the server
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+    categoryID, err := strconv.Atoi(idStr)
+    if err != nil {
+        http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    var category Category
+    err = json.NewDecoder(r.Body).Decode(&category)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    // Use the categoryID from the URL, not category.ID from the body
+    statement, err := db.Prepare("UPDATE categories SET name = ? WHERE id = ?")
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    defer statement.Close()
+
+    _, err = statement.Exec(category.Name, categoryID)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusNoContent)
+}
+
+
+// DeleteCategory deletes a single category by ID
+func DeleteCategory(w http.ResponseWriter, r *http.Request, idStr string) {
+	if r.Method != "DELETE" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	defer db.Close()
+
+	categoryID, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	statement, err := db.Prepare("DELETE FROM categories WHERE id = ?")
 	if err != nil {
-		http.Error(w, "Failed to prepare statement"+err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer statement.Close()
 
 	_, err = statement.Exec(categoryID)
 	if err != nil {
-		http.Error(w, "Failed to execute statement"+err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-
 }
