@@ -11,7 +11,15 @@
 <body>
 <div class="container">
     <div class="profile-section">
-        <div class="profile">Profile</div>
+        <div>
+        <button class="profileBtn" type="submit" formmethod="get">Profile</button>
+        </div>
+        <div class="star"></div>
+        <div class="star1"></div>
+        <div class="star2"></div>
+        <div class="star3"></div>
+        <div class="star4"></div>
+        <script src="../script/Star.js"></script>
     </div>
     <div class="main-section">
         <div class="title">Forum</div>
@@ -20,24 +28,32 @@
                 <input type="text" class="post-title" placeholder="Titre du Post">
                 <textarea class="post-description" placeholder="Description détaillée du post."></textarea>
                 <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
+                <button class="post-Button" formmethod="post">POSTEZ !</button>
             </div>
             <div class="comments">
                 <h3>Commentaires</h3>
                 <div class="comment">
-                    <input class="comment-author" placeholder="Nom de l'utilisateur">
+                    <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
                     <label>
                         <textarea class="comment-text" placeholder="Commentaire sur le post."></textarea>
                     </label>
                 </div>
             </div>
+            <button class="comment-Button" formmethod="post">COMMENTEZ</button>
         </div>
     </div>
 
     <div class="side-section">
         <div class="categories">
+            <div class="star5"></div>
+            <div class="star6"></div>
+            <div class="star7"></div>
+            <div class="star8"></div>
+            <div class="star9"></div>
+            <script src="../script/Star2.js"></script>
             <form id="createCategoryForm" method="POST" action="/CreateCategory">
                 <input type="text" class="createCategory" name="categoryName" placeholder="Enter new category">
-                <button class="categoryBtn" type="submit">Create</button>
+                <button class="categoryBtn" type="submit" formmethod="post">Create</button>
             </form>
             <h3>Categories</h3>
             <ul id="categoriesList">
@@ -49,7 +65,7 @@
         <div class="hashtags">
             <form id="createHashtagForm" method="POST" action="/Create#">
                 <input type="text" class="createHashtags" name="hashtagsName" placeholder="Enter new hashtags">
-                <button class="hashtagsBtn" type="submit">Create</button>
+                <button class="hashtagsBtn" type="submit" formmethod="post">Create</button>
             </form>
             <h3>Hashtags</h3>
             <ul id="hashtagsList">

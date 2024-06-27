@@ -1,0 +1,100 @@
+/* Styles pour le corps pour centrer le conteneur de cartes */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('/image/fond-ecran-forum.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    overflow: auto; /* Permet le défilement vertical */
+}
+
+/* Ajustement du conteneur de cartes */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start; /* Alignement des éléments en haut */
+    width: 80%;
+    max-width: 1000px; /* Limite la largeur du conteneur */
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    margin-top: 20px; /* Espacement du haut */
+    margin-bottom: 20px; /* Espacement du bas */
+}
+
+/* Styles individuels des cartes */
+.card1, .card2, .card3, .card4, .card5 {
+    margin: 10px;
+    width: calc(100% / 3 - 20px); /* Ajuste la largeur pour s'adapter au conteneur avec des marges */
+    max-width: 200px; /* Assure que la largeur maximale est appliquée */
+    text-align: center;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+/* Ajustement de la base flexible pour les cartes supérieures */
+.card1, .card2 {
+    flex-basis: calc(50% - 20px); /* Assure que les deux premières cartes prennent la moitié de la largeur du conteneur */
+    margin-bottom: 20px; /* Espacement entre les cartes supérieures et inférieures */
+}
+
+/* Ajustement de la base flexible pour les cartes inférieures */
+.card3, .card4, .card5 {
+    flex-basis: calc(100% / 3 - 20px); /* Ajuste la largeur pour s'adapter au conteneur avec des marges */
+    max-width: 200px; /* Assure que la largeur maximale est appliquée */
+}
+
+/* Ajustement de la taille des images pour uniformiser */
+.card1 img, .card2 img, .card3 img, .card4 img, .card5 img {
+    width: 100%; /* Utilise toute la largeur disponible */
+    height: 200px; /* Hauteur fixe pour toutes les images */
+    object-fit: cover; /* Maintient le rapport d'aspect et couvre la zone définie */
+    border-top-left-radius: 16px; /* Coins arrondis pour l'image */
+    border-top-right-radius: 16px; /* Coins arrondis pour l'image */
+}
+
+/* Styles pour le titre */
+.title {
+    color: grey;
+    font-size: 18px;
+}
+
+/* Styles pour le bouton */
+button {
+    border: none;
+    outline: 0;
+    display: inline-block;
+    padding: 8px;
+    color: white;
+    background-color: #000;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+}
+
+/* Styles pour le lien */
+a {
+    text-decoration: none;
+    font-size: 22px;
+    color: black;
+}
+
+/* Effets de survol */
+button:hover, a:hover {
+    opacity: 0.7;
+}

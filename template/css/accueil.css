@@ -14,14 +14,11 @@ body {
 .container {
     display: flex;
     height: 100vh;
-    position: relative;
-    z-index: 1;
-    justify-content: space-between; /* Équilibre les sections */
+    justify-content: space-between;
 }
 
 .profile-section {
     width: 10%;
-    height: auto;
     padding: 15px;
     display: flex;
     flex-direction: column;
@@ -32,8 +29,8 @@ body {
     backdrop-filter: blur(1.1px);
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
-    flex-shrink: 0; /* Empêche la réduction */
 }
+
 .profile {
     background-color: #85aefa;
     border-radius: 10px;
@@ -41,8 +38,6 @@ body {
     text-align: center;
     width: 100%;
     margin-bottom: 10px;
-    position: relative; /* Nécessaire pour le z-index */
-    z-index: 2; /* Met le contenu au-dessus de l'image de fond */
 }
 
 .side-section {
@@ -54,15 +49,12 @@ body {
     backdrop-filter: blur(1.1px);
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
-    flex-shrink: 0; /* Empêche la réduction */
 }
 
 .main-section {
-    flex-grow: 1; /* Prend tout l'espace restant */
+    flex-grow: 1;
     padding: 10px;
     text-align: center;
-    position: relative;
-    z-index: 2;
 }
 
 .title {
@@ -70,7 +62,6 @@ body {
     font-weight: bold;
     padding: 30px;
     margin-bottom: 10px;
-    overflow-wrap: break-word;
     background: rgba(255, 255, 255, 0.31);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -79,95 +70,53 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
-.posts {
-    text-align: left;
-    position: relative;
-    z-index: 2;
-}
-
-.post-detail {
-    padding: 20px;
-    margin-top: 30px;
-    margin-bottom: 35px;
-    text-align: left;
-    background: rgba(255, 255, 255, 0.31);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(6.5px);
-    -webkit-backdrop-filter: blur(6.5px);
-    border: 1px solid rgba(255, 255, 255, 0.55);
-}
-
-.post-detail h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    position: relative;
-    z-index: 2;
-}
-
-.post-detail .post-content {
-    padding-bottom: 30px;
-    border-bottom: 1px solid #85aefa;
+.post-topic {
     margin-bottom: 20px;
-    position: relative;
-    z-index: 2;
 }
 
-.post-detail .post-content input {
-    width: 50%;
-    height: 30px;
-    padding: 8px;
-    margin-top: 16px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    resize: none;
-    position: relative;
-    z-index: 2;
+.post-feed {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
-.post-detail .post-description {
-    width: 95%;
-    height: 220px;
-    padding: 12px;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    resize: none;
-    position: relative;
-    z-index: 2;
-}
-
-.post-detail .comments {
-    padding-top: 2px;
-    position: relative;
-    z-index: 2;
-}
-
-.comment-text {
-    width: 95%;
-    height: 50px;
-    padding: 12px;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    resize: none;
-    position: relative;
-    z-index: 2;
-}
-
-.post-detail .comment {
-    margin-bottom: 5px;
-    position: relative;
-    z-index: 2;
-}
-
-.post-author {
-    margin-bottom: 1px;
+.post-feed .post-author {
     font-weight: bold;
-    position: relative;
-    z-index: 2;
+    margin-bottom: 10px;
+}
+
+.post-feed .postContent {
+    margin-bottom: 10px;
+}
+
+.comments {
+    padding: 10px;
+    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.comment {
+    margin-top: 10px;
+}
+
+.comment .post-author {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.comment .comment-text {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
 }
 
 .categories, .hashtags {
@@ -184,25 +133,19 @@ body {
 .categories h3, .hashtags h3 {
     margin: 0;
     margin-bottom: 10px;
-    position: relative;
-    z-index: 2;
 }
 
 .categories ul, .hashtags ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    position: relative;
-    z-index: 2;
 }
 
 .categories li, .hashtags li {
     margin-bottom: 5px;
-    position: relative;
-    z-index: 2;
 }
 
-.categories .createCategory, .createHashtags {
+.createCategory, .createHashtags {
     display: inline-block;
     align-items: center;
     margin-bottom: 8px;
@@ -219,11 +162,9 @@ body {
     transition: background-color 0.3s, transform 0.3s;
     cursor: pointer;
     border-bottom: 1px solid #85aefa;
-    position: relative;
-    z-index: 2;
 }
 
-.categories .createCategory::placeholder, .createHashtags::placeholder {
+.createCategory::placeholder, .createHashtags::placeholder {
     color: #fff;
 }
 
@@ -242,8 +183,6 @@ body {
     transition: background-color 0.3s, transform 0.3s;
     cursor: pointer;
     margin-bottom: 8px;
-    position: relative;
-    z-index: 2;
 }
 
 .categoryBtn:hover, .hashtagsBtn:hover {

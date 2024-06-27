@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,
-    initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
     <link rel="stylesheet" href="../css/connexion.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -12,153 +11,131 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js"></script>
 
 </head>
-
 <body onload="getCookieData()">
-    <div class="wrapper" id="loginForm">
-        <form action="" method="get">
-            <h1>Login</h1>
-            <div class="input-boxUser">
-                <label>
-                    <input type="text"
-                           id="userName"
-                           placeholder="Username" required>
-                </label>
-                <i class='bx bxs-user'></i>
-            </div>
-            <div class="input-boxPass">
-                <label>
-                    <input type="password"
-                           id="passWord"
-                           placeholder="Password"
-                           required>
-                </label>
-                <div class="eyePassword">
+<div class="wrapper" id="loginForm">
+    <form action="/login" method="post">
+        <h1>Login</h1>
+        <div class="input-boxUser">
+            <label>
+                <input type="text" id="userName" name="username" placeholder="Username" required>
+            </label>
+            <i class='bx bxs-user'></i>
+        </div>
+        <div class="input-boxPass">
+            <label>
+                <input type="password" id="passWord" name="password" placeholder="Password" required>
+            </label>
+            <div class="eyePassword">
                 <i class="fa-solid fa-eye"></i>
-                </div>
-                <i class='bx bxs-lock'></i>
             </div>
-            <div class="remember-forgot">
-                <label><input type="checkbox" onclick="setCookies()">Remember me</label>
-                <a href="#ForgotPassword">Forgot Password? </a>
-            </div>
-            <button type="submit" class="btn">Login</button>
-            <div class="register-link">
-                <p>Don't have an account?
-                    <a href="#registerForm">Register</a>
-                </p>
-            </div>
-            <script>
-                let input =document.querySelector('.input-boxPass input')
-                let showBtn =document.querySelector('.eyePassword i')
-                showBtn.onclick=function () {
-                    if(input.type === "password"){
-                        input.type = "text";
-                        showBtn.classList.add('active');
-                    }else {
-                        input.type = "password";
-                        showBtn.classList.remove('active');
+            <i class='bx bxs-lock'></i>
+        </div>
+        <div class="remember-forgot">
+            <label><input type="checkbox" onclick="setCookies()">Remember me</label>
+            <a href="#ForgotPassword">Forgot Password? </a>
+        </div>
+        <button type="submit" class="btn">Login</button>
+        <div class="register-link">
+            <p>Don't have an account?
+                <a href="#registerForm">Register</a>
+            </p>
+        </div>
+        <script>
+            let input = document.querySelector('.input-boxPass input')
+            let showBtn = document.querySelector('.eyePassword i')
+            showBtn.onclick = function () {
+                if (input.type === "password") {
+                    input.type = "text";
+                    showBtn.classList.add('active');
+                } else {
+                    input.type = "password";
+                    showBtn.classList.remove('active');
+                }
+            }
+            function setCookies() {
+                var u = document.getElementById('userName').value;
+                var p = document.getElementById('passWord').value;
+
+                document.cookie = "userName=" + u + ";path=/";
+                document.cookie = "passWord=" + p + ";path=/";
+            }
+
+            function getCookieData() {
+                var cookies = document.cookie.split("; ");
+                var userName = "";
+                var passWord = "";
+
+                cookies.forEach(cookie => {
+                    var [name, value] = cookie.split("=");
+                    if (name === "userName") {
+                        userName = value;
+                    } else if (name === "passWord") {
+                        passWord = value;
                     }
+                });
+                console.log(document.cookie);
+            }
+        </script>
+    </form>
+</div>
+
+<div class="wrapper-register" id="registerForm">
+    <form action="/adduser" method="post">
+        <div class="back-to-login">
+            <i class='bx bx-chevron-left'></i>
+            <p><a href="#loginForm" class="login-link">Login</a></p>
+        </div>
+        <h1>Register</h1>
+        <div class="input-box">
+            <input type="text" name="username" placeholder="Username" required>
+            <i class='bx bxs-user'></i>
+        </div>
+        <div class="input-box">
+            <input type="email" name="email" placeholder="Email" required>
+            <i class='bx bxs-envelope'></i>
+        </div>
+        <div class="input-boxPass2">
+            <input type="password" name="password" placeholder="Password" required>
+            <div class="eyePassword2">
+                <i class="fa-solid fa-eye"></i>
+            </div>
+            <i class='bx bxs-lock'></i>
+        </div>
+        <script>
+            let registerInput = document.querySelector('.input-boxPass2 input')
+            let registerShowBtn = document.querySelector('.eyePassword2 i')
+            registerShowBtn.onclick = function () {
+                if (registerInput.type === "password") {
+                    registerInput.type = "text";
+                    registerShowBtn.classList.add('active');
+                } else {
+                    registerInput.type = "password";
+                    registerShowBtn.classList.remove('active');
                 }
-                function setCookies() {
-                    var u = document.getElementById('userName').value;
-                    var p = document.getElementById('passWord').value;
+            }
+        </script>
+        <button type="submit" class="btn">Register</button>
+    </form>
+</div>
 
-                    document.cookie="userName="+u+";path=/";
-                    document.cookie="passWord="+p+";path=/";
-                }
-
-                function getCookieData() {
-                    var cookies = document.cookie.split("; ");
-                    var userName = "";
-                    var passWord = "";
-
-                    cookies.forEach(cookie => {
-                        var [name, value] = cookie.split("=");
-                        if (name === "userName") {
-                            userName = value;
-                        } else if (name === "passWord") {
-                            passWord = value;
-                        }
-                    });
-                    console.log(document.cookie);
-                }
-            </script>
-        </form>
-    </div>
-
-    <div class="wrapper-register" id="registerForm">
-        <form action="" method="post">
-            <div class="back-to-login">
-                <i class='bx bx-chevron-left'></i>
-                <p>
-                    <a href="#loginForm" class="login-link">Login</a>
-                </p>
-            </div>
-            <div class="autentification">
-                <div class="autentification-google">
-                </div>
-                <div class="autentification-facebook">
-                </div>
-                <div class="autentification-github">
-                </div>
-            </div>
-            <h1>Register</h1>
-            <div class="input-box">
-                <input type="text"
-                       placeholder="Username"
-                       required>
-                <i class='bx bxs-user'></i>
-            </div>
-            <div class="input-box">
-                <input type="email"
-                       placeholder="Email"
-                       required>
-                <i class='bx bxs-envelope'></i>
-            </div>
-            <div class="input-boxPass2">
-                <input type="password"
-                       placeholder="Password"
-                       required>
-                <div class="eyePassword2">
-                    <i class="fa-solid fa-eye"></i>
-                </div>
-                <i class='bx bxs-lock'></i>
-            </div>
-            <button type="submit" class="btn">Register</button>
-            <script>
-                let input2 =document.querySelector('.input-boxPass2 input')
-                let showBtn2 =document.querySelector('.eyePassword2 i')
-                showBtn2.onclick=function () {
-                    if(input2.type === "password"){
-                        input2.type = "text";
-                        showBtn2.classList.add('active2');
-                    }else {
-                        input2.type = "password";
-                        showBtn2.classList.remove('active2');
-                    }
-                }
-            </script>
-        </form>
-    </div>
-
-    <div class="forgot-password" id="forgotPassword">
-        <form action="" method="post">
-            <div class="back-to-login">
-                <i class='bx bx-chevron-left'></i>
-                <p>
-                    <a href="#loginForm2" class="login-link">Login</a>
-                </p>
-            </div>
-            <h1>You forgot your password ?</h1>
-            <div class="input-box">
-                <input type="email"
-                       placeholder="Email"
-                       required>
-                <i class='bx bxs-envelope'></i>
-            </div>
-            <button type="submit" class="btn">Send !</button>
-        </form>
-    </div>
-    <script src='../script/connexion.js'></script>
+<div class="forgot-password" id="forgotPassword">
+    <form action="" method="post">
+        <div class="back-to-login">
+            <i class='bx bx-chevron-left'></i>
+            <p>
+                <a href="#loginForm2" class="login-link">Login</a>
+            </p>
+        </div>
+        <h1>You forgot your password ?</h1>
+        <div class="input-box">
+            <input type="email"
+                   placeholder="Email"
+                   required>
+            <i class='bx bxs-envelope'></i>
+        </div>
+        <button type="submit" class="btn">Send !</button>
+    </form>
+</div>
+<script src='../script/connexion.js'></script>
 </body>
 </html>

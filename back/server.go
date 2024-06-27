@@ -8,7 +8,8 @@ import (
 
 func Server() {
 	r := mux.NewRouter()
-
+	db := dbConn()
+	defer db.Close()
 	// Create a file server to serve static files
 	r.PathPrefix("/html/").Handler(http.StripPrefix("/html/", http.FileServer(http.Dir("./template/html"))))
 	r.PathPrefix("/css/").Handler(http.StripPrefix("/css/", http.FileServer(http.Dir("./template/css"))))
@@ -40,15 +41,9 @@ func Server() {
 	r.HandleFunc("/category/{id}", CategoryHandler).Methods("GET")
 	r.HandleFunc("/category/{id}", DeleteCategory).Methods("DELETE")
 
-	// Authentication routes
-	r.HandleFunc("/login", Login).Methods("POST")
-	r.HandleFunc("/logout", Logout).Methods("POST")
-	// Option to login with ...
-	r.HandleFunc("/loginGoogle", handleGoogleLogin).Methods("GET")
-	r.HandleFunc("/callbackGoogle", handleGoogleCallback).Methods("GET")
-	r.HandleFunc("/loginFacebook", handleFacebookLogin).Methods("GET")
-	r.HandleFunc("/callbackFacebook", handleFacebookCallback).Methods("GET")
-
+	// Handle for login and register
+	r.HandleFunc("/adduser", addUser).Methods("GET", "POST")
+	r.HandleFunc("/login", loginUser).Methods("GET", "POST")
 	// Start the server
 	log.Println("Hello there !")
 	log.Println("Server started on http://localhost:8080/")
