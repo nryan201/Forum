@@ -8,7 +8,8 @@ import (
 
 func Server() {
 	r := mux.NewRouter()
-
+	db := dbConn()
+	defer db.Close()
 	// Create a file server to serve static files
 	r.PathPrefix("/html/").Handler(http.StripPrefix("/html/", http.FileServer(http.Dir("./template/html"))))
 	r.PathPrefix("/css/").Handler(http.StripPrefix("/css/", http.FileServer(http.Dir("./template/css"))))
@@ -41,14 +42,19 @@ func Server() {
 	r.HandleFunc("/category/{id}", DeleteCategory).Methods("DELETE")
 
 	// Authentication routes
-	r.HandleFunc("/login", Login).Methods("POST")
-	r.HandleFunc("/logout", Logout).Methods("POST")
+	//r.HandleFunc("/login", Login).Methods("POST")
+	//r.HandleFunc("/logout", Logout).Methods("POST")
 
 	// Google and Facebook authentication routes
-	r.HandleFunc("/loginGoogle", handleGoogleLogin).Methods("GET")
-	r.HandleFunc("/callbackGoogle", handleGoogleCallback).Methods("GET")
-	r.HandleFunc("/loginFacebook", handleFacebookLogin).Methods("GET")
-	r.HandleFunc("/callbackFacebook", handleFacebookCallback).Methods("GET")
+	//r.HandleFunc("/loginGoogle", handleGoogleLogin).Methods("GET")
+	//r.HandleFunc("/callbackGoogle", handleGoogleCallback).Methods("GET")
+	//r.HandleFunc("/loginFacebook", handleFacebookLogin).Methods("GET")
+	//r.HandleFunc("/callbackFacebook", handleFacebookCallback).Methods("GET")
+	//http.HandleFunc("/register", registerHandler)
+	//http.HandleFunc("/login", loginHandler)
+	//http.HandleFunc("/dashboard", dashboardHandler)
+
+	r.HandleFunc("/adduser", addUser).Methods("GET", "POST")
 
 	// Start the server
 	log.Println("Hello there !")

@@ -18,7 +18,6 @@ CREATE TABLE users (
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL, 
     email TEXT UNIQUE,
-    google_id TEXT UNIQUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -89,6 +88,7 @@ CREATE TABLE likes (
 INSERT INTO users (username, password, email, google_id) VALUES 
 ('user1', 'password1', 'user1@example.com', 'google_id1'),
 ('user2', 'password2', 'user2@example.com', 'google_id2');
+
 
 -- Insertion dans la table Topics
 INSERT INTO topics (user_id, title, description) VALUES 

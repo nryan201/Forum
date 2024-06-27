@@ -94,9 +94,3 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "User ID: %d\n", userID)
 	fmt.Fprintf(w, "User Info: %s\n", googleUser.Name)
 }
-
-func main() {
-	http.HandleFunc("/login", handleGoogleLogin)
-	http.HandleFunc("/callback", handleGoogleCallback)
-	log.Fatal(http.ListenAndServe(":8080", nil))
-}
