@@ -52,7 +52,7 @@ func OpenDB() (*sql.DB, error) {
 // Handle for home page
 func HomeHandle(w http.ResponseWriter, r *http.Request) {
 
-	tmp, err := template.ParseFiles("template/html/connexion.html")
+	tmp, err := template.ParseFiles("template/html/contact.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -523,10 +523,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	sessions.Values["username"] = username
 	sessions.Values["role"] = role
 	sessions.Save(r, w)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return 
+		return
 	}
 
 	if role == "admin" {

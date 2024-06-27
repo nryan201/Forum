@@ -1,60 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum</title>
-    <link rel="stylesheet" href="../css/accueil.css">
+    <link rel="stylesheet" type="text/css" href="/style/accueil.css">
+    <link rel="icon" type="image/vnd.icon" href="../ressource/image/maga.JPG">
+    <script src="/script/accueil.js"></script>
+    <title>Le Forum</title>
 </head>
+
 <body>
 <div class="container">
     <div class="profile-section">
         <div class="profile">Profile</div>
-        <div class="filters">
-            <div class="search">
-                <input type="text" placeholder="Search">
-                <button>Add Caption</button>
-                <button>Add Caption</button>
-                <button>Add Caption</button>
-                <button>Add Caption</button>
-            </div>
-        </div>
     </div>
     <div class="main-section">
-        <div class="title">Forum</div>
-        <div class="posts">
-            <a href="" class="post post-1">Post 1: bla bla bla bla bla bla bla bla</a>
-            <a href="" class="post post-2">Post 2: bla bla bla bla bla bla bla bla</a>
-            <a href="" class="post post-3">Post 3: bla bla bla bla bla bla bla bla</a>
-            <a href="" class="post post-4">Post 4: bla bla bla bla bla bla bla bla</a>
-            <a href="" class="post post-5">Post 5: bla bla bla bla bla bla bla bla</a>
-            <a href="" class="post post-6">Post 6: bla bla bla bla bla bla bla bla</a>
+        <div class="title">Bienvenue sur le Forum</div>
+        <div id="topic-container">
+            <!-- Les box des topics seront ajoutées ici par le JS -->
         </div>
     </div>
     <div class="side-section">
         <div class="categories">
+            <form id="createCategoryForm" method="POST" action="/CreateCategory">
+                <input type="text" class="createCategory" name="categoryName" placeholder="Enter new category">
+                <button class="categoryBtn" type="submit">Create</button>
+            </form>
             <h3>Categories</h3>
-            <ul>
-                <li>Granny</li>
-                <li>Granny</li>
-                <li>Granny</li>
+            <ul id="categoriesList">
                 <li>Granny</li>
                 <li>Granny</li>
                 <li>Granny</li>
             </ul>
         </div>
         <div class="hashtags">
+            <form id="createHashtagForm" method="POST" action="/Create#">
+                <input type="text" class="createHashtags" name="hashtagsName" placeholder="Enter new hashtags">
+                <button class="hashtagsBtn" type="submit">Create</button>
+            </form>
             <h3>Hashtags</h3>
-            <ul>
-                <li>#mesboules</li>
-                <li>#mesboules</li>
-                <li>#mesboules</li>
-                <li>#mesboules</li>
+            <ul id="hashtagsList">
                 <li>#mesboules</li>
                 <li>#mesboules</li>
             </ul>
         </div>
     </div>
 </div>
+<script src="../script/category.js"></script>
+<script src="../script/hashtag.js"></script>
+<script src="../script/topic.js"></script>
 </body>
+
 </html>

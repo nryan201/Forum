@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum</title>
-    <link rel="stylesheet" href="../css/post.css">
+    <link rel="stylesheet" href="../css/topic.css">
 </head>
 <body>
 <div class="container">
     <div class="profile-section">
         <div>
-        <button class="profileBtn" type="submit" formmethod="get">Profile</button>
+            <button class="profileBtn" type="submit" formmethod="get">Profile</button>
         </div>
         <div class="star"></div>
         <div class="star1"></div>
@@ -22,11 +22,10 @@
     <div class="main-section">
         <div class="title">Forum</div>
         <div class="post-detail">
-            <div class="post-content">
-                <input type="text" class="post-title" placeholder="Titre du Post">
-                <textarea class="post-description" placeholder="Description détaillée du post."></textarea>
+            <div class="post">
+                <div class="post-title">Contenu du Post</div>
+                <div class="postContent">Post: <span class="content-Post">Contenu du Post</span></div>
                 <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
-                <button class="post-Button" formmethod="post">POSTEZ !</button>
             </div>
             <div class="comments">
                 <h3>Commentaires</h3>
@@ -75,6 +74,5 @@
 </div>
 <script src="../script/category.js"></script>
 <script src="../script/hashtag.js"></script>
-<script src="../script/scroller.js"></script>
 </body>
 </html>
