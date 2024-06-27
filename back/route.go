@@ -376,6 +376,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// GetUser retrieves a single user by ID
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	// Logic for getting a user
 	var user User
@@ -409,6 +410,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// UpdateUser updates a single user by ID
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	// Logic for updating a user
 	var user User
@@ -441,6 +443,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// DeleteUser deletes a single user by ID
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	// Logic for deleting a user
 	var user User
@@ -476,86 +479,78 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 // Handle for login
 func Login(w http.ResponseWriter, r *http.Request) {
 	// Logic for login
-	sessions, err := store.Get(r, "session-name")
+	session, err := store.Get(r, "session-name")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Erreur lors de la connexion " +err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
-	// Check if the user exists
+	// Open the database
 	db, err := OpenDB()
 	if err != nil {
 		log.Println("Failed to open the database", err)
-		http.Error(w, "Internal server error", 500) // error 500 = internal server error
+		http.Error(w, "Erreur lors de la connexion à la base de données", http.StatusInternalServerError)
 		return
 	}
 	defer db.Close()
-
-	var user User
-	err = db.QueryRow("SELECT id, username, password FROM users WHERE username = ? AND password = ?", username, password).Scan(&user.ID, &user.Username, &user.Password)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
+	
 	var dbPassword, role string
 	err = db.QueryRow("SELECT password, role FROM users WHERE username = ?", username).Scan(&dbPassword, &role)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			http.Error(w, "User not found", http.StatusNotFound)
+			http.Error(w, "Utilisateur non trouvé", http.StatusNotFound)
 			return
 		}
-		http.Error(w, " Database error", http.StatusInternalServerError)
+		http.Error(w, "Erreur lors de la requête à la base de données"+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Check if the password is correct
 	err = bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(password))
 	if err != nil {
-		http.Error(w, "Invalid password", http.StatusUnauthorized)
+		http.Error(w, "Mot de passe incorrect", http.StatusUnauthorized)
 		return
 	}
 
-	sessions.Values["authentified"] = true
-	sessions.Values["username"] = username
-	sessions.Values["role"] = role
-	sessions.Save(r, w)
-
+	session.Values["authenticated"] = true
+	session.Values["username"] = username
+	session.Values["role"] = role
+	err = session.Save(r, w)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return 
+		http.Error(w, "Erreur lors de la sauvegarde de la session"+err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	if role == "admin" {
-		w.Write([]byte("You are an admin"))
+		w.Write([]byte("Welcome home Sir !!"))
 	} else {
-		w.Write([]byte("You are a user"))
+		w.Write([]byte("Welcome Guys !!"))
 	}
-
 }
 
 // Handle for logout
 func Logout(w http.ResponseWriter, r *http.Request) {
 	// Logic for logout
-	sessions, err := store.Get(r, "session-name")
+	session, err := store.Get(r, "session-name")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	sessions.Values["authentified"] = false
-	sessions.Save(r, w)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	session.Values["authentified"] = false
+	
+	if err := session.Save(r, w); err != nil {
+		http.Error(w, "Erreur lors de la sauvegarde de la session" +err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	// Send response to the client
 	w.Write([]byte("You are logged out"))
 }
 
+// Handle for category
 func CategoryHandler(w http.ResponseWriter, r *http.Request) {
 	// Logic for getting a category
 	vars := mux.Vars(r)
@@ -575,7 +570,7 @@ func CategoryHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare("SELECT id, name FROM categories WHERE id = ?")
+	statement, err := db.Prepare("SELECT id, name FROM categories WHERE id = ?") // Prepare the SQL statement
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -598,6 +593,7 @@ func CategoryHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// CreateCategory creates a single category
 func CreateCategory(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a category
 	if r.Method != "POST" {
