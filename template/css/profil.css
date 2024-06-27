@@ -16,7 +16,6 @@ body {
     color: #000000;
     padding: 20px;
     text-align: center;
-
     background: rgba(255, 255, 255, 0.31);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -27,10 +26,20 @@ body {
 
 .profile-wrapper {
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    position: relative;
+    flex-direction: column; /* Changer de ligne pour une disposition verticale */
+    justify-content: flex-start;
+    align-items: center;
+    position: absolute;
     margin-top: 50px;
+    margin-left: 17%;
+
+    width: 65%; /* Prendre toute la largeur */
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
 .profile-container {
@@ -38,7 +47,6 @@ body {
     flex-direction: column;
     align-items: center;
     padding-top: 10px;
-
     background: rgba(255, 255, 255, 0.15);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -46,6 +54,8 @@ body {
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
     flex-shrink: 0; /* Empêche la réduction */
+    width: 80%; /* Ajuster selon vos besoins */
+    margin-bottom: 20px; /* Ajouter de l'espace entre les sections */
 }
 
 .profile-pic {
@@ -86,16 +96,13 @@ body {
     display: flex;
     justify-content: space-around;
     margin-top: 10px;
-
 }
 
 .links-section a {
-
     color: #FFFFFF;
     padding: 5px;
     text-decoration: none;
     margin: 0 5px;
-
     background: rgba(255, 255, 255, 0.31);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -123,7 +130,6 @@ body {
     margin: 20px;
     display: inline-block;
     cursor: pointer;
-
     background: rgba(255, 255, 255, 0.31);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -132,10 +138,10 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
-.post-detail{
+.topic-content {
     padding: 10px;
     margin: 20px;
-
+    display: inline-block;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -143,4 +149,14 @@ body {
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
     flex-shrink: 0; /* Empêche la réduction */
+    width: 80%; /* Ajuster selon vos besoins */
+}
+
+.profile-section {
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
 }
