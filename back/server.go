@@ -41,9 +41,11 @@ func Server() {
 	r.HandleFunc("/category/{id}", CategoryHandler).Methods("GET")
 	r.HandleFunc("/category/{id}", DeleteCategory).Methods("DELETE")
 
-	// Handle for login and register
+	/* non fonctionel pour le moment
 	r.HandleFunc("/adduser", addUser).Methods("GET", "POST")
 	r.HandleFunc("/login", loginUser).Methods("GET", "POST")
+	*/
+
 	// Start the server
 	log.Println("Hello there !")
 	log.Println("Server started on http://localhost:8080/")

@@ -2,12 +2,8 @@ package back
 
 import (
 	"database/sql"
-	"fmt"
 	"html/template"
 	"log"
-	"net/http"
-
-	"github.com/mattn/go-sqlite3"
 )
 
 var tmpl = template.Must(template.ParseFiles("./template/html/connexion.html"))
@@ -20,6 +16,7 @@ func dbConn() (db *sql.DB) {
 	return db
 }
 
+/* Non fonctionel pour le moment attendre que Ryan et Alexis modifient ceci
 func addUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		username := r.FormValue("username")
@@ -113,3 +110,4 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, nil)
 	}
 }
+*/
