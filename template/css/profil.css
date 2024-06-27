@@ -29,10 +29,10 @@ body {
     flex-direction: column; /* Changer de ligne pour une disposition verticale */
     justify-content: flex-start;
     align-items: center;
-
+    position: absolute;
     margin-top: 50px;
-    margin-left: 17vh; /* Converti de 17% à 17vh */
-    width: 65vh; /* Converti de 65% à 65vh */
+    margin-left: 45vh; /* Converti de 17% à 17vh */
+    width: 100vh; /* Converti de 65% à 65vh */
     background: rgba(255, 255, 255, 0.31);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -55,6 +55,7 @@ body {
     flex-shrink: 0; /* Empêche la réduction */
     width: 80vh; /* Converti de 80% à 80vh */
     margin-bottom: 20px; /* Ajouter de l'espace entre les sections */
+    margin-top: 2.5vh;
 }
 
 .profile-pic {
