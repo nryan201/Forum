@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const topics = [
         { id: 1, author: "Utilisateur 1", content: "Contenu du topic 1" },
         { id: 2, author: "Utilisateur 2", content: "Contenu du topic 2" },
-        { id: 3, author: "Utilisateur 3", content: "Contenu du topic 3" }
+        { id: 3, author: "Utilisateur 3", content: "Contenu du topic 3" },
+        { id: 4, author: "Utilisateur 4", content: "Contenu du topic 4" }
     ];
 
     // Simulation de la récupération des topics
@@ -40,8 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("topicContainer or createTopicBox is not defined");
     }
 });
-/*// Récupération des topics depuis l'API
-    fetch('/api/topics')
+/*// Récupération des topics depuis la BDD
+    fetch('/bdd/topics')
         .then(response => response.json())
         .then(topics => {
             topics.forEach(topic => {
