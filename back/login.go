@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/mattn/go-sqlite3"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 var tmpl = template.Must(template.ParseFiles("./template/html/connexion.html"))

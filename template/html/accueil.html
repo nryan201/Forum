@@ -1,54 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/style/accueil.css">
+    <link rel="icon" type="image/vnd.icon" href="../ressource/image/maga.JPG">
+    <script src="/script/accueil.js"></script>
+    <title>Le Forum</title>
     <title>Forum</title>
-    <link rel="stylesheet" href="../css/post.css">
+    <link rel="stylesheet" href="../css/accueil.css">
 </head>
+
 <body>
+
 <div class="container">
     <div class="profile-section">
         <div class="profile">Profile</div>
     </div>
     <div class="main-section">
         <div class="title">Bienvenue sur le Forum</div>
-        <div class="post-detail">
-            <div class="post-feed">
-                <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
-                <div>(mettre le feed de post)</div>
-            </div>
-            <div class="comments">
-                <h3>Commentaires</h3>
-                <div class="comment">
-                    <input class="comment-author" placeholder="Nom de l'utilisateur">
-                    <label>
-                        <textarea class="comment-text" placeholder="Commentaire sur le post."></textarea>
-                    </label>
-                </div>
-            </div>
+        <div id="topic-container">
+            <!-- Les box des topics seront ajoutées ici par le JS -->
         </div>
-
-        <div class="post-detail">
-            <div class="post-feed">
-                <input type="text" class="post-title" placeholder="recherche d'un Post">
-
-                <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
-            </div>
-            <div class="comments">
-                <h3>Commentaires</h3>
-                <div class="comment">
-                    <input class="comment-author" placeholder="Nom de l'utilisateur">
-                    <label>
-                        <textarea class="comment-text" placeholder="Commentaire sur le post."></textarea>
-                    </label>
-                </div>
-            </div>
         </div>
-
-
-    </div>
-
     <div class="side-section">
         <div class="categories">
             <form id="createCategoryForm" method="POST" action="/CreateCategory">
@@ -77,5 +52,8 @@
 </div>
 <script src="../script/category.js"></script>
 <script src="../script/hashtag.js"></script>
+<script src="../script/topic.js"></script>
 </body>
+
+
 </html>
