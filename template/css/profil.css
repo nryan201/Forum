@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-image: url('/image/fond-ecran-forum.jpg');
+    background-image: url('/image/fondEcranForum.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -29,11 +29,10 @@ body {
     flex-direction: column; /* Changer de ligne pour une disposition verticale */
     justify-content: flex-start;
     align-items: center;
-    position: absolute;
-    margin-top: 50px;
-    margin-left: 17%;
 
-    width: 65%; /* Prendre toute la largeur */
+    margin-top: 50px;
+    margin-left: 17vh; /* Converti de 17% à 17vh */
+    width: 65vh; /* Converti de 65% à 65vh */
     background: rgba(255, 255, 255, 0.31);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -54,7 +53,7 @@ body {
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
     flex-shrink: 0; /* Empêche la réduction */
-    width: 80%; /* Ajuster selon vos besoins */
+    width: 80vh; /* Converti de 80% à 80vh */
     margin-bottom: 20px; /* Ajouter de l'espace entre les sections */
 }
 
@@ -73,7 +72,7 @@ body {
 .info-section {
     padding: 20px;
     border-radius: 10px;
-    width: 300px;
+    width: 30vh; /* Converti de 300px à 30vh pour plus de cohérence */
 }
 
 .info-section .info-item {
@@ -115,7 +114,7 @@ body {
     background-color: #408EC6;
     color: #000000;
     padding: 10px;
-    width: 200px;
+    width: 20vh; /* Converti de 200px à 20vh pour plus de cohérence */
     position: absolute;
     right: 0;
     top: 50px;
@@ -149,7 +148,7 @@ body {
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
     flex-shrink: 0; /* Empêche la réduction */
-    width: 80%; /* Ajuster selon vos besoins */
+    width: 80vh; /* Converti de 80% à 80vh */
 }
 
 .profile-section {
