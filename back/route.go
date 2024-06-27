@@ -52,7 +52,7 @@ func OpenDB() (*sql.DB, error) {
 // Handle for home page
 func HomeHandle(w http.ResponseWriter, r *http.Request) {
 
-	tmp, err := template.ParseFiles("template/html/connexion1.html")
+	tmp, err := template.ParseFiles("template/html/connexion.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

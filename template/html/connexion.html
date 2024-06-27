@@ -25,60 +25,60 @@
             </label>
             <div class="eyePassword">
                 <i class="fa-solid fa-eye"></i>
-                </div>
-                <i class='bx bxs-lock'></i>
             </div>
-            <div class="remember-forgot">
-                <label><input type="checkbox" onclick="setCookies()">Remember me</label>
-                <a href="#ForgotPassword">Forgot Password? </a>
-            </div>
-            <button type="submit" class="btn">Login</button>
-            <div class="register-link">
-                <p>Don't have an account?
-                    <a href="#registerForm">Register</a>
-                </p>
-            </div>
-            <script>
-                let input =document.querySelector('.input-boxPass input')
-                let showBtn =document.querySelector('.eyePassword i')
-                showBtn.onclick=function () {
-                    if(input.type === "password"){
-                        input.type = "text";
-                        showBtn.classList.add('active');
-                    }else {
-                        input.type = "password";
-                        showBtn.classList.remove('active');
+            <i class='bx bxs-lock'></i>
+        </div>
+        <div class="remember-forgot">
+            <label><input type="checkbox" onclick="setCookies()">Remember me</label>
+            <a href="#ForgotPassword">Forgot Password? </a>
+        </div>
+        <button type="submit" class="btn">Login</button>
+        <div class="register-link">
+            <p>Don't have an account?
+                <a href="#registerForm">Register</a>
+            </p>
+        </div>
+        <script>
+            let input = document.querySelector('.input-boxPass input')
+            let showBtn = document.querySelector('.eyePassword i')
+            showBtn.onclick = function () {
+                if (input.type === "password") {
+                    input.type = "text";
+                    showBtn.classList.add('active');
+                } else {
+                    input.type = "password";
+                    showBtn.classList.remove('active');
+                }
+            }
+            function setCookies() {
+                var u = document.getElementById('userName').value;
+                var p = document.getElementById('passWord').value;
+
+                document.cookie = "userName=" + u + ";path=/";
+                document.cookie = "passWord=" + p + ";path=/";
+            }
+
+            function getCookieData() {
+                var cookies = document.cookie.split("; ");
+                var userName = "";
+                var passWord = "";
+
+                cookies.forEach(cookie => {
+                    var [name, value] = cookie.split("=");
+                    if (name === "userName") {
+                        userName = value;
+                    } else if (name === "passWord") {
+                        passWord = value;
                     }
-                }
-                function setCookies() {
-                    var u = document.getElementById('userName').value;
-                    var p = document.getElementById('passWord').value;
-
-                    document.cookie="userName="+u+";path=/";
-                    document.cookie="passWord="+p+";path=/";
-                }
-
-                function getCookieData() {
-                    var cookies = document.cookie.split("; ");
-                    var userName = "";
-                    var passWord = "";
-
-                    cookies.forEach(cookie => {
-                        var [name, value] = cookie.split("=");
-                        if (name === "userName") {
-                            userName = value;
-                        } else if (name === "passWord") {
-                            passWord = value;
-                        }
-                    });
-                    console.log(document.cookie);
-                }
-            </script>
-        </form>
-    </div>
+                });
+                console.log(document.cookie);
+            }
+        </script>
+    </form>
+</div>
 
 <div class="wrapper-register" id="registerForm">
-    <form action="/register" method="post">
+    <form action="/adduser" method="post">
         <div class="back-to-login">
             <i class='bx bx-chevron-left'></i>
             <p><a href="#loginForm" class="login-link">Login</a></p>
@@ -99,28 +99,41 @@
             </div>
             <i class='bx bxs-lock'></i>
         </div>
+        <script>
+            let registerInput = document.querySelector('.input-boxPass2 input')
+            let registerShowBtn = document.querySelector('.eyePassword2 i')
+            registerShowBtn.onclick = function () {
+                if (registerInput.type === "password") {
+                    registerInput.type = "text";
+                    registerShowBtn.classList.add('active');
+                } else {
+                    registerInput.type = "password";
+                    registerShowBtn.classList.remove('active');
+                }
+            }
+        </script>
         <button type="submit" class="btn">Register</button>
     </form>
 </div>
 
-    <div class="forgot-password" id="forgotPassword">
-        <form action="" method="post">
-            <div class="back-to-login">
-                <i class='bx bx-chevron-left'></i>
-                <p>
-                    <a href="#loginForm2" class="login-link">Login</a>
-                </p>
-            </div>
-            <h1>You forgot your password ?</h1>
-            <div class="input-box">
-                <input type="email"
-                       placeholder="Email"
-                       required>
-                <i class='bx bxs-envelope'></i>
-            </div>
-            <button type="submit" class="btn">Send !</button>
-        </form>
-    </div>
-    <script src='../script/connexion.js'></script>
+<div class="forgot-password" id="forgotPassword">
+    <form action="" method="post">
+        <div class="back-to-login">
+            <i class='bx bx-chevron-left'></i>
+            <p>
+                <a href="#loginForm2" class="login-link">Login</a>
+            </p>
+        </div>
+        <h1>You forgot your password ?</h1>
+        <div class="input-box">
+            <input type="email"
+                   placeholder="Email"
+                   required>
+            <i class='bx bxs-envelope'></i>
+        </div>
+        <button type="submit" class="btn">Send !</button>
+    </form>
+</div>
+<script src='../script/connexion.js'></script>
 </body>
 </html>

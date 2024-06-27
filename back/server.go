@@ -41,21 +41,9 @@ func Server() {
 	r.HandleFunc("/category/{id}", CategoryHandler).Methods("GET")
 	r.HandleFunc("/category/{id}", DeleteCategory).Methods("DELETE")
 
-	// Authentication routes
-	//r.HandleFunc("/login", Login).Methods("POST")
-	//r.HandleFunc("/logout", Logout).Methods("POST")
-
-	// Google and Facebook authentication routes
-	//r.HandleFunc("/loginGoogle", handleGoogleLogin).Methods("GET")
-	//r.HandleFunc("/callbackGoogle", handleGoogleCallback).Methods("GET")
-	//r.HandleFunc("/loginFacebook", handleFacebookLogin).Methods("GET")
-	//r.HandleFunc("/callbackFacebook", handleFacebookCallback).Methods("GET")
-	//http.HandleFunc("/register", registerHandler)
-	//http.HandleFunc("/login", loginHandler)
-	//http.HandleFunc("/dashboard", dashboardHandler)
-
+	// Handle for login and register
 	r.HandleFunc("/adduser", addUser).Methods("GET", "POST")
-
+	r.HandleFunc("/login", loginUser).Methods("GET", "POST")
 	// Start the server
 	log.Println("Hello there !")
 	log.Println("Server started on http://localhost:8080/")
