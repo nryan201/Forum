@@ -1,0 +1,162 @@
+body {
+    color: #FFFFFF;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('/image/fond-ecran-forum.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.header {
+    color: #000000;
+    padding: 20px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.profile-wrapper {
+    display: flex;
+    flex-direction: column; /* Changer de ligne pour une disposition verticale */
+    justify-content: flex-start;
+    align-items: center;
+    position: absolute;
+    margin-top: 50px;
+    margin-left: 17%;
+
+    width: 65%; /* Prendre toute la largeur */
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    flex-shrink: 0; /* Empêche la réduction */
+    width: 80%; /* Ajuster selon vos besoins */
+    margin-bottom: 20px; /* Ajouter de l'espace entre les sections */
+}
+
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    background-color: #D3D3D3;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.info-section {
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+}
+
+.info-section .info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.info-section .info-item span {
+    font-weight: bold;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.info-section .info-item p {
+    margin: 0;
+}
+
+.links-section {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.links-section a {
+    color: #FFFFFF;
+    padding: 5px;
+    text-decoration: none;
+    margin: 0 5px;
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.birthdate-section {
+    background-color: #408EC6;
+    color: #000000;
+    padding: 10px;
+    width: 200px;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    text-align: center;
+}
+
+.back-button {
+    font-size: 20px;
+    color: #FFFFFF;
+    padding: 10px;
+    text-decoration: none;
+    margin: 20px;
+    display: inline-block;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.topic-content {
+    padding: 10px;
+    margin: 20px;
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    flex-shrink: 0; /* Empêche la réduction */
+    width: 80%; /* Ajuster selon vos besoins */
+}
+
+.profile-section {
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+}

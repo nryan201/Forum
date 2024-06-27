@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil</title>
+    <link rel="stylesheet" href="../css/profil.css">
+</head>
+<body>
+<div class="header">Nom du forum</div>
+<button class="back-button" onclick="goBack()">Retour</button>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+<div class="profile-wrapper">
+    <div class="profile-container">
+        <div class="profile-pic" id="profile-pic">pp du profil</div>
+        <div class="info-section">
+            <div class="info-item"><span id="username">Username :</span><p>bonjour</p></div>
+            <div class="info-item"><span id="name">Name :</span><p>bonjour</p></div>
+            <div class="info-item"><span id="firstname">Firstname :</span><p>bonjour</p></div>
+            <div class="info-item"><span id="birthdate-section">Birthdate :</span><p>bonjour</p></div>
+            <div class="info-item"><span id="email">Mail :</span><p>bonjour</p></div>
+
+            <div class="info-item"><span id="other-link">Other link :</span></div>
+            <div class="links-section">
+                <a href="#" id="google-link">Google</a>
+                <a href="#" id="github-link">Github</a>
+                <a href="#" id="riot-client-link">Riot Games</a>
+                <a href="#" id="facebook-link">Facebook</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="topic-content">
+        <span class="author-topic">(mettre ses topics)</span>
+    </div>
+
+</div>
+</body>
+</html>

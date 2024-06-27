@@ -1,57 +1,258 @@
 body {
-    background-color: #1A1A1A;
-    color: #FFFFFF;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-image: url('/image/fond-ecran-forum.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
 }
-.header, .post-header {
-    background-color: #333333;
-    padding: 20px;
+
+.container {
     display: flex;
-    justify-content: space-between;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+    justify-content: space-between; /* Équilibre les sections */
+}
+
+.profile-section {
+    width: 10%;
+    height: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    flex-shrink: 0; /* Empêche la réduction */
 }
-.header {
-    height: 100px;
-}
-.header .back-menu {
-    background-color: #E0E0E0;
-    color: #000000;
+.profile {
+    background-color: #85aefa;
+    border-radius: 10px;
     padding: 10px;
     text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative; /* Nécessaire pour le z-index */
+    z-index: 2; /* Met le contenu au-dessus de l'image de fond */
 }
-.header .profile {
-    background-color: #E0E0E0;
-    color: #000000;
+
+.side-section {
+    width: 20%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    flex-shrink: 0; /* Empêche la réduction */
+}
+
+.main-section {
+    flex-grow: 1; /* Prend tout l'espace restant */
     padding: 10px;
     text-align: center;
+    position: relative;
+    z-index: 2;
 }
-.post-header .post-info {
-    flex-grow: 1;
-    text-align: center;
-}
-.post-header .dropdown {
-    background-color: #E0E0E0;
-    color: #000000;
-    padding: 10px;
-    text-align: center;
-}
-.post {
-    background-color: #E0E0E0;
-    color: #000000;
-    padding: 20px;
-    margin: 20px;
-}
-.post .username {
+
+.title {
+    font-size: 40px;
     font-weight: bold;
+    padding: 30px;
+    margin-bottom: 10px;
+    overflow-wrap: break-word;
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
 }
-.post .content {
-    margin-top: 10px;
+
+.posts {
+    text-align: left;
+    position: relative;
+    z-index: 2;
 }
-.post .links a {
-    color: #0000FF;
+
+.post-detail {
+    padding: 20px;
+    margin-top: 30px;
+    margin-bottom: 35px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.post-detail h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 2;
+}
+
+.post-detail .post-content {
+    padding-bottom: 30px;
+    border-bottom: 1px solid #85aefa;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.post-detail .post-content input {
+    width: 50%;
+    height: 30px;
+    padding: 8px;
+    margin-top: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    resize: none;
+    position: relative;
+    z-index: 2;
+}
+
+.post-detail .post-description {
+    width: 95%;
+    height: 220px;
+    padding: 12px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    resize: none;
+    position: relative;
+    z-index: 2;
+}
+
+.post-detail .comments {
+    padding-top: 2px;
+    position: relative;
+    z-index: 2;
+}
+
+.comment-text {
+    width: 95%;
+    height: 50px;
+    padding: 12px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    resize: none;
+    position: relative;
+    z-index: 2;
+}
+
+.post-detail .comment {
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 2;
+}
+
+.post-author {
+    margin-bottom: 1px;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+}
+
+.categories, .hashtags {
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8.3px);
+    -webkit-backdrop-filter: blur(8.3px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.categories h3, .hashtags h3 {
+    margin: 0;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 2;
+}
+
+.categories ul, .hashtags ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.categories li, .hashtags li {
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 2;
+}
+
+.categories .createCategory, .createHashtags {
+    display: inline-block;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
     text-decoration: none;
-    display: block;
-    margin: 5px 0;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    border-bottom: 1px solid #85aefa;
+    position: relative;
+    z-index: 2;
+}
+
+.categories .createCategory::placeholder, .createHashtags::placeholder {
+    color: #fff;
+}
+
+.categoryBtn, .hashtagsBtn {
+    align-items: center;
+    padding: 5px 20px;
+    font-size: 13px;
+    font-weight: normal;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+}
+
+.categoryBtn:hover, .hashtagsBtn:hover {
+    background-color: #45a049;
+    transform: translateY(-3px);
+}
+
+.categoryBtn:active, .hashtagsBtn:active {
+    background-color: #3e8e41;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(0);
 }
