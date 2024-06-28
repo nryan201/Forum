@@ -1,30 +1,67 @@
 body {
-    background-color: #1d469a;
     color: #FFFFFF;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-image: url('/image/fond-ecran-forum.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
 }
 
 .header {
-    background-color: #408EC6;
     color: #000000;
     padding: 20px;
     text-align: center;
+    background: rgba(255, 255, 255, 0.31);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(6.5px);
+        -webkit-backdrop-filter: blur(6.5px);
+        border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
 .profile-wrapper {
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    position: relative;
+    flex-direction: column;
+        /* Changer de ligne pour une disposition verticale */
+        justify-content: flex-start;
+        align-items: center;
+        position: absolute;
     margin-top: 50px;
+    margin-left: 45vh;
+        /* Converti de 17% à 17vh */
+        width: 100vh;
+        /* Converti de 65% à 65vh */
+        background: rgba(255, 255, 255, 0.31);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(6.5px);
+        -webkit-backdrop-filter: blur(6.5px);
+        border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
 .profile-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 10px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(1.1px);
+        -webkit-backdrop-filter: blur(1.1px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        flex-shrink: 0;
+        /* Empêche la réduction */
+        width: 80vh;
+        /* Converti de 80% à 80vh */
+        margin-bottom: 20px;
+        /* Ajouter de l'espace entre les sections */
+        margin-top: 2.5vh;
 }
 
 .profile-pic {
@@ -40,10 +77,10 @@ body {
 }
 
 .info-section {
-    background-color: #85aefa;
     padding: 20px;
     border-radius: 10px;
-    width: 300px;
+    width: 30vh;
+        /* Converti de 300px à 30vh pour plus de cohérence */
 }
 
 .info-section .info-item {
@@ -69,18 +106,24 @@ body {
 }
 
 .links-section a {
-    background-color: #408EC6;
     color: #FFFFFF;
     padding: 5px;
-    border-radius: 5px;
     text-decoration: none;
+    margin: 0 5px;
+        background: rgba(255, 255, 255, 0.31);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(6.5px);
+        -webkit-backdrop-filter: blur(6.5px);
+        border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
 .birthdate-section {
     background-color: #408EC6;
     color: #000000;
     padding: 10px;
-    width: 200px;
+    width: 20vh;
+        /* Converti de 200px à 20vh pour plus de cohérence */
     position: absolute;
     right: 0;
     top: 50px;
@@ -88,11 +131,42 @@ body {
 }
 
 .back-button {
-    background-color: #408EC6;
+    font-size: 20px;
     color: #FFFFFF;
-    padding: 5px;
-    border-radius: 5px;
+    padding: 10px;
     text-decoration: none;
     margin: 20px;
     display: inline-block;
+    cursor: pointer;
+        background: rgba(255, 255, 255, 0.31);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(6.5px);
+        -webkit-backdrop-filter: blur(6.5px);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+    }
+    
+    .topic-content {
+        padding: 10px;
+        margin: 20px;
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(1.1px);
+        -webkit-backdrop-filter: blur(1.1px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        flex-shrink: 0;
+        /* Empêche la réduction */
+        width: 80vh;
+        /* Converti de 80% à 80vh */
+}
+
+.profile-section {
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
 }

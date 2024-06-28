@@ -1,7 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', function() {
     const topicContainer = document.getElementById('topic-container');
 
-    // Fonction pour créer une box de topic
+    // function to create a topic box
     function createTopicBox(topic) {
         const postFeed = document.createElement('div');
         postFeed.className = 'post-feed';
@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
         postAuthor.innerHTML = `Auteur: <span class="author-name">${topic.author}</span>`;
 
         const postContent = document.createElement('div');
-        postContent.className = 'postContent';
-        postContent.innerHTML = `Post: <span class="content-Post">${topic.content}</span>`;
+        postContent.className = 'post-content'; // Assurez-vous que cette classe correspond dans le CSS
+        postContent.innerHTML = `Post: <span class="content-post">${topic.content}</span>`; // Assurez-vous que cette classe correspond dans le CSS
 
         postFeed.appendChild(postAuthor);
         postFeed.appendChild(postContent);
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return postFeed;
     }
 
-    // Données fictives pour les topics
+    // topics data
     const topics = [
         { id: 1, author: "Utilisateur 1", content: "Contenu du topic 1" },
         { id: 2, author: "Utilisateur 2", content: "Contenu du topic 2" },
@@ -28,26 +28,42 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: 4, author: "Utilisateur 4", content: "Contenu du topic 4" }
     ];
 
-    // Simulation de la récupération des topics
-    if (topicContainer && createTopicBox) {
-        topics.forEach(topic => {
-            const topicBox = createTopicBox(topic);
-            const topicWrapper = document.createElement('div');
-            topicWrapper.className = 'post-topic';
-            topicWrapper.appendChild(topicBox);
-            topicContainer.appendChild(topicWrapper);
+    // topic creation
+    topics.forEach(topic => {
+        const topicBox = createTopicBox(topic);
+        const topicWrapper = document.createElement('div');
+        topicWrapper.className = 'post-topic'; // Assurez-vous que cette classe correspond dans le CSS
+        topicWrapper.appendChild(topicBox);
+        topicContainer.appendChild(topicWrapper);
+    });
+
+    // like and dislike buttons
+    const likeButtons = document.querySelectorAll('.like-button');
+    const dislikeButtons = document.querySelectorAll('.dislike-button');
+
+    likeButtons.forEach(likeButton => {
+        likeButton.addEventListener('click', () => {
+            const postFeed = likeButton.closest('.post-feed');
+            const likeCount = postFeed.querySelector('.like-count');
+            likeCount.textContent = parseInt(likeCount.textContent) + 1;
         });
-    } else {
-        console.error("topicContainer or createTopicBox is not defined");
-    }
+    });
+
+    dislikeButtons.forEach(dislikeButton => {
+        dislikeButton.addEventListener('click', () => {
+            const postFeed = dislikeButton.closest('.post-feed');
+            const dislikeCount = postFeed.querySelector('.dislike-count');
+            dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+        });
+    });
+
+    // share button
+    const shareButtons = document.querySelectorAll('.share-button');
+    shareButtons.forEach(shareButton => {
+        shareButton.addEventListener('click', () => {
+            const postFeed = shareButton.closest('.post-feed');
+            const shareCount = postFeed.querySelector('.share-count');
+            shareCount.textContent = parseInt(shareCount.textContent) + 1;
+        });
+    });
 });
-/*// Récupération des topics depuis la BDD
-    fetch('/bdd/topics')
-        .then(response => response.json())
-        .then(topics => {
-            topics.forEach(topic => {
-                const topicBox = createTopicBox(topic);
-                topicContainer.appendChild(topicBox);
-            });
-        })
-        .catch(error => console.error('Erreur:', error));*/
