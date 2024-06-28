@@ -55,9 +55,6 @@
             function setCookies() {
                 var u = document.getElementById('userName').value;
                 var p = document.getElementById('passWord').value;
-
-                document.cookie = "userName=" + u + ";path=/";
-                document.cookie = "passWord=" + p + ";path=/";
             }
 
             function getCookieData() {
@@ -80,7 +77,7 @@
 </div>
 
 <div class="wrapper-register" id="registerForm">
-    <form action="/adduser" method="post">
+    <form action="/addUser" method="post">
         <div class="back-to-login">
             <i class='bx bx-chevron-left'></i>
             <p><a href="#loginForm" class="login-link">Login</a></p>

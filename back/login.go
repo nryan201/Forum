@@ -2,8 +2,11 @@ package back
 
 import (
 	"database/sql"
+	"fmt"
+	"github.com/mattn/go-sqlite3"
 	"html/template"
 	"log"
+	"net/http"
 )
 
 var tmpl = template.Must(template.ParseFiles("./template/html/connexion.html"))
@@ -16,7 +19,6 @@ func dbConn() (db *sql.DB) {
 	return db
 }
 
-/* Non fonctionel pour le moment attendre que Ryan et Alexis modifient ceci
 func addUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		username := r.FormValue("username")
@@ -93,15 +95,16 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		err := db.QueryRow("SELECT username, password FROM users WHERE username = ?", username).Scan(&dbUsername, &dbPassword)
 		if err != nil {
 			if err == sql.ErrNoRows {
-				fmt.Fprintf(w, "Nom d'utilisateur ou mot de passe incorrect")
+				http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
 			} else {
+				http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
 				log.Fatal(err)
 			}
 			return
 		}
 
 		if dbPassword != password {
-			fmt.Fprintf(w, "Nom d'utilisateur ou mot de passe incorrect")
+			http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
 			return
 		}
 
@@ -110,4 +113,3 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, nil)
 	}
 }
-*/
