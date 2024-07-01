@@ -14,7 +14,10 @@ func Server() {
 	http.Handle("/image/", http.StripPrefix("/image/", http.FileServer(http.Dir("template/ressource/image/"))))
 	http.Handle("/script/", http.StripPrefix("/script/", http.FileServer(http.Dir("template/script/"))))
 
+
+	
     http.HandleFunc("/", routeHandler)
+	http.HandleFunc("/block", BlockHandler)
  	// Start the server
 	 log.Println("Hello there !")
 	 log.Println("Server started on http://localhost:8080/")

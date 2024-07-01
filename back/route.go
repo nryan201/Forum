@@ -69,7 +69,7 @@ func HomeHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl, err := template.ParseFiles("template/html/profil.html")
+	tmpl, err := template.ParseFiles("template/html/accueil.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -685,4 +685,32 @@ func DeleteCategory(w http.ResponseWriter, r *http.Request, idStr string) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+
+// Handle for topic
+func BlockHandler (w http.ResponseWriter, r *http.Request){
+
+	if r.URL.Path != "/block" {
+		http.NotFound(w, r)
+		return
+	}
+
+	http.Redirect(w, r, "https://www.minecraft.net/fr-fr", http.StatusFound)
+
+}
+
+func SerchHandle (w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query().Get("q")
+	if query == "" {
+		http.Error(w, "Missing query parameter", http.StatusBadRequest)
+		return
+	}
+	results, err := SearchDatabase(query)
+	if err != nil {
+		log.Printf("Error searching database: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(results)
 }
