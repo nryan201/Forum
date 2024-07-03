@@ -13,14 +13,17 @@ DROP TABLE IF EXISTS users;
 -- Création des tables
 
 -- Table Users
+DROP TABLE IF EXISTS users;
+
 CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id TEXT PRIMARY KEY,
     username TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
+    password TEXT NOT NULL ,
     email TEXT UNIQUE,
     role TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
 
 -- Table Topics
 CREATE TABLE topics (

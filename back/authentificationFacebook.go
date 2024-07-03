@@ -2,11 +2,14 @@ package back
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
+	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/facebook"
 )
@@ -60,8 +63,49 @@ func handleFacebookCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "User ID: %s\n", facebookUser.ID)
-	fmt.Fprintf(w, "User Name: %s\n", facebookUser.Name)
-	fmt.Fprintf(w, "User Email: %s\n", facebookUser.Email)
+	facebookUser.ID = strings.TrimSpace(facebookUser.ID)
+	facebookUser.Name = strings.TrimSpace(facebookUser.Name)
+	facebookUser.Email = strings.TrimSpace(facebookUser.Email)
 
+	if !isValidString(facebookUser.ID) || !isValidString(facebookUser.Name) || !isValidString(facebookUser.Email) {
+		log.Printf("Invalid data found in user details: ID: %s, Name: %s, Email: %s\n", facebookUser.ID, facebookUser.Name, facebookUser.Email)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	db, err := sql.Open("sqlite3", "./db.sqlite")
+	if err != nil {
+		log.Fatal("Failed to open database: ", err)
+	}
+	defer db.Close()
+
+	log.Println("Database opened successfully")
+
+	var userID string
+	err = db.QueryRow("SELECT id FROM users WHERE id = ?", facebookUser.ID).Scan(&userID)
+	if err == sql.ErrNoRows {
+		log.Printf("Attempting to insert new user with ID: %s, Name: %s, Email: %s", facebookUser.ID, facebookUser.Name, facebookUser.Email)
+		statement, err := db.Prepare("INSERT INTO users (id, username, email, role) VALUES (?, ?, ?, ?)")
+		if err != nil {
+			log.Fatal("Failed to prepare statement: ", err)
+		}
+		defer statement.Close()
+
+		log.Printf("Inserting user with ID (type: %T): %s", facebookUser.ID, facebookUser.ID)
+		log.Printf("Inserting user with Name (type: %T): %s", facebookUser.Name, facebookUser.Name)
+		log.Printf("Inserting user with Email (type: %T): %s", facebookUser.Email, facebookUser.Email)
+
+		_, err = statement.Exec(facebookUser.ID, facebookUser.Name, facebookUser.Email, "user")
+		if err != nil {
+			log.Printf("Failed to insert new user: %s", err)
+		} else {
+			log.Println("New user inserted successfully")
+			fmt.Fprintf(w, "Connexion réussie. Bienvenue %s! (ID utilisateur: %s)", facebookUser.Name, facebookUser.ID)
+		}
+	} else if err != nil {
+		log.Fatal("Failed to query existing user: ", err)
+	} else {
+		log.Printf("User found with ID: %s", userID)
+		fmt.Fprintf(w, "Welcome back %s! (User ID: %s)", facebookUser.Name, userID)
+	}
 }

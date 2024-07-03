@@ -17,6 +17,10 @@ func Server() {
 	http.HandleFunc("/", routeHandler)
 	http.HandleFunc("/login", loginUser)
 	http.HandleFunc("/addUser", addUser)
+	http.HandleFunc("/loginFacebook", handleFacebookLogin)
+	http.HandleFunc("/callbackFacebook", handleFacebookCallback)
+	http.HandleFunc("/loginGoogle", handleGoogleLogin)
+	http.HandleFunc("/callbackGoogle", handleGoogleCallback)
 
 	log.Println("Hello there !")
 	log.Println("Server started on http://localhost:8080/")
