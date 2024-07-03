@@ -69,7 +69,7 @@ func HomeHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl, err := template.ParseFiles("template/html/accueil.html")
+	tmpl, err := template.ParseFiles("template/html/contact.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -103,7 +103,7 @@ func CreateTopic(w http.ResponseWriter, r *http.Request, idStr string) {
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(topic.Title, topic.Description)
+	_, err = statement.Exec(topic.ID, topic.Title, topic.Description)
 	if err != nil {
 		http.Error(w, "Internal server error: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -553,7 +553,6 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("You have been logged out"))
 }
 
-// Handle for category
 
 // CreateCategory creates a new category
 func CreateCategory (w http.ResponseWriter, r *http.Request) {
