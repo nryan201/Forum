@@ -19,13 +19,13 @@ body {
     justify-content: space-between; /* Équilibre les sections */
 }
 
-.profile-section,
-.side-section {
-    position: fixed;
+.profile-section, .side-section {
+    position: sticky; /* Utiliser sticky au lieu de fixed */
+    top: 0; /* Pour aligner au haut du conteneur parent */
     width: 20%;
     height: 100vh;
-    overflow-y: auto;
 }
+
 .profile-section {
     left: 0;
     width: 10%;
@@ -72,6 +72,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.25);
     flex-shrink: 0; /* Empêche la réduction */
 }
+
 .star5,.star6,.star7,.star8,.star9 {
     position: absolute;
     width: 20px;
@@ -81,8 +82,8 @@ body {
 }
 
 .main-section {
-    margin-left: 20%;
-    margin-right: 20%;
+    margin-left: 10px;
+    margin-right: 10px;
     height: 100vh;
     overflow: auto;
     flex-grow: 1; /* Prend tout l'espace restant */
@@ -98,12 +99,12 @@ body {
     padding: 30px;
     margin-bottom: 10px;
     overflow-wrap: break-word;
-    background: rgba(255, 255, 255, 0.31);
+    background: rgba(44, 152, 155, 0.75);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(6.5px);
-    -webkit-backdrop-filter: blur(6.5px);
-    border: 1px solid rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(4.7px);
+    -webkit-backdrop-filter: blur(4.7px);
+    border: 1px solid rgba(44, 152, 155, 0.3);
 }
 
 .posts {
@@ -272,7 +273,7 @@ body {
     position: relative;
     z-index: 2;
 }
-.profileBtn {
+.profileBtn{
     align-items: center;
     padding: 15px 40px;
     font-size: 20px;
@@ -286,13 +287,49 @@ body {
     text-decoration: none;
     transition: background-color 0.3s, transform 0.3s;
     cursor: pointer;
-    margin-bottom: 8px;
+    top: 10px;
+    position: relative;
+    z-index: 2;
+}
+.returnHome{
+    align-items: center;
+    padding: 15px 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    top: 60px;
+    position: relative;
+    z-index: 2;
+}
+.contact{
+    align-items: center;
+    padding: 15px 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    top: 3353%;
     position: relative;
     z-index: 2;
 }
 .comment-Button{
     align-items: center;
-    padding: 5px 20px;
+    padding: 5px 10px;
     font-size: 15px;
     font-weight: bold;
     color: #fff;
@@ -304,15 +341,13 @@ body {
     text-decoration: none;
     transition: background-color 0.3s, transform 0.3s;
     cursor: pointer;
-    position: relative;
-    margin-top: auto;
-    margin-left: 680px;
-    margin-bottom: auto;
-    z-index: 2;
+    margin-top: 10px; /* Ajoutez une marge en haut pour l'espacement */
+    width: 30%; /* Ajustez la largeur selon votre mise en page */
+    margin-left: 70%;
 }
 .post-Button{
     align-items: center;
-    padding: 5px 20px;
+    padding: 5px 10px;
     font-size: 15px;
     font-weight: bold;
     color: #fff;
@@ -324,15 +359,17 @@ body {
     text-decoration: none;
     transition: background-color 0.3s, transform 0.3s;
     cursor: pointer;
-    position: relative;
-    margin-top: auto;
-    margin-left: 700px;
-    margin-bottom: auto;
-    z-index: 2;
+    margin-top: 10px; /* Ajoutez une marge en haut pour l'espacement */
+    width: 30%; /* Ajustez la largeur selon votre mise en page */
+    margin-left: 70%;
 }
 
 .categoryBtn:hover, .hashtagsBtn:hover,.profileBtn:hover {
     background-color: #45a049;
+    transform: translateY(-3px);
+}
+.returnHome:hover, .contact:hover{
+    background-color: #8e004e;
     transform: translateY(-3px);
 }
 

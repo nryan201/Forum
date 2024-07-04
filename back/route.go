@@ -41,6 +41,7 @@ type Category struct {
 	Name string `json:"name"`
 }
 
+
 var (
 	db      *sql.DB
 	idRegex = regexp.MustCompile(`^/(\d+)$`) // Regular expression to match an ID in the URL
@@ -637,6 +638,11 @@ func UpdateCategory(w http.ResponseWriter, r *http.Request, idStr string) {
 	}
 	defer statement.Close()
 
+	_, err = statement.Exec(category.Name, categoryID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	_, err = statement.Exec(category.Name, categoryID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

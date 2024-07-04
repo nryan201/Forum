@@ -29,6 +29,3 @@ document.getElementById("commentForm").onsubmit = function(event){
     });
 };
 
-
-// possbility to scroll 
-

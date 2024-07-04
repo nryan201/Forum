@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // fetch topics data
     fetch('/bdd/topics') // Assurez-vous que l'URL est correcte
         .then(response => response.json())
-        .then(topics => {
+        .then(topic => {
             topics.forEach(topic => {
                 const topicBox = createTopicBox(topic);
                 topicContainer.appendChild(topicBox);

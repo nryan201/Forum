@@ -12,7 +12,11 @@ body{
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+<<<<<<< HEAD
     background-image: url('/image/fond-ecran-forum.jpg');
+=======
+    background-image: url('/image/fond-ecraneforum.jpg');
+>>>>>>> FrontRoutes
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
