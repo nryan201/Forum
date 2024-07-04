@@ -32,16 +32,19 @@ func Server() {
 	certPath := "./permsHttps/cert.pem"
 	keyPath := "./permsHttps/key.pem"
 
+	// Start the server
 	log.Println("Hello there !")
 	log.Println("Server started on http://localhost:8080/")
 	log.Println("Press Ctrl+C to stop the server")
 
+	// Start the server with TLS
 	err := http.ListenAndServeTLS(":8080", certPath, keyPath, nil)
 	if err != nil {
-		log.Fatal("ListenAndServe: %v", err)
+		log.Fatal("ListenAndServeTLS: %v", err)
 	}
 }
 
+// routeHandler is the main handler for the server
 func routeHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if the request URL path is /api
 	path := r.URL.Path
@@ -50,7 +53,6 @@ func routeHandler(w http.ResponseWriter, r *http.Request) {
 	if path == "/" {
 		switch method {
 		case "GET":
-			HomeHandle(w, r)
 			HomeHandle(w, r)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -71,20 +73,22 @@ func routeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleTopic(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/topic/")
-	switch r.Method {
-	case "GET":
-		GetTopic(w, r, idStr)
-		GetTopic(w, r, idStr)
-	case "POST":
-		CreateTopic(w, r, idStr)
-	case "PUT":
-		UpdateTopic(w, r, idStr)
-	case "DELETE":
-		DeleteTopic(w, r, idStr)
-		DeleteTopic(w, r, idStr)
+	path := r.URL.Path
+	switch {
+	case path == "/topic":
+		HomeHandle(w, r)
+	case strings.HasPrefix(path, "/topic/"):
+		handleTopic(w, r)
+		case strings.HasPrefix(path, "/comment/"):
+		handleComment(w, r)
+	case strings.HasPrefix(path, "/user/"):
+		handleUser(w, r)
+	case strings.HasPrefix(path, "/login"):
+		handleLogin(w, r)
+	case strings.HasPrefix(path, "/addUser"):
+		addUser(w, r)
 	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Not found", http.StatusNotFound)
 	}
 }
 
@@ -93,14 +97,11 @@ func handleComment(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		GetComment(w, r, idStr)
-		GetComment(w, r, idStr)
 	case "POST":
 		CreateComment(w, r)
 	case "PUT":
 		UpdateComment(w, r, idStr)
-		UpdateComment(w, r, idStr)
 	case "DELETE":
-		DeleteComment(w, r, idStr)
 		DeleteComment(w, r, idStr)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -112,13 +113,11 @@ func handleUser(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		GetUser(w, r, idStr)
-		GetUser(w, r, idStr)
 	case "POST":
 		CreateUser(w, r)
 	case "PUT":
 		UpdateUser(w, r, idStr)
 	case "DELETE":
-		DeleteUser(w, r, idStr)
 		DeleteUser(w, r, idStr)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
