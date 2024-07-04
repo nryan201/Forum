@@ -13,7 +13,7 @@ var rolePermissions = map[string]map[string]bool{
 		"view":    true,
 		"share":   true,
 		"create":  false,
-		"comment": false,
+		"comment": true,
 		"like":    false,
 		"dislike": false,
 		"delete":  false,

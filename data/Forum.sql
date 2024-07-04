@@ -13,17 +13,14 @@ DROP TABLE IF EXISTS users;
 -- Création des tables
 
 -- Table Users
-DROP TABLE IF EXISTS users;
-
 CREATE TABLE users (
-    id TEXT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL ,
+    password TEXT NOT NULL,
     email TEXT UNIQUE,
     role TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
 
 -- Table Topics
 CREATE TABLE topics (
@@ -90,8 +87,8 @@ CREATE TABLE likes (
 
 -- Insertion dans la table Users
 INSERT INTO users (username, password, email,role) VALUES
-('user1', 'password1', 'user1@example.com', 'admin'),
-('user2', 'password2', 'user2@example.com', 'user');
+('user1', '$2y$10$XU5kkL4flq14JpyK/wenDuSO4Jdqb.EMPgB8td3nW1PhacAtRjmg6', 'user1@example.com', 'admin'),
+('user2', '$2y$10$3sisfsHwR92g6Jo9udd1TuIgoU3DPgL/9.Z0mkRsKGCxTd10Tlq5a', 'user2@example.com', 'user');
 
 
 -- Insertion dans la table Topics
