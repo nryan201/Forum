@@ -19,6 +19,7 @@ func Server() {
 	http.HandleFunc("/accueil", AccueilHandle)
 	http.HandleFunc("/contact", ContactHandle)
 	http.HandleFunc("/profil", ProfilHandle)
+	http.HandleFunc("/post", PostHandle)
 
 	// Path to your SSL certificate and key
 	certPath := "./permsHttps/cert.pem"
@@ -157,6 +158,23 @@ func ProfilHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tmpl, err := template.ParseFiles("template/html/profil.html") // return to profil
+	if err != nil {
+		log.Printf("Error parsing template %v", err)
+		http.Error(w, "internal server errror ", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		log.Printf("Error executing template: %v", err)
+	}
+}
+func PostHandle(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/post" {
+		http.NotFound(w, r)
+		return
+	}
+	tmpl, err := template.ParseFiles("template/html/post.html") // return to post
 	if err != nil {
 		log.Printf("Error parsing template %v", err)
 		http.Error(w, "internal server errror ", http.StatusInternalServerError)
