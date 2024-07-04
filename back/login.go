@@ -111,7 +111,12 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
 			return
 		}
-
+		http.SetCookie(w, &http.Cookie{
+			Name:     "username",
+			Value:    username,
+			Path:     "/",
+			HttpOnly: true,
+		})
 		fmt.Fprintf(w, "Connexion réussie. Bienvenue %s!", username)
 	} else {
 		tmpl.Execute(w, nil)
