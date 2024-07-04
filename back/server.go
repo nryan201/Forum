@@ -34,11 +34,11 @@ func Server() {
 
 	// Start the server
 	log.Println("Hello there !")
-	log.Println("Server started on http://localhost:8080/")
+	log.Println("Server started on https://localhost:443/")
 	log.Println("Press Ctrl+C to stop the server")
 
 	// Start the server with TLS
-	err := http.ListenAndServeTLS(":8080", certPath, keyPath, nil)
+	err := http.ListenAndServeTLS(":443", certPath, keyPath, nil)
 	if err != nil {
 		log.Fatal("ListenAndServeTLS: %v", err)
 	}
@@ -79,7 +79,7 @@ func handleTopic(w http.ResponseWriter, r *http.Request) {
 		HomeHandle(w, r)
 	case strings.HasPrefix(path, "/topic/"):
 		handleTopic(w, r)
-		case strings.HasPrefix(path, "/comment/"):
+	case strings.HasPrefix(path, "/comment/"):
 		handleComment(w, r)
 	case strings.HasPrefix(path, "/user/"):
 		handleUser(w, r)

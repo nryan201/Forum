@@ -42,14 +42,25 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     // topic creation
-    topics.forEach(topic => {
-        const topicBox = createTopicBox(topic);
-        const topicWrapper = document.createElement('div');
-        topicWrapper.className = 'post-topic'; // Assurez-vous que cette classe correspond dans le CSS
-        topicWrapper.appendChild(topicBox);
-        topicContainer.appendChild(topicWrapper);
-    });
+    const routes = [
+        "/post"
+    ];
 
+    // Simulation de la récupération des topics
+    if (topicContainer && createTopicBox) {
+        topics.forEach(topic => {
+            const topicBox = createTopicBox(topic);
+            const topicWrapper = document.createElement('div');
+            topicWrapper.className = 'post-topic';
+            topicWrapper.appendChild(topicBox);
+            topicContainer.appendChild(topicWrapper);
+            topicBox.addEventListener('click', () => {
+                window.location.href = routes;
+            });
+        });
+    } else {
+        console.error("topicContainer or createTopicBox is not defined");
+    }
     // like, dislike and share buttons
     document.addEventListener('click', function (event) {
         if (event.target.classList.contains('like-button')) {
