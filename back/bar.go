@@ -2,6 +2,9 @@ package back
 
 import (
 	"database/sql"
+	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type Result struct {
@@ -36,4 +39,73 @@ func SearchDatabase(query string) ([]Result, error) {
 		results = append(results, result)
 	}
 	return results, nil
+}
+
+func SearchTopics (query string)([]Topic, error){
+
+	db, err := sql.Open("sqlite3", "./db.sqlite")
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare("SELECT id, title, description FROM topic WHERE title LIKE ? OR description LIKE ?")
+	if err != nil {
+		log.Printf("Error preparing statement: %v", err)
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query("%" + query + "%", "%" + query + "%")
+	if err != nil {
+		log.Printf("Error getting topics: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var topics []Topic
+	for rows.Next() {
+		var t Topic
+		err := rows.Scan(&t.ID, &t.Title, &t.Description)
+		if err != nil {
+			log.Printf("Error scanning topic: %v", err)
+			return nil, err
+		}
+		topics = append(topics, t)
+	}
+	return topics, nil
+}
+
+func GetAllTopics() ([]Topic, error) {
+	db, err := sql.Open("sqlite3", "./db.sqlite")
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+	
+	
+	// 
+	rows, err := db.Query("SELECT id, title, description FROM topics")
+	if err != nil {
+		log.Printf("Error getting topics: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var topics []Topic
+	for rows.Next() {
+		var t Topic
+		if err := rows.Scan(&t.ID, &t.Title, &t.Description); err != nil {
+			log.Printf("Error scanning topic: %v", err)
+			return nil, err
+		}
+		topics = append(topics, t)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Printf("Error iterating rows: %v", err)
+		return nil, err
+	}
+
+	return topics, nil
 }

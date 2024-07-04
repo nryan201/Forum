@@ -186,18 +186,24 @@ func ProfilHandle(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error executing template: %v", err)
 	}
 }
+
+// PostHandle is the handler for the /post route
 func PostHandle(w http.ResponseWriter, r *http.Request) {
+
 	if r.URL.Path != "/post" {
 		http.NotFound(w, r)
 		return
 	}
+
 	 query := r.URL.Query()
 	 var topics []Topic
 	 var err error
 
-	 if query != ""{
-		topics, err = SearchTopics(query.Get("query"))
-	 }else{
+	 // if query is not empty, search for topics
+	 searchQuery := query.Get("search")
+	 if searchQuery != "" {
+		topics, err = SearchTopics(searchQuery)
+	 } else {
 		topics, err = GetAllTopics()
 	 }
 
@@ -214,63 +220,4 @@ func PostHandle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "internal server errror ", http.StatusInternalServerError)
 		return
 	 }
-}
-
-func SearchTopics (query string)([]Topic, error){
-	db := OpenDB()
-	defer db.Close()
-
-	stmt, err := db.Prepare("SELECT id, title, description FROM topic WHERE title LIKE ? OR description LIKE ?")
-	if err != nil {
-		log.Printf("Error preparing statement: %v", err)
-		return nil, err
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query("%" + query + "%", "%" + query + "%")
-	if err != nil {
-		log.Printf("Error getting topics: %v", err)
-		return nil, err
-	}
-	defer rows.Close()
-
-	var topics []Topic
-	for rows.Next() {
-		var t Topic
-		err := rows.Scan(&t.ID, &t.Title, &t.Description)
-		if err != nil {
-			log.Printf("Error scanning topic: %v", err)
-			return nil, err
-		}
-		topics = append(topics, t)
-	}
-}
-
-func GetAllTopics() ([]Topic, error) {
-	db := OpenDB()
-	defer db.Close()
-
-	rows, err := db.Query("SELECT id, title, description FROM topic")
-	if err != nil {
-		log.Printf("Error getting topics: %v", err)
-		return nil, err
-	}
-	defer rows.Close()
-
-	var topics []Topic
-	for rows.Next() {
-		var t Topic
-		err := rows.Scan(&t.ID, &t.Title, &t.Description); err != nil {
-			log.Printf("Error scanning topic: %v", err)
-			return nil, err
-		}
-		topics = append(topics, t)
-	}
-
-	if err := rows.Err(); err != nil {
-		log.Printf("Error iterating rows: %v", err)
-		return nil, err
-	}
-
-	return topics, nil
 }

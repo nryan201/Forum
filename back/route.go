@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"net/url"
 
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 	"golang.org/x/crypto/bcrypt"
@@ -711,6 +712,13 @@ func SearchHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/post?results="+url.QueryEscape(string(results)), http.StatusFound)
+	jsonResults, err := json.Marshal(results)
+	if err != nil {
+		log.Printf("Error marshalling results: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/post?results="+url.QueryEscape(string(jsonResults)), http.StatusFound)
 }
 
