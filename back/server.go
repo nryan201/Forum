@@ -79,7 +79,7 @@ func handleTopic(w http.ResponseWriter, r *http.Request) {
 		HomeHandle(w, r)
 	case strings.HasPrefix(path, "/topic/"):
 		handleTopic(w, r)
-		case strings.HasPrefix(path, "/comment/"):
+	case strings.HasPrefix(path, "/comment/"):
 		handleComment(w, r)
 	case strings.HasPrefix(path, "/user/"):
 		handleUser(w, r)
