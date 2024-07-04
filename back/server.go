@@ -34,7 +34,7 @@ func Server() {
 
 	// Start the server
 	log.Println("Hello there !")
-	log.Println("Server started on http://localhost:443/")
+	log.Println("Server started on https://localhost:443/")
 	log.Println("Press Ctrl+C to stop the server")
 
 	// Start the server with TLS
