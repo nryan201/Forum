@@ -34,13 +34,13 @@ func Server() {
 
 	// Start the server
 	log.Println("Hello there !")
-	log.Println("Server started on http://localhost:8080/")
+	log.Println("Server started on http://localhost:443/")
 	log.Println("Press Ctrl+C to stop the server")
 
 	// Start the server with TLS
-	err := http.ListenAndServeTLS(":8080", certPath, keyPath, nil)
+	err := http.ListenAndServeTLS(":443", certPath, keyPath, nil)
 	if err != nil {
-		log.Fatal("ListenAndServeTLS: %v", err)
+		log.Fatalf("ListenAndServeTLS: %v", err)
 	}
 }
 
