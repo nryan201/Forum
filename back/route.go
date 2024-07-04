@@ -41,7 +41,6 @@ type Category struct {
 	Name string `json:"name"`
 }
 
-
 var (
 	db      *sql.DB
 	idRegex = regexp.MustCompile(`^/(\d+)$`) // Regular expression to match an ID in the URL
@@ -69,7 +68,7 @@ func HomeHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl, err := template.ParseFiles("template/html/accueil.html")
+	tmpl, err := template.ParseFiles("template/html/connexion.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -483,6 +482,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Check if the correct HTTP method is used
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		template.ParseFiles("template/html/accueil.html")
 		return
 	}
 
@@ -502,7 +502,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Compare the provided password with the hashed password from the database
-	err = bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(password), []byte(dbPassword))
 	if err != nil {
 		http.Error(w, "Invalid password", http.StatusUnauthorized)
 		return

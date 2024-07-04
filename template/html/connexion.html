@@ -15,6 +15,11 @@
 <div class="wrapper" id="loginForm">
     <form action="/login" method="post">
         <h1>Login</h1>
+        <div class="guest-mode">
+        <p>You want to go in it with Guest mode ?
+            <a href="/accueil">Forum</a>
+        </p>
+        </div>
         <div class="input-boxUser">
             <label>
                 <input type="text" id="userName" name="username" placeholder="Username" required>
@@ -36,9 +41,16 @@
         </div>
         <button type="submit" class="btn">Login</button>
         <div class="register-link">
-            <p>Don't have an account?
+            <p>Don't have an account ?
                 <a href="#registerForm">Register</a>
             </p>
+        </div>
+        <div class="Connexion-Container">
+            <div class="other-connexion">
+                <a href="#" id="github-link"><i class='bx bxl-github'></i></a>
+                <a href="#" id="google-link"><i class='bx bxl-google'></i></a>
+                <a href="#" id="facebook-link"><i class='bx bxl-meta'></i></a>
+            </div>
         </div>
         <script>
             let input = document.querySelector('.input-boxPass input')
