@@ -11,7 +11,7 @@ COPY . .
 RUN go build -o main .
 
 # Exposer le port utilisé par l'application
-EXPOSE 8080
+EXPOSE 443
 
 # Commande pour lancer l'application
 CMD ["./main"]

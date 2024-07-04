@@ -3,7 +3,7 @@ services:
     build: .
     image: fondecranforum:latest
     ports:
-      - "8080:8080"
+      - "443:443"
     volumes:
       - ./template/ressource/images:/app/template/ressource/images
       - ./data:/data
