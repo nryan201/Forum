@@ -40,7 +40,7 @@ func Server() {
 	// Start the server with TLS
 	err := http.ListenAndServeTLS(":443", certPath, keyPath, nil)
 	if err != nil {
-		log.Fatal("ListenAndServeTLS: %v", err)
+		log.Fatalf("ListenAndServeTLS: %v", err)
 	}
 }
 
