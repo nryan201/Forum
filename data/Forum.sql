@@ -17,9 +17,9 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     id TEXT PRIMARY KEY,
-    username TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL ,
-    email TEXT UNIQUE,
+    username TEXT NOT NULL,
+    password TEXT ,
+    email TEXT,
     role TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );

@@ -23,6 +23,8 @@ func Server() {
 	http.HandleFunc("/callbackFacebook", handleFacebookCallback)
 	http.HandleFunc("/loginGoogle", handleGoogleLogin)
 	http.HandleFunc("/callbackGoogle", handleGoogleCallback)
+	http.HandleFunc("/loginGithub", handleGithubLogin)
+	http.HandleFunc("/callbackGithub", handleGithubCallback)
 	http.HandleFunc("/accueil", AccueilHandle)
 	http.HandleFunc("/contact", ContactHandle)
 	http.HandleFunc("/profil", ProfilHandle)

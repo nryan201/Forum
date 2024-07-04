@@ -17,7 +17,7 @@ import (
 
 var (
 	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:8080/callbackGoogle",
+		RedirectURL:  "https://localhost:443/callbackGoogle",
 		ClientID:     "767814867927-m0ou233go88bec08h0qobi3v50nn5qhg.apps.googleusercontent.com",
 		ClientSecret: "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",
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
@@ -86,7 +86,7 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	log.Println("Database opened successfully")
 
 	var userGoogleID string
-	err = db.QueryRow("SELECT id FROM users WHERE id = ? OR email = ?", GoogleUser.ID, GoogleUser.Email).Scan(&userGoogleID)
+	err = db.QueryRow("SELECT id FROM users WHERE id = ?", GoogleUser.ID).Scan(&userGoogleID)
 	if errors.Is(err, sql.ErrNoRows) {
 		log.Printf("Attempting to insert new user with ID: %s, Name: %s, Email: %s", GoogleUser.ID, GoogleUser.Name, GoogleUser.Email)
 		statement, err := db.Prepare("INSERT INTO users (id, username, email, role) VALUES (?, ?, ?, ?)")

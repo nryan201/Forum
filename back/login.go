@@ -42,7 +42,7 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 
-		var existingUsername, existingEmail string
+		var existingUsername string
 
 		// Vérifier si le nom d'utilisateur est déjà pris
 		err = tx.QueryRow("SELECT username FROM users WHERE username = ?", username).Scan(&existingUsername)
@@ -56,31 +56,14 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Vérifier si l'adresse e-mail est déjà prise
-		err = tx.QueryRow("SELECT email FROM users WHERE email = ?", email).Scan(&existingEmail)
-		if err != nil && err != sql.ErrNoRows {
-			tx.Rollback()
-			log.Fatal(err)
-		}
-		if existingEmail != "" {
-			tx.Rollback()
-			fmt.Fprintf(w, "Adresse e-mail déjà prise. Veuillez en choisir une autre.")
-			return
-		}
-
-		// Générer un identifiant séquentiel de type texte
-		var maxID sql.NullString
-		err = tx.QueryRow("SELECT MAX(CAST(id AS INTEGER)) FROM users").Scan(&maxID)
+		// Compter le nombre de comptes existants et ajouter 1 pour générer le nouvel ID
+		var count int
+		err = tx.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
 		if err != nil {
 			tx.Rollback()
 			log.Fatal(err)
 		}
-
-		newID := "1"
-		if maxID.Valid {
-			maxIDInt, _ := strconv.Atoi(maxID.String)
-			newID = strconv.Itoa(maxIDInt + 1)
-		}
+		newID := strconv.Itoa(count + 1)
 
 		// Insérer le nouvel utilisateur avec le rôle par défaut "user"
 		_, err = tx.Exec("INSERT INTO users(id, username, password, email, role) VALUES(?, ?, ?, ?, ?)", newID, username, hashedPassword, email, "user")

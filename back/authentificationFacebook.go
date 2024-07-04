@@ -16,7 +16,7 @@ import (
 
 var (
 	facebookOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:8080/callbackFacebook",
+		RedirectURL:  "https://localhost:443/callbackFacebook",
 		ClientID:     "1515434692706809",
 		ClientSecret: "3d109972564526228111d7206c651932",
 		Scopes:       []string{"public_profile", "email"},
