@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -100,12 +99,13 @@ func handleFacebookCallback(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Failed to insert new user: %s", err)
 		} else {
 			log.Println("New user inserted successfully")
-			fmt.Fprintf(w, "Connexion réussie. Bienvenue %s! (ID utilisateur: %s)", facebookUser.Name, facebookUser.ID)
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
 	} else if err != nil {
 		log.Fatal("Failed to query existing user: ", err)
 	} else {
 		log.Printf("User found with ID: %s", userID)
-		fmt.Fprintf(w, "Welcome back %s! (User ID: %s)", facebookUser.Name, userID)
+		log.Printf("Welcome back %s!", facebookUser.Name)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }

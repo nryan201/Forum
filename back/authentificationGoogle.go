@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -105,13 +104,15 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Failed to insert new user: %s", err)
 		} else {
 			log.Println("New user inserted successfully")
-			fmt.Fprintf(w, "Connexion réussie. Bienvenue %s! (ID utilisateur: %s)", GoogleUser.Name, GoogleUser.ID)
+			log.Printf("Connexion réussie. Bienvenue %s! (ID utilisateur: %s)\n", GoogleUser.Name, GoogleUser.ID)
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
 	} else if err != nil {
 		log.Fatal("Failed to query existing user: ", err)
 	} else {
 		log.Printf("User found with ID: %s", userGoogleID)
-		fmt.Fprintf(w, "Welcome back %s! (User ID: %s)", GoogleUser.Name, userGoogleID)
+		log.Printf("Welcome back %s!", GoogleUser.Name)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 

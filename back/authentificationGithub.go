@@ -132,12 +132,14 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Failed to insert new user: %s", err)
 		} else {
 			log.Println("New user inserted successfully")
-			fmt.Fprintf(w, "Connexion réussie. Bienvenue %s! (ID utilisateur: %d)", githubUser.Name, githubUser.ID)
+			log.Printf("User ID: %d", githubUser.ID)
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
 	} else if err != nil {
 		log.Fatal("Failed to query existing user: ", err)
 	} else {
 		log.Printf("User found with ID: %s", userID)
-		fmt.Fprintf(w, "Welcome back %s! (User ID: %s)", githubUser.Name, userID)
+		log.Printf("Welcome back %s!", githubUser.Name)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
