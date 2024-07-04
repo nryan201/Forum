@@ -18,6 +18,8 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id TEXT PRIMARY KEY,
     username TEXT NOT NULL,
+    name TEXT,
+    birthday DATE,
     password TEXT ,
     email TEXT,
     role TEXT,
@@ -89,11 +91,9 @@ CREATE TABLE likes (
 -- Insertion des données
 
 -- Insertion dans la table Users
-INSERT INTO users (username, password, email,role) VALUES
-('user1', '$2y$10$XU5kkL4flq14JpyK/wenDuSO4Jdqb.EMPgB8td3nW1PhacAtRjmg6', 'user1@example.com', 'admin'),
-('user2', '$2y$10$3sisfsHwR92g6Jo9udd1TuIgoU3DPgL/9.Z0mkRsKGCxTd10Tlq5a', 'user2@example.com', 'user');
-
-
+INSERT INTO users (username,name, password, birthday, email, role) VALUES
+('user1','user1', '$2y$10$XU5kkL4flq14JpyK/wenDuSO4Jdqb.EMPgB8td3nW1PhacAtRjmg6', '1999-01-18', 'user1@example.com', 'admin'),
+('user2','user2', '$2y$10$3sisfsHwR92g6Jo9udd1TuIgoU3DPgL/9.Z0mkRsKGCxTd10Tlq5a', '1999-01-18', 'user2@example.com', 'user');
 -- Insertion dans la table Topics
 INSERT INTO topics (user_id, title, description) VALUES
 (1, 'Topic Title 1', 'Description of topic 1'),

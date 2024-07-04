@@ -8,11 +8,13 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 var tmpl = template.Must(template.ParseFiles("./template/html/connexion.html"))
+var tmplProfile = template.Must(template.ParseFiles("./template/html/profil.html"))
 
 func dbConn() (db *sql.DB) {
 	db, err := sql.Open("sqlite3", "./db.sqlite")
@@ -27,6 +29,21 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
 		email := r.FormValue("email")
+		name := r.FormValue("name")
+		birthday := r.FormValue("birthday")
+
+		log.Printf("Username : %s\n", username)
+		log.Printf("Password : %s\n", password)
+		log.Printf("Email : %s\n", email)
+		log.Printf("Name : %s\n", name)
+		log.Printf("Date de naissance (originale) : %s\n", birthday)
+
+		// Vérifier le format de la date
+		_, err := time.Parse("2006-01-02", birthday)
+		if err != nil {
+			http.Error(w, "Format de date incorrect", http.StatusBadRequest)
+			return
+		}
 
 		// Chiffrer le mot de passe
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -66,7 +83,7 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 		newID := strconv.Itoa(count + 1)
 
 		// Insérer le nouvel utilisateur avec le rôle par défaut "user"
-		_, err = tx.Exec("INSERT INTO users(id, username, password, email, role) VALUES(?, ?, ?, ?, ?)", newID, username, hashedPassword, email, "user")
+		_, err = tx.Exec("INSERT INTO users(id, username, name, birthday, password, email, role) VALUES(?, ?, ?, ?, ?, ?, ?)", newID, username, name, birthday, hashedPassword, email, "user")
 		if err != nil {
 			tx.Rollback()
 			fmt.Fprintf(w, "Erreur lors de l'ajout de l'utilisateur : %v", err)
@@ -79,7 +96,17 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 
-		fmt.Fprintf(w, "Utilisateur ajouté avec succès")
+		// Créer un cookie de session pour l'utilisateur nouvellement ajouté
+		http.SetCookie(w, &http.Cookie{
+			Name:     "username",
+			Value:    username,
+			Path:     "/",
+			HttpOnly: true,
+		})
+
+		// Rediriger vers la page d'accueil
+		log.Printf("Nouvel utilisateur ajouté : %s\n", username)
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 	} else {
 		tmpl.Execute(w, nil)
 	}
@@ -117,8 +144,63 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			Path:     "/",
 			HttpOnly: true,
 		})
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 	} else {
 		tmpl.Execute(w, nil)
+	}
+}
+
+func profilePage(w http.ResponseWriter, r *http.Request) {
+	log.Println("Entering profilePage function")
+
+	// Lire le cookie
+	cookie, err := r.Cookie("username")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			// Pas de cookie, utilisateur non connecté
+			log.Println("No cookie found, redirecting to login page")
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+		// Autre erreur
+		log.Println("Error reading cookie:", err)
+		http.Error(w, "Erreur lors de la lecture du cookie", http.StatusInternalServerError)
+		return
+	}
+
+	username := cookie.Value
+	log.Println("Cookie found, username:", username)
+
+	// Récupérer les informations de l'utilisateur depuis la base de données
+	db := dbConn()
+	defer db.Close()
+
+	var user struct {
+		Username  string
+		Name      string
+		Firstname string
+		Birthdate string
+		Email     string
+	}
+	user.Username = username
+	user.Name = "-"
+	user.Firstname = "-"
+	user.Birthdate = "-"
+	user.Email = "-"
+
+	err = db.QueryRow("SELECT username, name, strftime('%Y-%m-%d', birthday), email FROM users WHERE username = ?", username).Scan(&user.Username, &user.Name, &user.Birthdate, &user.Email)
+	if err != nil {
+		log.Println("Error retrieving user data:", err)
+		http.Error(w, "Erreur lors de la récupération des données utilisateur", http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("User data retrieved: %+v\n", user)
+
+	// Rendre le template avec les données de l'utilisateur
+	err = tmplProfile.Execute(w, user)
+	if err != nil {
+		log.Println("Error rendering template:", err)
+		http.Error(w, "Erreur lors du rendu du template", http.StatusInternalServerError)
 	}
 }

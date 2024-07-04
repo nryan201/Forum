@@ -19,6 +19,7 @@ func Server() {
 	http.HandleFunc("/block", BlockHandler)
 	http.HandleFunc("/login", loginUser)
 	http.HandleFunc("/addUser", addUser)
+
 	http.HandleFunc("/loginFacebook", handleFacebookLogin)
 	http.HandleFunc("/callbackFacebook", handleFacebookCallback)
 	http.HandleFunc("/loginGoogle", handleGoogleLogin)
@@ -27,7 +28,7 @@ func Server() {
 	http.HandleFunc("/callbackGithub", handleGithubCallback)
 	http.HandleFunc("/accueil", AccueilHandle)
 	http.HandleFunc("/contact", ContactHandle)
-	http.HandleFunc("/profil", ProfilHandle)
+	http.HandleFunc("/profil", profilePage)
 	http.HandleFunc("/post", PostHandle)
 
 	// Path to your SSL certificate and key

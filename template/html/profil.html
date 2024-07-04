@@ -6,25 +6,18 @@
     <title>Profil</title>
     <link rel="stylesheet" href="../css/profil.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
 </head>
 <body>
 <div class="title">Forum</div>
-<button class="back-button" onclick="goBack()">Retour</button>
-<script>
-    function goBack() {
-        window.history.back();
-    }
-</script>
+<button class="back-button" onclick="window.history.back()">Retour</button>
 <div class="profile-wrapper">
     <div class="profile-container">
         <div class="profile-pic" id="profile-pic">pp du profil</div>
         <div class="info-section">
-            <div class="info-item"><span id="username">Username :</span><p>bonjour</p></div>
-            <div class="info-item"><span id="name">Name :</span><p>bonjour</p></div>
-            <div class="info-item"><span id="firstname">Firstname :</span><p>bonjour</p></div>
-            <div class="info-item"><span id="birthdate-section">Birthdate :</span><p>bonjour</p></div>
-            <div class="info-item"><span id="email">Mail :</span><p>bonjour</p></div>
+            <div class="info-item"><span id="username">Username :</span><p>{{.Username}}</p></div>
+            <div class="info-item"><span id="name">Name :</span><p>{{.Name}}</p></div>
+            <div class="info-item"><span id="birthdate-section">Birthdate :</span><p>{{.Birthdate}}</p></div>
+            <div class="info-item"><span id="email">Mail :</span><p>{{.Email}}</p></div>
 
             <div class="links-section">
                 <a href="#" id="google-link"><i class='bx bxl-google'></i></a>
