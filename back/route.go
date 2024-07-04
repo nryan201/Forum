@@ -39,12 +39,11 @@ type User struct {
 type Category struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
-}	
+}
 
 var (
-	db *sql.DB
+	db      *sql.DB
 	idRegex = regexp.MustCompile(`^/(\d+)$`) // Regular expression to match an ID in the URL
-
 
 )
 
@@ -69,7 +68,7 @@ func HomeHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl, err := template.ParseFiles("template/html/accueil.html")
+	tmpl, err := template.ParseFiles("template/html/post.html")
 	if err != nil {
 		log.Printf("Error parsing template: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -190,8 +189,6 @@ func DeleteTopic(w http.ResponseWriter, r *http.Request, idStr string) {
 		return
 	}
 
-
-
 	topicID, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
@@ -214,7 +211,6 @@ func DeleteTopic(w http.ResponseWriter, r *http.Request, idStr string) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-
 // Handle for create commment
 func CreateComment(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a comment
@@ -229,7 +225,7 @@ func CreateComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	statement , err := db.Prepare("INSERT INTO comments (content, topic_id) VALUES (?, ?)")
+	statement, err := db.Prepare("INSERT INTO comments (content, topic_id) VALUES (?, ?)")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -301,7 +297,6 @@ func UpdateComment(w http.ResponseWriter, r *http.Request, idStr string) {
 
 	defer statement.Close()
 
-
 	_, err = statement.Exec(comment.Content, comment.TopicID, comment.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -312,7 +307,7 @@ func UpdateComment(w http.ResponseWriter, r *http.Request, idStr string) {
 
 }
 
-func DeleteComment(w http.ResponseWriter, r *http.Request , idStr string) {
+func DeleteComment(w http.ResponseWriter, r *http.Request, idStr string) {
 	// Logic for deleting a comment
 	if r.Method != "DELETE" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -384,7 +379,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 
-
 }
 
 // GetUser retrieves a single user by ID
@@ -394,7 +388,6 @@ func GetUser(w http.ResponseWriter, r *http.Request, isStr string) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-
 
 	userID, err := strconv.Atoi(isStr)
 	if err != nil {
@@ -424,7 +417,6 @@ func UpdateUser(w http.ResponseWriter, r *http.Request, idStr string) {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-
 
 	userID, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -504,7 +496,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "User not found", http.StatusNotFound)
 			return
 		}
-		http.Error(w, "Error querying database: " + err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error querying database: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -532,7 +524,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(responseMessage))
 }
 
-
 // Handle for logout
 func Logout(w http.ResponseWriter, r *http.Request) {
 	// Logic for logout
@@ -543,11 +534,11 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 	// Delete the cookie
 	http.SetCookie(w, &http.Cookie{
-		Name:   "authentificated",
-		Value:  "",
-		Path:  "/",
+		Name:     "authentificated",
+		Value:    "",
+		Path:     "/",
 		HttpOnly: true,
-		MaxAge: -1,
+		MaxAge:   -1,
 	})
 
 	w.Write([]byte("You have been logged out"))
@@ -556,7 +547,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 // Handle for category
 
 // CreateCategory creates a new category
-func CreateCategory (w http.ResponseWriter, r *http.Request) {
+func CreateCategory(w http.ResponseWriter, r *http.Request) {
 	// Logic for creating a category
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -569,7 +560,7 @@ func CreateCategory (w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	statement , err := db.Prepare("INSERT INTO categories (name) VALUES (?)")
+	statement, err := db.Prepare("INSERT INTO categories (name) VALUES (?)")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -587,7 +578,7 @@ func CreateCategory (w http.ResponseWriter, r *http.Request) {
 }
 
 // GetCategory retrieves a single category by ID
-func GetCategory(w http.ResponseWriter, r *http.Request , idStr string) {
+func GetCategory(w http.ResponseWriter, r *http.Request, idStr string) {
 	if r.Method != "GET" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -622,41 +613,40 @@ func GetCategory(w http.ResponseWriter, r *http.Request , idStr string) {
 
 // UpdateCategory updates a single category by ID
 func UpdateCategory(w http.ResponseWriter, r *http.Request, idStr string) {
-    if r.Method != "PUT" {
-        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-        return
-    }
+	if r.Method != "PUT" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
-    categoryID, err := strconv.Atoi(idStr)
-    if err != nil {
-        http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
-        return
-    }
+	categoryID, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Bad request: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 
-    var category Category
-    err = json.NewDecoder(r.Body).Decode(&category)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
-        return
-    }
+	var category Category
+	err = json.NewDecoder(r.Body).Decode(&category)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-    // Use the categoryID from the URL, not category.ID from the body
-    statement, err := db.Prepare("UPDATE categories SET name = ? WHERE id = ?")
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
-    defer statement.Close()
+	// Use the categoryID from the URL, not category.ID from the body
+	statement, err := db.Prepare("UPDATE categories SET name = ? WHERE id = ?")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer statement.Close()
 
-    _, err = statement.Exec(category.Name, categoryID)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
+	_, err = statement.Exec(category.Name, categoryID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-    w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusNoContent)
 }
-
 
 // DeleteCategory deletes a single category by ID
 func DeleteCategory(w http.ResponseWriter, r *http.Request, idStr string) {

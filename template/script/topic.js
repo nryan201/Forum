@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 /*// Récupération des topics depuis la BDD
     fetch('/bdd/topics')
         .then(response => response.json())
-        .then(topics => {
+        .then(topic => {
             topics.forEach(topic => {
                 const topicBox = createTopicBox(topic);
                 topicContainer.appendChild(topicBox);

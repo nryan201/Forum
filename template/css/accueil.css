@@ -30,16 +30,59 @@ body {
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
 }
-
-.profile {
-    background-color: #85aefa;
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 10px;
+.star,.star1,.star2,.star3,.star4 {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: yellow;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.star5,.star6,.star7,.star8,.star9 {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: yellow;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
 
+.profile{
+    align-items: center;
+    padding: 15px 40px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    margin-bottom: 8px;
+    top: 30px;
+    position: relative;
+    z-index: 2;
+}
+
+.contact{
+    align-items: center;
+    padding: 15px 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    top: 3483%;
+    position: relative;
+    z-index: 2;
+}
 .side-section {
     width: 20%;
     padding: 10px;
@@ -61,20 +104,21 @@ body {
     font-size: 40px;
     font-weight: bold;
     padding: 30px;
-    margin-bottom: 10px;
-    background: rgba(255, 255, 255, 0.31);
+    margin-bottom: 20px;
+    background: rgba(44, 152, 155, 0.75);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(6.5px);
-    -webkit-backdrop-filter: blur(6.5px);
-    border: 1px solid rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(4.7px);
+    -webkit-backdrop-filter: blur(4.7px);
+    border: 1px solid rgba(44, 152, 155, 0.3);
 }
 
 .post-topic {
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
 .post-feed {
+    margin-top: 30px;
     padding: 20px;
     background: rgba(255, 255, 255, 0.31);
     border-radius: 16px;
@@ -183,6 +227,10 @@ body {
     transition: background-color 0.3s, transform 0.3s;
     cursor: pointer;
     margin-bottom: 8px;
+}
+.contact:hover, .profile:hover{
+    background-color: #8e004e;
+    transform: translateY(-3px);
 }
 
 .categoryBtn:hover, .hashtagsBtn:hover {

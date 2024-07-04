@@ -13,6 +13,22 @@ body {
     height: 100%;
     overflow: auto; /* Permet le défilement vertical */
 }
+.returnHome-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start; /* Alignement des éléments en haut */
+    padding: 20px 35px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.8px);
+    -webkit-backdrop-filter: blur(1.8px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    margin-top: 2px; /* Espacement du haut */
+    margin-bottom: 75%;
+    margin-right: 20px;
+}
 
 /* Ajustement du conteneur de cartes */
 .card-container {
@@ -73,6 +89,24 @@ body {
     font-size: 18px;
 }
 
+.returnHome {
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: normal;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+}
+
 /* Styles pour le bouton */
 button {
     border: none;
@@ -97,4 +131,9 @@ a {
 /* Effets de survol */
 button:hover, a:hover {
     opacity: 0.7;
+}
+
+.returnHome:hover{
+    background-color: #8e004e;
+    transform: translateY(-3px);
 }

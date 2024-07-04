@@ -2,7 +2,6 @@ package main
 
 import (
 	"main/back"
-	
 )
 
 func main() {
