@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"encoding/json"
 )
 
 func Server() {
@@ -194,10 +195,82 @@ func PostHandle(w http.ResponseWriter, r *http.Request) {
 	 var topics []Topic
 	 var err error
 
-	 if query!= ""{
-		topics, err = SearchDatabase(query.Get("query"))
+	 if query != ""{
+		topics, err = SearchTopics(query.Get("query"))
 	 }else{
-		topics, err = AllTopics()
+		topics, err = GetAllTopics()
 	 }
+
+	if err != nil {
+		log.Printf("Error getting topics: %v", err)
+		http.Error(w, "internal server errror ", http.StatusInternalServerError)
+		return
 	 }
+
+	 w.Header().Set("Content-Type", "application/json")
+	 err = json.NewEncoder(w).Encode(topics)
+	 if err != nil {
+		log.Printf("Error encoding topics: %v", err)
+		http.Error(w, "internal server errror ", http.StatusInternalServerError)
+		return
+	 }
+}
+
+func SearchTopics (query string)([]Topic, error){
+	db := OpenDB()
+	defer db.Close()
+
+	stmt, err := db.Prepare("SELECT id, title, description FROM topic WHERE title LIKE ? OR description LIKE ?")
+	if err != nil {
+		log.Printf("Error preparing statement: %v", err)
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query("%" + query + "%", "%" + query + "%")
+	if err != nil {
+		log.Printf("Error getting topics: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var topics []Topic
+	for rows.Next() {
+		var t Topic
+		err := rows.Scan(&t.ID, &t.Title, &t.Description)
+		if err != nil {
+			log.Printf("Error scanning topic: %v", err)
+			return nil, err
+		}
+		topics = append(topics, t)
+	}
+}
+
+func GetAllTopics() ([]Topic, error) {
+	db := OpenDB()
+	defer db.Close()
+
+	rows, err := db.Query("SELECT id, title, description FROM topic")
+	if err != nil {
+		log.Printf("Error getting topics: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var topics []Topic
+	for rows.Next() {
+		var t Topic
+		err := rows.Scan(&t.ID, &t.Title, &t.Description); err != nil {
+			log.Printf("Error scanning topic: %v", err)
+			return nil, err
+		}
+		topics = append(topics, t)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Printf("Error iterating rows: %v", err)
+		return nil, err
+	}
+
+	return topics, nil
 }
