@@ -21,7 +21,11 @@
 <div class="container">
     <div class="profile-section">
         <div>
+            {{if .LoggedIn}}
             <a class="profile" href="/profil">Profil</a>
+            {{else}}
+            <a class="profile" href="/login">Connexion</a>
+            {{end}}
         </div>
         <div class="star"></div>
         <div class="star1"></div>

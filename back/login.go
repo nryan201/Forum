@@ -3,11 +3,12 @@ package back
 import (
 	"database/sql"
 	"fmt"
-	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+
+	"golang.org/x/crypto/bcrypt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -129,8 +130,17 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		http.SetCookie(w, &http.Cookie{
+			Name:  "username",
+			Value: username,
+			Path: "/",
+			HttpOnly: true,
+	})
+
 		fmt.Fprintf(w, "Connexion réussie. Bienvenue %s!", username)
 	} else {
 		tmpl.Execute(w, nil)
 	}
 }
+
+

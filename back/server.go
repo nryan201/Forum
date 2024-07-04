@@ -190,15 +190,14 @@ func PostHandle(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	tmpl, err := template.ParseFiles("template/html/post.html") // return to post
-	if err != nil {
-		log.Printf("Error parsing template %v", err)
-		http.Error(w, "internal server errror ", http.StatusInternalServerError)
-		return
-	}
+	 query := r.URL.Query()
+	 var topics []Topic
+	 var err error
 
-	err = tmpl.Execute(w, nil)
-	if err != nil {
-		log.Printf("Error executing template: %v", err)
-	}
+	 if query!= ""{
+		topics, err = SearchDatabase(query.Get("query"))
+	 }else{
+		topics, err = AllTopics()
+	 }
+	 }
 }

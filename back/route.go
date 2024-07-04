@@ -64,21 +64,26 @@ func CloseDB() {
 
 // HomeHandle handles the home page
 func HomeHandle(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
+	sessionsCookie, err := r.Cookie("authenticated")
+	loggedIn := (err == nil && sessionsCookie != nil && sessionsCookie.Value != "")
+
+	data :=  struct {
+		LoggedIn bool
+	}{
+		LoggedIn: loggedIn,
 	}
 
 	tmpl, err := template.ParseFiles("template/html/accueil.html")
 	if err != nil {
-		log.Printf("Error parsing template: %v", err)
+		log.Printf("Error parsing template %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	err = tmpl.Execute(w, nil)
+	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 }
 
@@ -693,8 +698,8 @@ func BlockHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func SerchHandle(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query().Get("q")
+func SearchHandle(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query().Get("query")
 	if query == "" {
 		http.Error(w, "Missing query parameter", http.StatusBadRequest)
 		return
@@ -705,5 +710,7 @@ func SerchHandle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(results)
+
+	http.Redirect(w, r, "/post?results="+url.QueryEscape(string(results)), http.StatusFound)
 }
+
