@@ -7,6 +7,8 @@ require (
 	golang.org/x/crypto v0.24.0
 )
 
+require github.com/google/uuid v1.6.0
+
 require (
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	golang.org/x/oauth2 v0.21.0

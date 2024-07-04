@@ -2,8 +2,14 @@ package back
 
 import (
 	"database/sql"
+	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"log"
+	"net/http"
+	"strconv"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var tmpl = template.Must(template.ParseFiles("./template/html/connexion.html"))
@@ -16,12 +22,17 @@ func dbConn() (db *sql.DB) {
 	return db
 }
 
-/* Non fonctionel pour le moment attendre que Ryan et Alexis modifient ceci
 func addUser(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
 		email := r.FormValue("email")
+
+		// Chiffrer le mot de passe
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		db := dbConn()
 		defer db.Close()
@@ -57,14 +68,24 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Insérer le nouvel utilisateur
-		_, err = tx.Exec("INSERT INTO users(username, password, email) VALUES(?, ?, ?)", username, password, email)
+		// Générer un identifiant séquentiel de type texte
+		var maxID sql.NullString
+		err = tx.QueryRow("SELECT MAX(CAST(id AS INTEGER)) FROM users").Scan(&maxID)
 		if err != nil {
 			tx.Rollback()
-			if sqliteErr, ok := err.(sqlite3.Error); ok && sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
-				fmt.Fprintf(w, "Nom d'utilisateur ou adresse e-mail déjà pris. Veuillez en choisir un autre.")
-				return
-			}
+			log.Fatal(err)
+		}
+
+		newID := "1"
+		if maxID.Valid {
+			maxIDInt, _ := strconv.Atoi(maxID.String)
+			newID = strconv.Itoa(maxIDInt + 1)
+		}
+
+		// Insérer le nouvel utilisateur avec le rôle par défaut "user"
+		_, err = tx.Exec("INSERT INTO users(id, username, password, email, role) VALUES(?, ?, ?, ?, ?)", newID, username, hashedPassword, email, "user")
+		if err != nil {
+			tx.Rollback()
 			fmt.Fprintf(w, "Erreur lors de l'ajout de l'utilisateur : %v", err)
 			return
 		}
@@ -93,15 +114,18 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		err := db.QueryRow("SELECT username, password FROM users WHERE username = ?", username).Scan(&dbUsername, &dbPassword)
 		if err != nil {
 			if err == sql.ErrNoRows {
-				fmt.Fprintf(w, "Nom d'utilisateur ou mot de passe incorrect")
+				http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
 			} else {
+				http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
 				log.Fatal(err)
 			}
 			return
 		}
 
-		if dbPassword != password {
-			fmt.Fprintf(w, "Nom d'utilisateur ou mot de passe incorrect")
+		// Vérifier le mot de passe
+		err = bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(password))
+		if err != nil {
+			http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
 			return
 		}
 
@@ -110,4 +134,3 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		tmpl.Execute(w, nil)
 	}
 }
-*/

@@ -13,13 +13,17 @@ DROP TABLE IF EXISTS users;
 -- Création des tables
 
 -- Table Users
+DROP TABLE IF EXISTS users;
+
 CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id TEXT PRIMARY KEY,
     username TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL, 
+    password TEXT NOT NULL ,
     email TEXT UNIQUE,
+    role TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
 
 -- Table Topics
 CREATE TABLE topics (
@@ -85,46 +89,46 @@ CREATE TABLE likes (
 -- Insertion des données
 
 -- Insertion dans la table Users
-INSERT INTO users (username, password, email, google_id) VALUES 
-('user1', 'password1', 'user1@example.com', 'google_id1'),
-('user2', 'password2', 'user2@example.com', 'google_id2');
+INSERT INTO users (username, password, email,role) VALUES
+('user1', 'password1', 'user1@example.com', 'admin'),
+('user2', 'password2', 'user2@example.com', 'user');
 
 
 -- Insertion dans la table Topics
-INSERT INTO topics (user_id, title, description) VALUES 
+INSERT INTO topics (user_id, title, description) VALUES
 (1, 'Topic Title 1', 'Description of topic 1'),
 (2, 'Topic Title 2', 'Description of topic 2');
 
 -- Insertion dans la table Comments
-INSERT INTO comments (topic_id, user_id, content) VALUES 
+INSERT INTO comments (topic_id, user_id, content) VALUES
 (1, 1, 'Comment on topic 1 by user 1'),
 (1, 2, 'Comment on topic 1 by user 2'),
 (2, 1, 'Comment on topic 2 by user 1');
 
 -- Insertion dans la table Hashtags
-INSERT INTO hashtags (name) VALUES 
+INSERT INTO hashtags (name) VALUES
 ('hashtag1'),
 ('hashtag2');
 
 -- Insertion dans la table Topic_Hashtags
-INSERT INTO topic_hashtags (topic_id, hashtag_id) VALUES 
+INSERT INTO topic_hashtags (topic_id, hashtag_id) VALUES
 (1, 1),
 (1, 2),
 (2, 1);
 
 -- Insertion dans la table Categories
-INSERT INTO categories (name) VALUES 
+INSERT INTO categories (name) VALUES
 ('category1'),
 ('category2');
 
 -- Insertion dans la table Topic_Categories
-INSERT INTO topic_categories (topic_id, category_id) VALUES 
+INSERT INTO topic_categories (topic_id, category_id) VALUES
 (1, 1),
 (1, 2),
 (2, 1);
 
 -- Insertion dans la table Likes
-INSERT INTO likes (topic_id, user_id) VALUES 
+INSERT INTO likes (topic_id, user_id) VALUES
 (1, 1),
 (1, 2),
 (2, 1);
