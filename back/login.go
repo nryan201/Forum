@@ -137,7 +137,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			HttpOnly: true,
 	})
 
-		fmt.Fprintf(w, "Connexion réussie. Bienvenue %s!", username)
+		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 	} else {
 		tmpl.Execute(w, nil)
 	}

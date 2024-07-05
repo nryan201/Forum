@@ -76,16 +76,19 @@ func SearchTopics (query string)([]Topic, error){
 	return topics, nil
 }
 
-func GetAllTopics() ([]Topic, error) {
+// GetAllTopics returns all topics from the database
+func GetAllTopics(page int, pageSize int) ([]Topic, error) {
 	db, err := sql.Open("sqlite3", "./db.sqlite")
 	if err != nil {
 		return nil, err
 	}
 	defer db.Close()
-	
-	
-	// 
-	rows, err := db.Query("SELECT id, title, description FROM topics")
+
+	// Calculate the offset
+	offset := (page - 1) * pageSize
+	query := `SELECT id, title, description FROM topics LIMIT ? OFFSET ?`
+
+	rows, err := db.Query(query, pageSize, offset)
 	if err != nil {
 		log.Printf("Error getting topics: %v", err)
 		return nil, err
@@ -102,10 +105,6 @@ func GetAllTopics() ([]Topic, error) {
 		topics = append(topics, t)
 	}
 
-	if err := rows.Err(); err != nil {
-		log.Printf("Error iterating rows: %v", err)
-		return nil, err
-	}
-
+	log.Printf("Topics fetched: %v", topics)
 	return topics, nil
 }

@@ -10,6 +10,24 @@ document.getElementById('searchForm').addEventListener('submit', function (event
 });
 
 
+// func for search topics in the search bar
+function searchTopics() {
+    const query = document.getElementById('searchInput').value;
+    fetch(`/post?query=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            data.forEach(topic => {
+                const topicDiv = document.createElement('div');
+                topicDiv.innerHTML = `<h2>${topic.Title}</h2><p>${topic.Description}</p>`;
+                resultsDiv.appendChild(topicDiv);
+            });
+        })
+        .catch(error => console.error('Error fetching topics:', error));
+}
+
+
 function displayResults(results) {
     const resultsContainer = document.getElementById('searchResults');
     resultsContainer.innerHTML = ''; // Clear previous results
@@ -19,3 +37,4 @@ function displayResults(results) {
         resultsContainer.appendChild(div);
     });
 }
+

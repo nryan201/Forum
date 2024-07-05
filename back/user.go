@@ -11,7 +11,7 @@ import (
 var rolePermissions = map[string]map[string]bool{
 	"guest": {
 		"view":    true,
-		"share":   true,
+		"share":   false,
 		"create":  false,
 		"comment": true,
 		"like":    false,
@@ -36,7 +36,7 @@ var rolePermissions = map[string]map[string]bool{
 		"comment": true,
 		"like":    true,
 		"dislike": true,
-		"delete":  true,
+		"delete":  false,
 		"report":  true,
 	},
 	"admin": {

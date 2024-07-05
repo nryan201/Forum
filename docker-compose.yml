@@ -7,3 +7,4 @@ services:
     volumes:
       - ./template/ressource/images:/app/template/ressource/images
       - ./data:/data
+      - ./permsHttps:/app/permsHttps

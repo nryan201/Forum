@@ -28,6 +28,7 @@ func Server() {
 	http.HandleFunc("/contact", ContactHandle)
 	http.HandleFunc("/profil", ProfilHandle)
 	http.HandleFunc("/post", PostHandle)
+	http.HandleFunc("/api/topics", PushTopic)
 	
 
 	// Path to your SSL certificate and key
@@ -204,7 +205,7 @@ func PostHandle(w http.ResponseWriter, r *http.Request) {
 	 if searchQuery != "" {
 		topics, err = SearchTopics(searchQuery)
 	 } else {
-		topics, err = GetAllTopics()
+		topics, err = GetAllTopics(0, 0)
 	 }
 
 	if err != nil {
@@ -221,3 +222,8 @@ func PostHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	 }
 }
+
+func EnableCors (w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+

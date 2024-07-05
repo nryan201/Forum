@@ -19,6 +19,10 @@ type Topic struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	Likes 	 	int    `json:"likes"`
+	Dislikes 	int    `json:"dislikes"`
+	Comments	string `json:"comments"`
+	Username	string `json:"username"`
 }
 
 // Comment represents a comment
@@ -32,6 +36,8 @@ type Comment struct {
 type User struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
+	Firsname string `json:"firstname"`
+	Lastname string `json:"lastname"`
 	Password string `json:"password"`
 	Mail     string `json:"mail"`
 }
@@ -42,6 +48,10 @@ type Category struct {
 	Name string `json:"name"`
 }
 
+type Hastag struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
 
 var (
 	db      *sql.DB
@@ -87,6 +97,21 @@ func HomeHandle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 }
+
+
+// Push topic on the home page
+func PushTopic(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
+	topics, err := GetAllTopics(0, 0)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(topics)
+}
+
+// GetAllTopics retrieves all topics
 
 // CreateTopic handles topic creation
 func CreateTopic(w http.ResponseWriter, r *http.Request, idStr string) {
