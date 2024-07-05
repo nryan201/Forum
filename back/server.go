@@ -39,7 +39,9 @@ func Server() {
 	http.HandleFunc("/accueil", AccueilHandle)
 	http.HandleFunc("/contact", ContactHandle)
 	http.HandleFunc("/profil", profilePage)
-	http.HandleFunc("/post", PostHandle)
+	//http.HandleFunc("/post", PostHandle) celui sert a la creation de post
+	http.HandleFunc("/submit-post", postHandler)
+	http.HandleFunc("/post", postDetailHandler) // celui sert a la visualisation de post
 
 	// Path to your SSL certificate and key
 	certPath := "./permsHttps/cert.pem"
@@ -202,7 +204,7 @@ func PostHandle(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	tmpl, err := template.ParseFiles("template/html/post.html") // return to post
+	tmpl, err := template.ParseFiles("template/html/postDetail.html") // return to post
 	if err != nil {
 		log.Printf("Error parsing template %v", err)
 		http.Error(w, "internal server errror ", http.StatusInternalServerError)
@@ -213,4 +215,50 @@ func PostHandle(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
 	}
+}
+func postHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Error parsing form", http.StatusBadRequest)
+		return
+	}
+
+	title := r.FormValue("title")
+	description := r.FormValue("description")
+
+	// Retrieve user_id from cookie
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Error(w, "Authentication required", http.StatusUnauthorized)
+		return
+	}
+	userID := cookie.Value
+
+	db := dbConn()
+	defer db.Close()
+
+	// Generate the next topic ID by counting existing entries
+	var topicID int
+	err = db.QueryRow("SELECT COUNT(*) FROM topics").Scan(&topicID)
+	if err != nil {
+		log.Printf("Error counting topics: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	topicID++ // Increment to get the new topic ID
+
+	// Insert the new topic
+	_, err = db.Exec("INSERT INTO topics (id, user_id, title, description) VALUES (?, ?, ?, ?)", topicID, userID, title, description)
+	if err != nil {
+		log.Printf("Error inserting new topic: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther) // Redirect to home or confirmation page
 }

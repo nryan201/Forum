@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum</title>
+    <title>{{.Title}} - Forum</title>
     <link rel="stylesheet" href="../css/post.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js"></script>
-    
 </head>
 <body>
 <div class="container">
@@ -28,24 +27,13 @@
         <script src="../script/Star.js"></script>
     </div>
     <div class="main-section">
-        <div class="title">Forum</div>
+        <div class="title">{{.Title}}</div>
         <div class="post-detail">
             <div class="post-content">
-                <input type="text" class="post-title" placeholder="Titre du Post">
-                <textarea class="post-description" placeholder="Description détaillée du post."></textarea>
-                <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
-                <button class="post-Button" formmethod="post">POSTEZ !</button>
+                <h2>{{.Title}}</h2>
+                <p>{{.Description}}</p>
+                <div class="post-author">Auteur: <span class="author-name">{{.Username}}</span></div>
             </div>
-            <div class="comments">
-                <h3>Commentaires</h3>
-                <div class="comment">
-                    <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
-                    <label>
-                        <textarea class="comment-text" placeholder="Commentaire sur le post."></textarea>
-                    </label>
-                </div>
-            </div>
-            <button class="comment-Button" formmethod="post">COMMENTEZ</button>
         </div>
     </div>
 
@@ -81,8 +69,5 @@
         </div>
     </div>
 </div>
-<script src="../script/category.js"></script>
-<script src="../script/hashtag.js"></script>
-<script src="../script/scroller.js"></script>
 </body>
 </html>

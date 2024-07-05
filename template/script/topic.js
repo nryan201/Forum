@@ -2,30 +2,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const topicContainer = document.getElementById('topic-container');
 
     function createTopicBox(topic) {
-        // Create outer div for the topic with class 'post-topic'
         const topicBox = document.createElement('div');
         topicBox.className = 'post-topic';
 
-        // Create inner div for the feed with class 'post-feed'
         const postFeed = document.createElement('div');
         postFeed.className = 'post-feed';
 
-        // Create title element
         const title = document.createElement('h3');
         title.textContent = topic.title;
-        title.style.fontSize = '24px'; // Example of making the text larger
+        title.className = 'post-title';
 
-        // Create description paragraph
         const description = document.createElement('p');
         description.textContent = topic.description;
-        description.style.fontSize = '18px'; // Larger text for description
+        description.className = 'post-description';
 
-        // Append title and description to the 'post-feed' div
         postFeed.appendChild(title);
         postFeed.appendChild(description);
-
-        // Append 'post-feed' to 'post-topic'
         topicBox.appendChild(postFeed);
+
+        // Adding event listener to the entire topic box
+        topicBox.addEventListener('click', function() {
+            window.location.href = '/post?id=' + topic.id; // Redirect to the detailed post view
+        });
 
         return topicBox;
     }

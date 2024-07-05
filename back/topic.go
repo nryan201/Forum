@@ -1,10 +1,14 @@
 package back
 
 import (
+	"database/sql"
 	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
 )
+
+var tmplPost = template.Must(template.ParseFiles("./template/html/postDetail.html"))
 
 func addTopicHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -64,4 +68,47 @@ func getTopicsHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topics)
+}
+func postDetailHandler(w http.ResponseWriter, r *http.Request) {
+	// Get the topic ID from the query parameters
+	topicID := r.URL.Query().Get("id")
+	if topicID == "" {
+		http.Error(w, "Topic ID is required", http.StatusBadRequest)
+		return
+	}
+
+	db := dbConn()
+	defer db.Close()
+
+	var topic struct {
+		ID          int
+		Username    string
+		Title       string
+		Description string
+	}
+
+	// Query to get the topic details along with the author's username
+	query := `
+		SELECT t.id, u.username, t.title, t.description
+		FROM topics t
+		JOIN users u ON t.user_id = u.id
+		WHERE t.id = ?
+	`
+
+	err := db.QueryRow(query, topicID).Scan(&topic.ID, &topic.Username, &topic.Title, &topic.Description)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Topic not found", http.StatusNotFound)
+		} else {
+			log.Printf("Error retrieving topic: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	err = tmplPost.Execute(w, topic)
+	if err != nil {
+		log.Printf("Error executing template: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
 }

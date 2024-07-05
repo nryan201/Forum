@@ -158,15 +158,9 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 	// Lire le cookie
 	cookie, err := r.Cookie("user_id")
 	if err != nil {
-		if err == http.ErrNoCookie {
-			// Pas de cookie, utilisateur non connecté
-			log.Println("No cookie found, redirecting to login page")
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
-		}
-		// Autre erreur
-		log.Println("Error reading cookie:", err)
-		http.Error(w, "Erreur lors de la lecture du cookie", http.StatusInternalServerError)
+		// Handle no cookie or cookie read error by redirecting to login page
+		log.Printf("Error reading cookie or no cookie found: %v", err)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
@@ -194,7 +188,7 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Println("No user found with id:", userID)
-			http.Error(w, "Utilisateur non trouvé", http.StatusNotFound)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 		log.Println("Error retrieving user data:", err)
