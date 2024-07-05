@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     id TEXT PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT UNIQUE,
     name TEXT,
     birthday DATE,
     password TEXT ,

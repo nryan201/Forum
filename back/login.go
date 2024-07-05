@@ -204,3 +204,19 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Erreur lors du rendu du template", http.StatusInternalServerError)
 	}
 }
+
+func clearCookie(w http.ResponseWriter, name string) {
+	log.Println("Clearing cookie", name)
+	http.SetCookie(w, &http.Cookie{
+		Name:    name,
+		Value:   "",
+		Path:    "/",
+		Expires: time.Unix(0, 0),
+	})
+}
+
+func logout(w http.ResponseWriter, r *http.Request) {
+	log.Println("Logging out user")
+	clearCookie(w, "username")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}

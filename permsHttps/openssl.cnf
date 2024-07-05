@@ -1,0 +1,26 @@
+[req]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = dn
+req_extensions = req_ext
+x509_extensions = v3_ca # The extentions to add to the self signed cert
+
+[dn]
+C = FR
+ST = Haute-Garonne
+L = Toulouse
+O = Forum
+OU = IT
+CN = localhost
+emailAddress = forum@forum.com
+
+[req_ext]
+subjectAltName = @alt_names
+
+[v3_ca]
+subjectAltName = @alt_names
+keyUsage = keyCertSign, cRLSign, digitalSignature, keyEncipherment
+
+[alt_names]
+DNS.1 = localhost
