@@ -3,14 +3,13 @@ package back
 import (
 	"database/sql"
 	"encoding/json"
+	_ "github.com/mattn/go-sqlite3" // SQLite driver
+	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"log"
 	"net/http"
 	"regexp"
 	"strconv"
-
-	_ "github.com/mattn/go-sqlite3" // SQLite driver
-	"golang.org/x/crypto/bcrypt"
 )
 
 // Topic represents a topic
@@ -44,7 +43,6 @@ type Category struct {
 var (
 	db      *sql.DB
 	idRegex = regexp.MustCompile(`^/(\d+)$`) // Regular expression to match an ID in the URL
-
 )
 
 // OpenDB initializes the database connection

@@ -2,17 +2,23 @@ package back
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+	"sync"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var tmpl = template.Must(template.ParseFiles("./template/html/connexion.html"))
+var (
+	tmpl                = template.Must(template.ParseFiles("./template/html/connexion.html"))
+	isUserAuthenticated = false
+	mu                  sync.Mutex
+)
 
 func dbConn() (db *sql.DB) {
 	db, err := sql.Open("sqlite3", "./db.sqlite")
@@ -116,13 +122,12 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			if err == sql.ErrNoRows {
 				http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
 			} else {
+				log.Println("Erreur lors de la vérification des informations de connexion:", err)
 				http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
-				log.Fatal(err)
 			}
 			return
 		}
 
-		// Vérifier le mot de passe
 		err = bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(password))
 		if err != nil {
 			http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
@@ -134,10 +139,28 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			Value:    username,
 			Path:     "/",
 			HttpOnly: true,
+			Secure:   true, // S'assure que le cookie est uniquement transmis sur HTTPS
 		})
 
-		fmt.Fprintf(w, "Connexion réussie. Bienvenue %s!", username)
+		mu.Lock()
+		isUserAuthenticated = true
+		mu.Unlock()
+
+		tmpl.Execute(w, struct{ LoggeIn bool }{LoggeIn: true})
 	} else {
-		tmpl.Execute(w, nil)
+		tmpl.Execute(w, struct{ LoggeIn bool }{LoggeIn: isUserAuthenticated})
+	}
+}
+
+func checkAuthStatus(w http.ResponseWriter, r *http.Request) {
+	mu.Lock()
+	defer mu.Unlock()
+
+	authStatus := map[string]bool{"isAuthenticated": isUserAuthenticated}
+
+	err := json.NewEncoder(w).Encode(authStatus)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }

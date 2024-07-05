@@ -29,6 +29,7 @@ func Server() {
 	http.HandleFunc("/post", PostHandle)
 	http.HandleFunc("/connexion", ConnexionHandle)
 	http.HandleFunc("/topic", TopicHandle)
+	http.HandleFunc("/check-auth-status", checkAuthStatus)
 
 	// Path to your SSL certificate and key
 	certPath := "./permsHttps/cert.pem"
