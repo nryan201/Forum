@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum</title>
+    <title>Edit Post</title>
     <link rel="stylesheet" href="../css/post.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js"></script>
 </head>
@@ -27,14 +27,15 @@
         <script src="../script/Star.js"></script>
     </div>
     <div class="main-section">
-        <div class="title">Forum</div>
-        <form method="POST" action="/submit-post">
+        <div class="title">Edit Post</div>
+        <form method="POST" action="/submit-edit">
             <div class="post-detail">
                 <div class="post-content">
-                    <input type="text" name="title" class="post-title" placeholder="Titre du Post" required>
-                    <textarea name="description" class="post-description" placeholder="Description détaillée du post." required></textarea>
-                    <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
-                    <button type="submit" class="post-Button">POSTEZ !</button>
+                    <input type="hidden" name="id" value="{{.ID}}">
+                    <input type="text" name="title" class="post-title" placeholder="Titre du Post" value="{{.Title}}" required>
+                    <textarea name="description" class="post-description" placeholder="Description détaillée du post." required>{{.Description}}</textarea>
+                    <div class="post-author">Auteur: <span class="author-name">{{.Username}}</span></div>
+                    <button type="submit" class="post-Button">UPDATE POST</button>
                 </div>
             </div>
         </form>

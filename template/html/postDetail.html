@@ -33,6 +33,11 @@
                 <h2>{{.Title}}</h2>
                 <p>{{.Description}}</p>
                 <div class="post-author">Auteur: <span class="author-name">{{.Username}}</span></div>
+                {{if .IsOwner}}
+                <div>
+                    <a href="/editpost?id={{.ID}}" class="edit-button">Edit Post</a>
+                </div>
+                {{end}}
             </div>
         </div>
     </div>

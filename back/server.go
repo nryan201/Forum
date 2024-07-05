@@ -39,9 +39,13 @@ func Server() {
 	http.HandleFunc("/accueil", AccueilHandle)
 	http.HandleFunc("/contact", ContactHandle)
 	http.HandleFunc("/profil", profilePage)
+
+	//Handle Post
 	http.HandleFunc("/createpost", PostHandle) // celui sert a la creation de post
 	http.HandleFunc("/submit-post", postHandler)
-	http.HandleFunc("/post", postDetailHandler) // celui sert a la visualisation de post
+	http.HandleFunc("/post", postDetailHandler)  // celui sert a la visualisation de post
+	http.HandleFunc("/editpost", editPostHandle) // for editing posts
+	http.HandleFunc("/submit-edit", editHandler)
 
 	// Path to your SSL certificate and key
 	certPath := "./permsHttps/cert.pem"
