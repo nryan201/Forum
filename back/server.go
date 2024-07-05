@@ -39,7 +39,7 @@ func Server() {
 	http.HandleFunc("/accueil", AccueilHandle)
 	http.HandleFunc("/contact", ContactHandle)
 	http.HandleFunc("/profil", profilePage)
-	//http.HandleFunc("/post", PostHandle) celui sert a la creation de post
+	http.HandleFunc("/createpost", PostHandle) // celui sert a la creation de post
 	http.HandleFunc("/submit-post", postHandler)
 	http.HandleFunc("/post", postDetailHandler) // celui sert a la visualisation de post
 
@@ -200,14 +200,14 @@ func ProfilHandle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func PostHandle(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/post" {
+	if r.URL.Path != "/createpost" {
 		http.NotFound(w, r)
 		return
 	}
-	tmpl, err := template.ParseFiles("template/html/postDetail.html") // return to post
+	tmpl, err := template.ParseFiles("template/html/post.html") // Update to the path of your create post template
 	if err != nil {
 		log.Printf("Error parsing template %v", err)
-		http.Error(w, "internal server errror ", http.StatusInternalServerError)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -234,7 +234,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	// Retrieve user_id from cookie
 	cookie, err := r.Cookie("user_id")
 	if err != nil {
-		http.Error(w, "Authentication required", http.StatusUnauthorized)
+		http.Redirect(w, r, "/login", http.StatusSeeOther) // Redirect to login page if not authenticated
 		return
 	}
 	userID := cookie.Value
