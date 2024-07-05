@@ -41,7 +41,7 @@ body {
     background: yellow;
     clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
-.profile {
+.profile{
     background-color: #85aefa;
     border-radius: 10px;
     padding: 10px;
@@ -50,6 +50,24 @@ body {
     margin-bottom: 10px;
     position: relative; /* Nécessaire pour le z-index */
     z-index: 2; /* Met le contenu au-dessus de l'image de fond */
+}
+.returnHome{
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: normal;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    top: 10px;
+    position: relative;
+    z-index: 2;
 }
 
 .side-section {
@@ -93,9 +111,14 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.55);
 }
 .post-title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
     margin-top: 10px;
     margin-bottom: 3px;
-    font-weight: bold;
     position: relative;
     z-index: 2;
 }
@@ -120,9 +143,24 @@ body {
     position: relative;
     z-index: 2;
 }
+
 .postContent{
-    margin-top: 20px;
-    margin-bottom: 3px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    flex-shrink: 0; /* Empêche la réduction */
+}
+.post-author {
+    margin-top: 10px;
+    margin-bottom: 10px;
     font-weight: bold;
     position: relative;
     z-index: 2;
@@ -153,13 +191,6 @@ body {
     z-index: 2;
 }
 
-.post-author {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-weight: bold;
-    position: relative;
-    z-index: 2;
-}
 
 .categories, .hashtags {
     padding: 10px;
@@ -294,6 +325,73 @@ body {
     margin-bottom: auto;
     z-index: 2;
 }
+.post{
+    position: relative;
+    min-height: 200px;
+    width: 97%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    flex-shrink: 0; /* Empêche la réduction */
+}
+
+.interaction-buttons{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 50px 0;
+    gap: 10px;
+    width: 180px;
+    height: 55px;
+    padding: 5px;
+}
+.like-button, .dislike-button, .share-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    width: 90px;
+    height: 30px;
+    padding: 5px;
+    margin: 0 auto 5px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8.3px);
+    -webkit-backdrop-filter: blur(8.3px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.like-button #like{
+    color: rgba(42, 41, 41, 0.15);
+    font-size:25px;
+    -webkit-text-stroke: 0.5px black; /* for WebKit browsers */
+}
+.like-button:hover #like{
+    color: blue;
+}
+.dislike-button #disLike{
+    color: rgba(42, 41, 41, 0.15);
+    font-size:25px ;
+    -webkit-text-stroke: 0.5px black; /* for WebKit browsers */
+}
+.dislike-button #disLike:hover{
+    color: red;
+}
+.share-button #share{
+    color: rgba(42, 41, 41, 0.15);
+    font-size:25px ;
+    -webkit-text-stroke: 0.5px black; /* for WebKit browsers */
+}
+.share-button #share:hover{
+    color: green;
+}
 
 .categoryBtn:hover, .hashtagsBtn:hover,.profileBtn:hover {
     background-color: #45a049;
@@ -305,7 +403,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
-.post-Button:hover,.comment-Button:hover {
+.post-Button:hover,.comment-Button:hover, .returnHome:hover {
     background-color: #8e004e;
     transform: translateY(-3px);
 }

@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Forum</title>
     <link rel="stylesheet" href="../css/topic.css">
 </head>
 <body>
 <div class="container">
     <div class="profile-section">
-        
         <div>
-        <button class="profileBtn" type="submit" formmethod="get">Profile</button>
+            {{if .LoggedIn}}
+                <a class="profile" href="/profil">Profil</a>
+            {{else}}
+                <a class="returnHome" href="/accueil">Home</a>
+            {{end}}
         </div>
         <div class="star"></div>
         <div class="star1"></div>
@@ -24,17 +28,28 @@
         <div class="title">Forum</div>
         <div class="post-detail">
             <div class="post">
-                <div class="post-title">Contenu du Post</div>
-                <div class="postContent">Post: <span class="content-Post">Contenu du Post</span></div>
+                <div class="post-title">Titre du post</div>
+                <div class="postContent">Contenu du Post</div>
                 <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
-                <!-- add like/dislike and share btn -->
                 <div class="interaction-buttons">
-                    <button class="like-button">Like</button>
-                    <span class="like-count">0</span>
-                    <button class="dislike-button">Dislike</button>
-                    <span class="dislike-count">0</span>
-                    <button class="share-button">Share</button>
-                    <span class="share-count">0</span>
+                    <div class="like-button">
+                        <i id="like" class='bx bxs-like'></i>
+                    <div class="Count">
+                        <span class="like-count">0</span>
+                    </div>
+                    </div>
+                    <div class="dislike-button">
+                        <i id="disLike" class='bx bxs-dislike' ></i>
+                    <div class="Count">
+                        <span class="dislike-count">0</span>
+                    </div>
+                    </div>
+                    <div class="share-button">
+                        <i id="share" class='bx bx-share-alt'></i>
+                    <div class="Count">
+                        <span class="share-count">0</span>
+                    </div>
+                    </div>
                 </div>
             </div>
             <div class="comments">
@@ -79,6 +94,7 @@
         </div>
     </div>
 </div>
+<script src="../script/topic.js"></script>
 <script src="../script/category.js"></script>
 <script src="../script/hashtag.js"></script>
 </body>

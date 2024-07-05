@@ -13,7 +13,10 @@ body{
     align-items: center;
     min-height: 100vh;
     background-image: url('/image/fond-ecran-forum.jpg');
+<<<<<<< HEAD
 
+=======
+>>>>>>> Peaufinages
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -255,13 +258,74 @@ body{
     text-decoration: none;
     font-weight: 600;
 }
+.guest-mode{
+    margin-top: 10px;
+    text-align: center;
+}
+.guest-mode a{
+    color: #fff;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: 0.3s;
+    text-decoration: none;
+}
+.guest-mode p a:hover{
+    text-decoration: underline;
+}
+
+.guest-mode p {
+    font-weight: normal;
+    color: #fff;
+    text-decoration: none;
+}
 
 .register-link p a:hover{
     text-decoration: underline;
 }
-
+.Connexion-Container{
+    justify-content: center;
+    width: 200px;
+    height: 50px;
+    padding: 5px;
+    margin: 0 auto 5px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8.3px);
+    -webkit-backdrop-filter: blur(8.3px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
 .back-to-login p a{
     color: white;
+}
+
+.other-connexion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.other-connexion i{
+    font-size: 35px; /* Ajustez la taille de l'icône si nécessaire */
+}
+
+.other-connexion #google-link:hover{
+    background: linear-gradient(135deg, #4285F4 25%, #34A853 25%, #34A853 50%, #FBBC05 50%, #FBBC05 75%, #EA4335 75%);
+    color: white;
+    border-radius: 10px;
+}
+.other-connexion #github-link:hover{
+    background: white;
+    font-weight: bold;
+    color: black;
+    border-radius: 10px;
+}
+
+.other-connexion a#facebook-link:hover {
+    background: linear-gradient(135deg, #00A4E4, #1877F2);
+    color: white;
+    border-radius: 10px;
 }
 
 .back-to-login i{

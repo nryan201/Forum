@@ -12,16 +12,15 @@
     <title>Forum</title>
 
 <body>
-    <form id="searchForm">
-        <input type="text" id="searchInput" placeholder="Search topics or users...">
-        <button type="submit">Search</button>
-    </form>
-    <div id="searchResults"></div>
     
 <div class="container">
     <div class="profile-section">
         <div>
-            <a class="profile" href="/profil">Profil</a>
+            {{if .LoggedIn}}
+                <a class="profile" href="/profil">Profil</a>
+            {{else}}
+                <a class="connexion" href="/connexion">Connexion</a>
+            {{end}}
         </div>
         <div class="star"></div>
         <div class="star1"></div>
@@ -68,6 +67,13 @@
                 <li>#mesboules</li>
                 <li>#mesboules</li>
             </ul>
+        </div>
+        <div class="Search-Container">
+            <form id="searchForm">
+                <input type="text" id="searchInput" placeholder="Search topics or users...">
+                <button type="submit" id="SearchBar">Search</button>
+            </form>
+            <div id="searchResults"></div>
         </div>
     </div>
 </div>

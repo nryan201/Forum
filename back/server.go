@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+var LoggedIN = false
+
 func Server() {
 	OpenDB()
 	defer db.Close()
@@ -38,6 +40,9 @@ func Server() {
 	http.HandleFunc("/contact", ContactHandle)
 	http.HandleFunc("/profil", profilePage)
 	http.HandleFunc("/post", PostHandle)
+	http.HandleFunc("/connexion", ConnexionHandle)
+	http.HandleFunc("/topic", TopicHandle)
+	
 
 	// Path to your SSL certificate and key
 	certPath := "./permsHttps/cert.pem"
@@ -161,6 +166,41 @@ func AccueilHandle(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error executing template: %v", err)
 	}
 }
+func ConnexionHandle(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/connexion" {
+		http.NotFound(w, r)
+		return
+	}
+	tmpl, err := template.ParseFiles("template/html/connexion.html") // return to connexion
+	if err != nil {
+		log.Printf("Error parsing template %v", err)
+		http.Error(w, "internal server errror ", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		log.Printf("Error executing template: %v", err)
+	}
+}
+func TopicHandle(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/topic" {
+		http.NotFound(w, r)
+		return
+	}
+	tmpl, err := template.ParseFiles("template/html/topic.html") // return to topic
+	if err != nil {
+		log.Printf("Error parsing template %v", err)
+		http.Error(w, "internal server errror ", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		log.Printf("Error executing template: %v", err)
+	}
+}
+
 func ContactHandle(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/contact" {
 		http.NotFound(w, r)

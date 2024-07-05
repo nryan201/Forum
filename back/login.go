@@ -126,13 +126,13 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			if err == sql.ErrNoRows {
 				http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
 			} else {
+				log.Println("Erreur lors de la vérification des informations de connexion:", err)
 				http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
 				log.Println("Error querying database:", err)
 			}
 			return
 		}
 
-		// Vérifier le mot de passe
 		err = bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(password))
 		if err != nil {
 			http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)

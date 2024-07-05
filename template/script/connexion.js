@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var registerForm = document.getElementById('registerForm');
     var forgotPassword = document.getElementById('forgotPassword');
 
-    // Fonction pour afficher le formulaire d'enregistrement
+    // Fonctions pour afficher les formulaires
     function showRegisterForm(e) {
         e.preventDefault();
         loginForm.style.display = 'none';
@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         registerForm.style.display = 'block';
     }
 
-    // Fonction pour afficher le formulaire de connexion
     function showLoginForm(e) {
         e.preventDefault();
         registerForm.style.display = 'none';
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
         loginForm.style.display = 'block';
     }
 
-    // Fonction pour afficher le formulaire de mot de passe oublié
     function showForgotPasswordForm(e) {
         e.preventDefault();
         loginForm.style.display = 'none';
@@ -27,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
         forgotPassword.style.display = 'block';
     }
 
-    // Attacher les écouteurs d'événements
+    // Attachement des écouteurs d'événements
     function attachEventListeners() {
         var registerLink = document.querySelector('a[href="#registerForm"]');
         var loginLink = document.querySelector('a[href="#loginForm"]');
@@ -48,6 +46,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Initialiser les écouteurs d'événements
+    // Initialisation des écouteurs d'événements
     attachEventListeners();
+
+    // Vérification de l'état d'authentification au chargement de la page
+    checkAuthStatus();
 });

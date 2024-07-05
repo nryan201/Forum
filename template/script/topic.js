@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // topic creation
     const routes = [
-        "/post"
+        "/topic"
     ];
 
     // Simulation de la récupération des topics
@@ -77,4 +77,25 @@ document.addEventListener('DOMContentLoaded', function() {
             shareCount.textContent = parseInt(shareCount.textContent) + 1;
         }
     });
+});
+
+//Fonction pour récupérer et afficher les données du post
+function fetchPostData() {
+    $.ajax({
+        url: 'https://localhost:443/topic',
+        type: 'GET',
+        success: function(data) {
+            $('.post-title').text(data.title);
+            $('.postContent').text(data.content);
+            $('.author-name').text(data.author);
+        },
+        error: function() {
+            alert('Erreur lors de la récupération des données du post');
+        }
+    });
+}
+
+// Exécute la fonction de récupération des données au chargement du document
+$(document).ready(function() {
+    fetchPostData(); // Appel initial pour charger les données du post
 });
