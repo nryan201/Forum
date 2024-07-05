@@ -17,7 +17,7 @@
         <button type="submit">Search</button>
     </form>
     <div id="searchResults"></div>
-    
+
 <div class="container">
     <div class="profile-section">
         <div>
@@ -36,9 +36,14 @@
     <div class="main-section">
         <div class="title">Bienvenue sur le Forum</div>
         <div id="topic-container">
-            <!-- Les box des topics seront ajoutées ici par le JS -->
+            {{range .}}
+            <div class="topic" id="#topi">
+                <h3>{{.Title}}</h3>
+                <p>{{.Description}}</p>
+            </div>
+            {{end}}
         </div>
-        </div>
+    </div>
     <div class="side-section">
         <div class="categories">
             <div class="star5"></div>

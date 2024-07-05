@@ -243,3 +243,25 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
+
+.topic {
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: rgba(255, 255, 255, 0.25); /* Semi-transparent white background */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    backdrop-filter: blur(5px); /* Blur effect for background elements */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Slight border for better definition */
+}
+
+.topic h3 {
+    font-size: 22px; /* Larger font size for the title */
+    color: #4181f8; /* Stylish blue color for the title */
+    margin-bottom: 10px; /* Space between title and description */
+}
+
+.topic p {
+    font-size: 16px; /* Readable text size for description */
+    color: #333; /* Darker text for better readability */
+    line-height: 1.5; /* More space between lines */
+}

@@ -19,6 +19,8 @@ func Server() {
 	http.HandleFunc("/block", BlockHandler)
 	http.HandleFunc("/login", loginUser)
 	http.HandleFunc("/addUser", addUser)
+	http.HandleFunc("/addTopic", addTopicHandler) // Add this for creating new topics
+	http.HandleFunc("/topics", getTopicsHandler)  // Add this to fetch and display topics on the homepage
 
 	//logout
 	http.HandleFunc("/logout", logout)
