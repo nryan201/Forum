@@ -138,57 +138,70 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 }
 
 func completeProfile(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		username := r.FormValue("username")
-		birthday := r.FormValue("birthday")
+	if r.Method != "POST" {
+		tmplCompleteProfile := template.Must(template.ParseFiles("./template/html/missingData.html"))
+		tmplCompleteProfile.Execute(w, nil)
+		return
+	}
 
-		// Vérifier le format de la date
-		_, err := time.Parse("2006-01-02", birthday)
-		if err != nil {
-			http.Error(w, "Format de date incorrect", http.StatusBadRequest)
-			return
-		}
+	username := r.FormValue("username")
+	birthday := r.FormValue("birthday")
 
-		// Lire le cookie Google ID
-		cookie, err := r.Cookie("google_id")
-		if err != nil {
-			http.Error(w, "Erreur lors de la lecture du cookie", http.StatusInternalServerError)
-			return
-		}
-		googleID := cookie.Value
+	_, err := time.Parse("2006-01-02", birthday)
+	if err != nil {
+		http.Error(w, "Format de date incorrect", http.StatusBadRequest)
+		return
+	}
 
-		db := dbConn()
-		defer db.Close()
+	var userID string
+	cookieGoogle, errGoogle := r.Cookie("google_id")
+	cookieFacebook, errFacebook := r.Cookie("facebook_id")
 
-		// Mettre à jour les informations de l'utilisateur dans la base de données
-		_, err = db.Exec("UPDATE users SET username = ?, birthday = ? WHERE id = ?", username, birthday, googleID)
-		if err != nil {
-			log.Printf("Failed to update user data: %s", err)
-			http.Error(w, "Erreur lors de la mise à jour des données utilisateur", http.StatusInternalServerError)
-			return
-		}
+	if errGoogle == nil {
+		userID = cookieGoogle.Value
+	} else if errFacebook == nil {
+		userID = cookieFacebook.Value
+	} else {
+		http.Error(w, "Erreur lors de la lecture du cookie", http.StatusInternalServerError)
+		return
+	}
 
-		// Supprimer le cookie google_id
+	db := dbConn()
+	defer db.Close()
+
+	_, err = db.Exec("UPDATE users SET username = ?, birthday = ? WHERE id = ?", username, birthday, userID)
+	if err != nil {
+		log.Printf("Failed to update user data: %s", err)
+		http.Error(w, "Erreur lors de la mise à jour des données utilisateur", http.StatusInternalServerError)
+		return
+	}
+
+	// Supprimer le cookie google_id ou facebook_id
+	if errGoogle == nil {
 		http.SetCookie(w, &http.Cookie{
 			Name:    "google_id",
 			Value:   "",
 			Path:    "/",
 			Expires: time.Unix(0, 0),
 		})
-
-		// Définir le cookie avec le nom d'utilisateur
+	} else if errFacebook == nil {
 		http.SetCookie(w, &http.Cookie{
-			Name:     "username",
-			Value:    username,
-			Path:     "/",
-			HttpOnly: true,
+			Name:    "facebook_id",
+			Value:   "",
+			Path:    "/",
+			Expires: time.Unix(0, 0),
 		})
-
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	} else {
-		tmplCompleteProfile := template.Must(template.ParseFiles("./template/html/missingData.html"))
-		tmplCompleteProfile.Execute(w, nil)
 	}
+
+	// Définir le cookie avec le nom d'utilisateur
+	http.SetCookie(w, &http.Cookie{
+		Name:     "username",
+		Value:    username,
+		Path:     "/",
+		HttpOnly: true,
+	})
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func isValidString(str string) bool {

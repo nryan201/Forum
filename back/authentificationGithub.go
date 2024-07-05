@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -53,7 +53,7 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 
 	var githubUser struct {
-		ID    int    `json:"id"`
+		ID    int    `json:"id"` // Changed from string to int for correct JSON unmarshalling
 		Email string `json:"email"`
 		Name  string `json:"name"`
 		Login string `json:"login"`
@@ -64,6 +64,8 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+
+	githubUserID := strconv.Itoa(githubUser.ID) // Convert ID from int to string
 
 	if githubUser.Email == "" {
 		emailsResponse, err := client.Get("https://api.github.com/user/emails")
@@ -78,11 +80,13 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 			Email   string `json:"email"`
 			Primary bool   `json:"primary"`
 		}
+
 		if err := json.NewDecoder(emailsResponse.Body).Decode(&emails); err != nil {
 			log.Printf("Could not decode emails response: %s\n", err.Error())
 			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 			return
 		}
+
 		for _, email := range emails {
 			if email.Primary {
 				githubUser.Email = email.Email
@@ -113,33 +117,44 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Database opened successfully")
 
-	var userID string
-	err = db.QueryRow("SELECT id FROM users WHERE id = ?", fmt.Sprint(githubUser.ID)).Scan(&userID)
+	var userID, username, birthday sql.NullString
+	err = db.QueryRow("SELECT id, username, birthday FROM users WHERE id = ?", githubUserID).Scan(&userID, &username, &birthday)
 	if err == sql.ErrNoRows {
-		log.Printf("Attempting to insert new user with ID: %d, Name: %s, Email: %s", githubUser.ID, githubUser.Name, githubUser.Email)
+		// Insert new user
 		statement, err := db.Prepare("INSERT INTO users (id, username, email, role) VALUES (?, ?, ?, ?)")
 		if err != nil {
 			log.Fatal("Failed to prepare statement: ", err)
 		}
 		defer statement.Close()
 
-		log.Printf("Inserting user with ID (type: %T): %d", githubUser.ID, githubUser.ID)
-		log.Printf("Inserting user with Name (type: %T): %s", githubUser.Name, githubUser.Name)
-		log.Printf("Inserting user with Email (type: %T): %s", githubUser.Email, githubUser.Email)
-
-		_, err = statement.Exec(fmt.Sprint(githubUser.ID), githubUser.Name, githubUser.Email, "user")
+		_, err = statement.Exec(githubUserID, githubUser.Name, githubUser.Email, "user")
 		if err != nil {
 			log.Printf("Failed to insert new user: %s", err)
-		} else {
-			log.Println("New user inserted successfully")
-			log.Printf("User ID: %d", githubUser.ID)
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+			return
 		}
+		log.Println("New user inserted successfully")
+		http.SetCookie(w, &http.Cookie{
+			Name:     "github_id",
+			Value:    githubUserID,
+			Path:     "/",
+			HttpOnly: true,
+		})
+		http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
 	} else if err != nil {
 		log.Fatal("Failed to query existing user: ", err)
 	} else {
-		log.Printf("User found with ID: %s", userID)
-		log.Printf("Welcome back %s!", githubUser.Name)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		log.Printf("User found with ID: %s", userID.String)
+		if !username.Valid || !birthday.Valid {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "github_id",
+				Value:    githubUserID,
+				Path:     "/",
+				HttpOnly: true,
+			})
+			http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
+		} else {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		}
 	}
 }

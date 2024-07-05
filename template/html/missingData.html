@@ -1,15 +1,22 @@
-<!-- template/html/complete_profile.html -->
+<!-- template/html/completeProfile.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Missing Data</title>
+    <title>Complete Your Profile</title>
 </head>
 <body>
 <h1>Complete Your Profile</h1>
 <form action="/completeProfile" method="post">
+    {{if eq .Type "github"}}
+    <!-- Use Name for GitHub users -->
+    <label for="name">Name (from GitHub):</label>
+    <input type="text" id="name" name="name" value="{{.Name}}" required>
+    {{else}}
+    <!-- Standard Username for other users -->
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required>
+    {{end}}
     <br>
     <label for="birthday">Birthday (YYYY-MM-DD):</label>
     <input type="date" id="birthday" name="birthday" required>
