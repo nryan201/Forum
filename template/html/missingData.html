@@ -1,10 +1,20 @@
+<!-- template/html/complete_profile.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Missing Data</title>
 </head>
 <body>
-$END$
+<h1>Complete Your Profile</h1>
+<form action="/completeProfile" method="post">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+    <label for="birthday">Birthday (YYYY-MM-DD):</label>
+    <input type="date" id="birthday" name="birthday" required>
+    <br>
+    <input type="submit" value="Submit">
+</form>
 </body>
 </html>
