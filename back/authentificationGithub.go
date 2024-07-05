@@ -4,10 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/oauth2"
@@ -109,10 +111,7 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := sql.Open("sqlite3", "./db.sqlite")
-	if err != nil {
-		log.Fatal("Failed to open database: ", err)
-	}
+	db := dbConn()
 	defer db.Close()
 
 	log.Println("Database opened successfully")
@@ -140,7 +139,7 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 			Path:     "/",
 			HttpOnly: true,
 		})
-		http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
+		http.Redirect(w, r, "/completeProfileGithub", http.StatusSeeOther)
 	} else if err != nil {
 		log.Fatal("Failed to query existing user: ", err)
 	} else {
@@ -152,9 +151,63 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 				Path:     "/",
 				HttpOnly: true,
 			})
-			http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
+			http.Redirect(w, r, "/completeProfileGithub", http.StatusSeeOther)
 		} else {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
 	}
+}
+
+func completeProfileGithub(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		tmplCompleteProfile := template.Must(template.ParseFiles("./template/html/missingDataGithub.html"))
+		tmplCompleteProfile.Execute(w, nil)
+		return
+	}
+
+	name := r.FormValue("name")
+	birthday := r.FormValue("birthday")
+
+	_, err := time.Parse("2006-01-02", birthday)
+	if err != nil {
+		http.Error(w, "Format de date incorrect", http.StatusBadRequest)
+		return
+	}
+
+	cookieGithub, err := r.Cookie("github_id")
+	if err != nil {
+		http.Error(w, "Erreur lors de la lecture du cookie GitHub", http.StatusInternalServerError)
+		return
+	}
+
+	userID := cookieGithub.Value
+	log.Printf("User ID: %s\n", userID)
+	db := dbConn()
+	defer db.Close()
+
+	_, err = db.Exec("UPDATE users SET name = ?, birthday = ? WHERE id = ?", name, birthday, userID)
+
+	if err != nil {
+		log.Printf("Failed to update user data: %s", err)
+		http.Error(w, "Erreur lors de la mise à jour des données utilisateur", http.StatusInternalServerError)
+		return
+	}
+
+	// Supprimer le cookie github_id
+	http.SetCookie(w, &http.Cookie{
+		Name:    "github_id",
+		Value:   "",
+		Path:    "/",
+		Expires: time.Unix(0, 0),
+	})
+
+	// Définir le cookie avec l'id de l'utilisateur
+	http.SetCookie(w, &http.Cookie{
+		Name:     "user_id",
+		Value:    userID,
+		Path:     "/",
+		HttpOnly: true,
+	})
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

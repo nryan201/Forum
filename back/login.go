@@ -32,11 +32,11 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 		name := r.FormValue("name")
 		birthday := r.FormValue("birthday")
 
-		log.Printf("Username : %s\n", username)
-		log.Printf("Password : %s\n", password)
-		log.Printf("Email : %s\n", email)
-		log.Printf("Name : %s\n", name)
-		log.Printf("Date de naissance (originale) : %s\n", birthday)
+		log.Printf("Username: %s\n", username)
+		log.Printf("Password: %s\n", password)
+		log.Printf("Email: %s\n", email)
+		log.Printf("Name: %s\n", name)
+		log.Printf("Date de naissance (originale): %s\n", birthday)
 
 		// Vérifier le format de la date
 		_, err := time.Parse("2006-01-02", birthday)
@@ -73,7 +73,7 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Compter le nombre de comptes existants et ajouter 1 pour générer le nouvel ID
+		// Générer un nouvel ID unique
 		var count int
 		err = tx.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
 		if err != nil {
@@ -96,10 +96,10 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 
-		// Créer un cookie de session pour l'utilisateur nouvellement ajouté
+		// Créer un cookie de session pour l'utilisateur nouvellement ajouté avec user_id
 		http.SetCookie(w, &http.Cookie{
-			Name:     "username",
-			Value:    username,
+			Name:     "user_id",
+			Value:    newID,
 			Path:     "/",
 			HttpOnly: true,
 		})
@@ -120,14 +120,14 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 		db := dbConn()
 		defer db.Close()
 
-		var dbUsername, dbPassword string
-		err := db.QueryRow("SELECT username, password FROM users WHERE username = ?", username).Scan(&dbUsername, &dbPassword)
+		var userID, dbPassword string
+		err := db.QueryRow("SELECT id, password FROM users WHERE username = ?", username).Scan(&userID, &dbPassword)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
 			} else {
 				http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
-				log.Fatal(err)
+				log.Println("Error querying database:", err)
 			}
 			return
 		}
@@ -138,9 +138,11 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
 			return
 		}
+
+		// Set user_id cookie
 		http.SetCookie(w, &http.Cookie{
-			Name:     "username",
-			Value:    username,
+			Name:     "user_id",
+			Value:    userID,
 			Path:     "/",
 			HttpOnly: true,
 		})
@@ -154,7 +156,7 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 	log.Println("Entering profilePage function")
 
 	// Lire le cookie
-	cookie, err := r.Cookie("username")
+	cookie, err := r.Cookie("user_id")
 	if err != nil {
 		if err == http.ErrNoCookie {
 			// Pas de cookie, utilisateur non connecté
@@ -168,8 +170,8 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username := cookie.Value
-	log.Println("Cookie found, username:", username)
+	userID := cookie.Value
+	log.Println("Cookie found, user_id:", userID)
 
 	// Récupérer les informations de l'utilisateur depuis la base de données
 	db := dbConn()
@@ -182,14 +184,19 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 		Birthdate string
 		Email     string
 	}
-	user.Username = username
+	user.Username = "-"
 	user.Name = "-"
 	user.Firstname = "-"
 	user.Birthdate = "-"
 	user.Email = "-"
 
-	err = db.QueryRow("SELECT username, name, strftime('%Y-%m-%d', birthday), email FROM users WHERE username = ?", username).Scan(&user.Username, &user.Name, &user.Birthdate, &user.Email)
+	err = db.QueryRow("SELECT username, name, strftime('%Y-%m-%d', birthday), email FROM users WHERE id = ?", userID).Scan(&user.Username, &user.Name, &user.Birthdate, &user.Email)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("No user found with id:", userID)
+			http.Error(w, "Utilisateur non trouvé", http.StatusNotFound)
+			return
+		}
 		log.Println("Error retrieving user data:", err)
 		http.Error(w, "Erreur lors de la récupération des données utilisateur", http.StatusInternalServerError)
 		return
@@ -198,6 +205,7 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 	log.Printf("User data retrieved: %+v\n", user)
 
 	// Rendre le template avec les données de l'utilisateur
+	tmplProfile := template.Must(template.ParseFiles("./template/html/profil.html"))
 	err = tmplProfile.Execute(w, user)
 	if err != nil {
 		log.Println("Error rendering template:", err)
@@ -214,7 +222,6 @@ func clearCookie(w http.ResponseWriter, name string) {
 		Expires: time.Unix(0, 0),
 	})
 }
-
 func logout(w http.ResponseWriter, r *http.Request) {
 	log.Println("Logging out user")
 	clearCookie(w, "username")

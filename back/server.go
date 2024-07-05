@@ -24,7 +24,7 @@ func Server() {
 	http.HandleFunc("/logout", logout)
 
 	http.HandleFunc("/completeProfile", completeProfile)
-
+	http.HandleFunc("/completeProfileGithub", completeProfileGithub)
 	//Handle Social Media
 	http.HandleFunc("/loginFacebook", handleFacebookLogin)
 	http.HandleFunc("/callbackFacebook", handleFacebookCallback)
