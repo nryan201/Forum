@@ -291,42 +291,7 @@ body {
     position: relative;
     z-index: 2;
 }
-.returnHome{
-    align-items: center;
-    padding: 15px 30px;
-    font-size: 15px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #4181f8;
-    border: none;
-    border-radius: 50px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s, transform 0.3s;
-    cursor: pointer;
-    top: 60px;
-    position: relative;
-    z-index: 2;
-}
-.contact{
-    align-items: center;
-    padding: 15px 30px;
-    font-size: 15px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #4181f8;
-    border: none;
-    border-radius: 50px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s, transform 0.3s;
-    cursor: pointer;
-    top: 3353%;
-    position: relative;
-    z-index: 2;
-}
+
 .comment-Button{
     align-items: center;
     padding: 5px 10px;

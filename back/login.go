@@ -3,11 +3,11 @@ package back
 import (
 	"database/sql"
 	"fmt"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -73,14 +73,8 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Générer un nouvel ID unique
-		var count int
-		err = tx.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
-		if err != nil {
-			tx.Rollback()
-			log.Fatal(err)
-		}
-		newID := strconv.Itoa(count + 1)
+		// Générer un nouvel UUID unique
+		newID := uuid.New().String()
 
 		// Insérer le nouvel utilisateur avec le rôle par défaut "user"
 		_, err = tx.Exec("INSERT INTO users(id, username, name, birthday, password, email, role) VALUES(?, ?, ?, ?, ?, ?, ?)", newID, username, name, birthday, hashedPassword, email, "user")
@@ -177,14 +171,18 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 		Firstname string
 		Birthdate string
 		Email     string
+		Role      string
+		IsAdmin   bool
 	}
 	user.Username = "-"
 	user.Name = "-"
 	user.Firstname = "-"
 	user.Birthdate = "-"
 	user.Email = "-"
+	user.Role = "-"
+	user.IsAdmin = false
 
-	err = db.QueryRow("SELECT username, name, strftime('%Y-%m-%d', birthday), email FROM users WHERE id = ?", userID).Scan(&user.Username, &user.Name, &user.Birthdate, &user.Email)
+	err = db.QueryRow("SELECT username, name, strftime('%Y-%m-%d', birthday), email, role FROM users WHERE id = ?", userID).Scan(&user.Username, &user.Name, &user.Birthdate, &user.Email, &user.Role)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Println("No user found with id:", userID)
@@ -194,6 +192,11 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 		log.Println("Error retrieving user data:", err)
 		http.Error(w, "Erreur lors de la récupération des données utilisateur", http.StatusInternalServerError)
 		return
+	}
+
+	// Vérifier si l'utilisateur est un administrateur
+	if user.Role == "admin" {
+		user.IsAdmin = true
 	}
 
 	log.Printf("User data retrieved: %+v\n", user)

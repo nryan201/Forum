@@ -10,6 +10,9 @@
 <body>
 <div class="title">Forum</div>
 <button class="back-button" onclick="window.history.back()">Retour</button>
+{{if .IsAdmin}}
+<button class="admin-button" onclick="location.href='/admin'">Admin</button>
+{{end}}
 <div class="profile-wrapper">
     <div class="profile-container">
         <div class="profile-pic" id="profile-pic">pp du profil</div>
@@ -27,6 +30,7 @@
         </div>
     </div>
 
+    <button class="back-button" onclick="window.history.back()">Retour</button>
     <div class="topic-content">
         <span class="author-topic">(mettre ses topics)</span>
     </div>

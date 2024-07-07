@@ -100,7 +100,7 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 		// Set cookie with the Google ID
 		http.SetCookie(w, &http.Cookie{
-			Name:     "google_id",
+			Name:     "user_id",
 			Value:    GoogleUser.ID,
 			Path:     "/",
 			HttpOnly: true,
@@ -115,7 +115,7 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		if !username.Valid || !birthday.Valid {
 			// Set cookie with the Google ID
 			http.SetCookie(w, &http.Cookie{
-				Name:     "google_id",
+				Name:     "user_id",
 				Value:    GoogleUser.ID,
 				Path:     "/",
 				HttpOnly: true,
@@ -123,10 +123,10 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 			http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
 		} else {
-			// Set the cookie with the username
+			// Set the cookie with the user ID
 			http.SetCookie(w, &http.Cookie{
-				Name:     "username",
-				Value:    username.String,
+				Name:     "user_id",
+				Value:    userGoogleID.String,
 				Path:     "/",
 				HttpOnly: true,
 			})
@@ -153,20 +153,12 @@ func completeProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var userID string
-	cookieGoogle, errGoogle := r.Cookie("google_id")
-	cookieFacebook, errFacebook := r.Cookie("facebook_id")
-	cookieGithub, errGithub := r.Cookie("github_id")
-
-	if errGoogle == nil {
-		userID = cookieGoogle.Value
-	} else if errFacebook == nil {
-		userID = cookieFacebook.Value
-	} else if errGithub == nil {
-		userID = cookieGithub.Value
-	} else {
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
 		http.Error(w, "Erreur lors de la lecture du cookie", http.StatusInternalServerError)
 		return
 	}
+	userID = cookie.Value
 
 	db := dbConn()
 	defer db.Close()
@@ -188,16 +180,8 @@ func completeProfile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Erreur lors de la mise à jour des données utilisateur", http.StatusInternalServerError)
 		return
 	}
-	// Supprimer les cookies google_id, facebook_id, ou github_id
-	if errGoogle == nil {
-		clearCookie(w, "google_id")
-	} else if errFacebook == nil {
-		clearCookie(w, "facebook_id")
-	} else if errGithub == nil {
-		clearCookie(w, "github_id")
-	}
 
-	// Définir le cookie avec l'ID utilisateur
+	// Set the cookie with the updated user ID
 	http.SetCookie(w, &http.Cookie{
 		Name:     "user_id",
 		Value:    userID,

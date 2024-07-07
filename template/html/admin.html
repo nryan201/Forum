@@ -40,10 +40,23 @@
                 <td>{{.Email}}</td>
                 <td>{{.Role}}</td>
                 <td>
-                    <form method="POST" action="/admin/delete-user">
+                    {{if ne $.CurrentUserID .ID}}
+                    <form method="POST" action="/admin/promote-user" style="display:inline;" onsubmit="storeActiveTab()">
+                        <input type="hidden" name="user_id" value="{{.ID}}">
+                        <select name="role">
+                            <option value="user" {{if eq .Role "user"}}selected{{end}}>User</option>
+                            <option value="moderator" {{if eq .Role "moderator"}}selected{{end}}>Moderator</option>
+                            <option value="admin" {{if eq .Role "admin"}}selected{{end}}>Admin</option>
+                        </select>
+                        <button type="submit">Change Role</button>
+                    </form>
+                    <form method="POST" action="/admin/delete-user" style="display:inline;" onsubmit="storeActiveTab()">
                         <input type="hidden" name="user_id" value="{{.ID}}">
                         <button type="submit">Delete</button>
                     </form>
+                    {{else}}
+                    <span>You cannot modify your own role</span>
+                    {{end}}
                 </td>
             </tr>
             {{end}}
@@ -71,7 +84,7 @@
                 <td>{{.Title}}</td>
                 <td>{{.Description}}</td>
                 <td>
-                    <form method="POST" action="/admin/delete-topic">
+                    <form method="POST" action="/admin/delete-topic" style="display:inline;" onsubmit="storeActiveTab()">
                         <input type="hidden" name="topic_id" value="{{.ID}}">
                         <button type="submit">Delete</button>
                     </form>
@@ -102,7 +115,7 @@
                 <td>{{.UserID}}</td>
                 <td>{{.Content}}</td>
                 <td>
-                    <form method="POST" action="/admin/delete-comment">
+                    <form method="POST" action="/admin/delete-comment" style="display:inline;" onsubmit="storeActiveTab()">
                         <input type="hidden" name="comment_id" value="{{.ID}}">
                         <button type="submit">Delete</button>
                     </form>
@@ -129,7 +142,7 @@
                 <td>{{.ID}}</td>
                 <td>{{.Name}}</td>
                 <td>
-                    <form method="POST" action="/admin/delete-category">
+                    <form method="POST" action="/admin/delete-category" style="display:inline;" onsubmit="storeActiveTab()">
                         <input type="hidden" name="category_id" value="{{.ID}}">
                         <button type="submit">Delete</button>
                     </form>
@@ -156,7 +169,7 @@
                 <td>{{.ID}}</td>
                 <td>{{.Name}}</td>
                 <td>
-                    <form method="POST" action="/admin/delete-hashtag">
+                    <form method="POST" action="/admin/delete-hashtag" style="display:inline;" onsubmit="storeActiveTab()">
                         <input type="hidden" name="hashtag_id" value="{{.ID}}">
                         <button type="submit">Delete</button>
                     </form>
@@ -193,10 +206,11 @@
                 <td>{{.CreatedAt}}</td>
                 <td>{{.Status}}</td>
                 <td>
-                    <form method="POST" action="/admin/handle-report">
+                    <form method="POST" action="/admin/handle-report" style="display:inline;" onsubmit="storeActiveTab()">
                         <input type="hidden" name="report_id" value="{{.ID}}">
                         <button type="submit" name="action" value="ignore">Ignore</button>
                         <button type="submit" name="action" value="delete">Delete</button>
+                        <button type="submit" name="action" value="deleteReport">Delete Report</button>
                     </form>
                 </td>
             </tr>
@@ -206,6 +220,11 @@
     </div>
 </div>
 <script>
+    function storeActiveTab() {
+        // Stocker l'onglet actif dans le stockage local
+        localStorage.setItem('activeTab', document.querySelector('.tab-button.active').getAttribute('onclick').match(/'([^']+)'/)[1]);
+    }
+
     function openTab(tabName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tab-content");
@@ -217,9 +236,14 @@
             tablinks[i].className = tablinks[i].className.replace(" active", "");
         }
         document.getElementById(tabName).style.display = "block";
+        document.querySelector(`[onclick="openTab('${tabName}')"]`).className += " active";
     }
-    // Set default tab
-    document.getElementById("users").style.display = "block";
+
+    // Ouvrir l'onglet actif à partir du stockage local ou par défaut à "users"
+    document.addEventListener('DOMContentLoaded', function() {
+        var activeTab = localStorage.getItem('activeTab') || 'users';
+        openTab(activeTab);
+    });
 </script>
 </body>
 </html>

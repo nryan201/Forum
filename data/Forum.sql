@@ -37,16 +37,16 @@ CREATE TABLE topics (
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 CREATE TABLE reports (
-                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                         topic_id INTEGER,
-                         comment_id INTEGER,
-                         user_id INTEGER NOT NULL,
-                         reason TEXT NOT NULL,
-                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                         status TEXT DEFAULT 'pending',
-                         FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE,
-                         FOREIGN KEY (comment_id) REFERENCES comments (id) ON DELETE CASCADE,
-                         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    topic_id INTEGER,
+    comment_id INTEGER,
+    user_id INTEGER NOT NULL,
+    reason TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status TEXT DEFAULT 'waiting for a response',
+    FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES comments (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 -- Table Comments
 CREATE TABLE comments (

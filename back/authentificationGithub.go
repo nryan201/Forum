@@ -55,7 +55,7 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 
 	var githubUser struct {
-		ID    int    `json:"id"` // Changed from string to int for correct JSON unmarshalling
+		ID    int    `json:"id"`
 		Email string `json:"email"`
 		Name  string `json:"name"`
 		Login string `json:"login"`
@@ -67,7 +67,7 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	githubUserID := strconv.Itoa(githubUser.ID) // Convert ID from int to string
+	githubUserID := strconv.Itoa(githubUser.ID) // Convertir l'ID en chaîne
 
 	if githubUser.Email == "" {
 		emailsResponse, err := client.Get("https://api.github.com/user/emails")
@@ -114,12 +114,10 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
 	defer db.Close()
 
-	log.Println("Database opened successfully")
-
 	var userID, username, birthday sql.NullString
 	err = db.QueryRow("SELECT id, username, birthday FROM users WHERE id = ?", githubUserID).Scan(&userID, &username, &birthday)
 	if err == sql.ErrNoRows {
-		// Insert new user
+		// Insérer un nouvel utilisateur
 		statement, err := db.Prepare("INSERT INTO users (id, username, email, role) VALUES (?, ?, ?, ?)")
 		if err != nil {
 			log.Fatal("Failed to prepare statement: ", err)
@@ -134,7 +132,7 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Println("New user inserted successfully")
 		http.SetCookie(w, &http.Cookie{
-			Name:     "github_id",
+			Name:     "user_id",
 			Value:    githubUserID,
 			Path:     "/",
 			HttpOnly: true,
@@ -143,16 +141,22 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 	} else if err != nil {
 		log.Fatal("Failed to query existing user: ", err)
 	} else {
-		log.Printf("User found with ID: %s", userID.String)
+		log.Printf("User found with ID: %s, Username Valid: %v, Birthday Valid: %v", userID.String, username.Valid, birthday.Valid)
 		if !username.Valid || !birthday.Valid {
 			http.SetCookie(w, &http.Cookie{
-				Name:     "github_id",
-				Value:    githubUserID,
+				Name:     "user_id",
+				Value:    userID.String,
 				Path:     "/",
 				HttpOnly: true,
 			})
 			http.Redirect(w, r, "/completeProfileGithub", http.StatusSeeOther)
 		} else {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "user_id",
+				Value:    userID.String,
+				Path:     "/",
+				HttpOnly: true,
+			})
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
 	}
@@ -174,34 +178,25 @@ func completeProfileGithub(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookieGithub, err := r.Cookie("github_id")
+	cookie, err := r.Cookie("user_id")
 	if err != nil {
 		http.Error(w, "Erreur lors de la lecture du cookie GitHub", http.StatusInternalServerError)
 		return
 	}
 
-	userID := cookieGithub.Value
+	userID := cookie.Value
 	log.Printf("User ID: %s\n", userID)
 	db := dbConn()
 	defer db.Close()
 
 	_, err = db.Exec("UPDATE users SET name = ?, birthday = ? WHERE id = ?", name, birthday, userID)
-
 	if err != nil {
 		log.Printf("Failed to update user data: %s", err)
 		http.Error(w, "Erreur lors de la mise à jour des données utilisateur", http.StatusInternalServerError)
 		return
 	}
 
-	// Supprimer le cookie github_id
-	http.SetCookie(w, &http.Cookie{
-		Name:    "github_id",
-		Value:   "",
-		Path:    "/",
-		Expires: time.Unix(0, 0),
-	})
-
-	// Définir le cookie avec l'id de l'utilisateur
+	// Set the cookie with the updated user ID
 	http.SetCookie(w, &http.Cookie{
 		Name:     "user_id",
 		Value:    userID,

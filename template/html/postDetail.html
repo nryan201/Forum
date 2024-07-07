@@ -54,7 +54,7 @@
 
         {{if .IsAuthenticated}}
         {{if or (eq .Role "admin") (eq .Role "moderator")}}
-        <form method="POST" action="/report-topic">
+        <form method="GET" action="/report-topic">
             <input type="hidden" name="topic_id" value="{{.ID}}">
             <button type="submit" class="report-Button">Signaler ce topic</button>
         </form>

@@ -11,10 +11,32 @@ var tmplAdmin = template.Must(template.ParseFiles("./template/html/admin.html"))
 var tmplModerator = template.Must(template.ParseFiles("./template/html/moderator.html"))
 
 func AdminHandle(w http.ResponseWriter, r *http.Request) {
+	// Lire le cookie
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	currentUserID := cookie.Value
+
 	db := dbConn()
 	defer db.Close()
 
-	// Fetch all users
+	// Vérifier le rôle de l'utilisateur
+	var role string
+	err = db.QueryRow("SELECT role FROM users WHERE id = ?", currentUserID).Scan(&role)
+	if err != nil {
+		log.Printf("Error fetching user role: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	if role != "admin" {
+		http.Error(w, "Access denied", http.StatusForbidden)
+		return
+	}
+
+	// Récupérer tous les utilisateurs
 	userRows, err := db.Query("SELECT id, username, name, email, role FROM users")
 	if err != nil {
 		log.Printf("Error fetching users: %v", err)
@@ -33,7 +55,7 @@ func AdminHandle(w http.ResponseWriter, r *http.Request) {
 		users = append(users, user)
 	}
 
-	// Fetch all topics
+	// Récupérer tous les topics
 	topicRows, err := db.Query("SELECT id, user_id, title, description, created_at FROM topics")
 	if err != nil {
 		log.Printf("Error fetching topics: %v", err)
@@ -52,7 +74,7 @@ func AdminHandle(w http.ResponseWriter, r *http.Request) {
 		topics = append(topics, topic)
 	}
 
-	// Fetch all comments
+	// Récupérer tous les commentaires
 	commentRows, err := db.Query("SELECT id, topic_id, user_id, content, created_at FROM comments")
 	if err != nil {
 		log.Printf("Error fetching comments: %v", err)
@@ -71,7 +93,7 @@ func AdminHandle(w http.ResponseWriter, r *http.Request) {
 		comments = append(comments, comment)
 	}
 
-	// Fetch all categories
+	// Récupérer toutes les catégories
 	categoryRows, err := db.Query("SELECT id, name FROM categories")
 	if err != nil {
 		log.Printf("Error fetching categories: %v", err)
@@ -90,7 +112,7 @@ func AdminHandle(w http.ResponseWriter, r *http.Request) {
 		categories = append(categories, category)
 	}
 
-	// Fetch all hashtags
+	// Récupérer tous les hashtags
 	hashtagRows, err := db.Query("SELECT id, name FROM hashtags")
 	if err != nil {
 		log.Printf("Error fetching hashtags: %v", err)
@@ -109,7 +131,7 @@ func AdminHandle(w http.ResponseWriter, r *http.Request) {
 		hashtags = append(hashtags, hashtag)
 	}
 
-	// Fetch all reports
+	// Récupérer tous les rapports
 	reportRows, err := db.Query("SELECT id, topic_id, comment_id, user_id, reason, created_at, status FROM reports")
 	if err != nil {
 		log.Printf("Error fetching reports: %v", err)
@@ -129,12 +151,13 @@ func AdminHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := AdminData{
-		Users:      users,
-		Topics:     topics,
-		Comments:   comments,
-		Categories: categories,
-		Hashtags:   hashtags,
-		Reports:    reports,
+		CurrentUserID: currentUserID,
+		Users:         users,
+		Topics:        topics,
+		Comments:      comments,
+		Categories:    categories,
+		Hashtags:      hashtags,
+		Reports:       reports,
 	}
 
 	err = tmplAdmin.Execute(w, data)
@@ -143,6 +166,7 @@ func AdminHandle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 }
+
 func ModeratorHandle(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
 	defer db.Close()
@@ -189,10 +213,24 @@ func DeleteUserHandle(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.FormValue("user_id")
 
+	// Retrieve the current user's ID from the cookie
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	currentUserID := cookie.Value
+
+	// Prevent the current user from deleting themselves
+	if currentUserID == userID {
+		http.Error(w, "You cannot delete your own account", http.StatusForbidden)
+		return
+	}
+
 	db := dbConn()
 	defer db.Close()
 
-	_, err := db.Exec("DELETE FROM users WHERE id = ?", userID)
+	_, err = db.Exec("DELETE FROM users WHERE id = ?", userID)
 	if err != nil {
 		log.Printf("Error deleting user: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -322,55 +360,61 @@ func HandleReport(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-		if commentID.Valid {
-			_, err = db.Exec("DELETE FROM comments WHERE id = ?", commentID.Int64)
-			if err != nil {
-				log.Printf("Error deleting comment: %v", err)
-				http.Error(w, "Internal server error", http.StatusInternalServerError)
-				return
-			}
-		}
 		_, err = db.Exec("UPDATE reports SET status = 'resolved' WHERE id = ?", reportID)
 		if err != nil {
 			log.Printf("Error resolving report: %v", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
+	} else if action == "deleteReport" {
+		_, err := db.Exec("DELETE FROM reports WHERE id = ?", reportID)
+		if err != nil {
+			log.Printf("Error deleting report: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 	}
 
-	http.Redirect(w, r, "/moderator", http.StatusSeeOther)
+	http.Redirect(w, r, r.Referer(), http.StatusSeeOther)
 }
-func ReportTopicHandler(w http.ResponseWriter, r *http.Request) {
+
+func PromoteUserHandle(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, "Error parsing form", http.StatusBadRequest)
+	userID := r.FormValue("user_id")
+	role := r.FormValue("role")
+
+	if role != "user" && role != "moderator" && role != "admin" {
+		http.Error(w, "Invalid role", http.StatusBadRequest)
 		return
 	}
 
-	topicID := r.FormValue("topic_id")
-
-	// Retrieve user_id from cookie
+	// Retrieve the current user's ID from the cookie
 	cookie, err := r.Cookie("user_id")
 	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusSeeOther) // Redirect to login page if not authenticated
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
-	userID := cookie.Value
+	currentUserID := cookie.Value
+
+	// Prevent the current user from promoting themselves
+	if currentUserID == userID {
+		http.Error(w, "You cannot change your own role", http.StatusForbidden)
+		return
+	}
 
 	db := dbConn()
 	defer db.Close()
 
-	_, err = db.Exec("INSERT INTO reports (topic_id, user_id, reason) VALUES (?, ?, 'Inappropriate content')", topicID, userID)
+	_, err = db.Exec("UPDATE users SET role = ? WHERE id = ?", role, userID)
 	if err != nil {
-		log.Printf("Error reporting topic: %v", err)
+		log.Printf("Error promoting user: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, "/post?id="+topicID, http.StatusSeeOther) // Redirect back to the post's detail page
+	http.Redirect(w, r, "/admin", http.StatusSeeOther)
 }

@@ -89,32 +89,39 @@ func handleFacebookCallback(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Failed to insert new user: %s", err)
 			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		} else {
-			log.Println("New user inserted successfully")
-			// Set cookie with the Facebook ID
-			http.SetCookie(w, &http.Cookie{
-				Name:     "facebook_id",
-				Value:    facebookUser.ID,
-				Path:     "/",
-				HttpOnly: true,
-			})
-			// Redirect to the complete profile page only if user data is incomplete
-			http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
+			return
 		}
+
+		log.Println("New user inserted successfully")
+		// Set cookie with the Facebook ID
+		http.SetCookie(w, &http.Cookie{
+			Name:     "user_id",
+			Value:    facebookUser.ID,
+			Path:     "/",
+			HttpOnly: true,
+		})
+		// Redirect to the complete profile page only if user data is incomplete
+		http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
 	} else if err != nil {
 		log.Fatal("Failed to query existing user: ", err)
 	} else {
-		log.Printf("User found with ID: %s", userID)
+		log.Printf("User found with ID: %s, Username Valid: %t, Birthday Valid: %t", userID.String, username.Valid, birthday.Valid)
 		if !username.Valid || !birthday.Valid {
 			// Set cookie with the Facebook ID
 			http.SetCookie(w, &http.Cookie{
-				Name:     "facebook_id",
+				Name:     "user_id",
 				Value:    facebookUser.ID,
 				Path:     "/",
 				HttpOnly: true,
 			})
 			http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
 		} else {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "user_id",
+				Value:    facebookUser.ID,
+				Path:     "/",
+				HttpOnly: true,
+			})
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
 	}

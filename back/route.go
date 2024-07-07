@@ -45,10 +45,11 @@ type Comment struct {
 
 // User represents a user
 type User struct {
-	ID       int
-	Name     string
+	ID       string
 	Username string
+	Name     string
 	Password string
+	Birthday string
 	Email    string
 	Role     string
 }
@@ -73,12 +74,13 @@ type Report struct {
 	Status    string
 }
 type AdminData struct {
-	Users      []User
-	Topics     []Topic
-	Comments   []Comment
-	Categories []Category
-	Hashtags   []Hashtag
-	Reports    []Report
+	Users         []User
+	Topics        []Topic
+	Comments      []Comment
+	Categories    []Category
+	Hashtags      []Hashtag
+	Reports       []Report
+	CurrentUserID string
 }
 
 var (
@@ -99,6 +101,20 @@ func OpenDB() {
 // CloseDB closes the database connection
 func CloseDB() {
 	db.Close()
+}
+func findUserByUUID(db *sql.DB, userID string) (*User, error) {
+	var user User
+	query := "SELECT id, username, name, birthday, email, role FROM users WHERE id = ?"
+	err := db.QueryRow(query, userID).Scan(&user.ID, &user.Username, &user.Name, &user.Birthday, &user.Email, &user.Role)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Printf("No user found with ID: %s\n", userID)
+			return nil, nil
+		}
+		log.Printf("Error retrieving user: %v\n", err)
+		return nil, err
+	}
+	return &user, nil
 }
 
 // HomeHandle handles the home page

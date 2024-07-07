@@ -51,6 +51,7 @@ func Server() {
 	// Admin and moderation routes
 	http.HandleFunc("/admin", AdminHandle)
 	http.HandleFunc("/admin/delete-user", DeleteUserHandle)
+	http.HandleFunc("/admin/promote-user", PromoteUserHandle)
 	http.HandleFunc("/admin/delete-topic", DeleteTopicHandle)
 	http.HandleFunc("/admin/delete-comment", DeleteCommentHandle)
 	http.HandleFunc("/admin/delete-category", DeleteCategoryHandle)
@@ -58,7 +59,9 @@ func Server() {
 	http.HandleFunc("/admin/handle-report", HandleReport)
 	http.HandleFunc("/moderator", ModeratorHandle)
 	http.HandleFunc("/moderator/handle-report", HandleReport)
-	http.HandleFunc("/report-topic", ReportTopicHandler)
+	http.HandleFunc("/report-topic", reportTopicDetailHandler)
+	http.HandleFunc("/submit-report", submitReportHandler)
+
 	// Path to your SSL certificate and key
 	certPath := "./permsHttps/cert.pem"
 	keyPath := "./permsHttps/key.pem"

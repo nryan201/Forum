@@ -9,6 +9,7 @@ import (
 )
 
 var tmplPost = template.Must(template.ParseFiles("./template/html/postDetail.html"))
+var tmplReport = template.Must(template.ParseFiles("./template/html/reportDetail.html"))
 
 func addTopicHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
@@ -308,4 +309,61 @@ func addCommentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/post?id="+topicID, http.StatusSeeOther) // Redirect back to the post's detail page
+}
+func reportTopicDetailHandler(w http.ResponseWriter, r *http.Request) {
+	topicID := r.URL.Query().Get("topic_id")
+	if topicID == "" {
+		http.Error(w, "Topic ID is required", http.StatusBadRequest)
+		return
+	}
+
+	data := struct {
+		TopicID string
+	}{
+		TopicID: topicID,
+	}
+
+	err := tmplReport.Execute(w, data)
+	if err != nil {
+		log.Printf("Error executing template: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
+}
+
+func submitReportHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("submitReportHandler reached")
+	if r.Method != http.MethodPost {
+		log.Println("Method not allowed")
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Error parsing form", http.StatusBadRequest)
+		return
+	}
+
+	topicID := r.FormValue("topic_id")
+	reason := r.FormValue("reason")
+
+	// Retrieve user_id from cookie
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther) // Redirect to login page if not authenticated
+		return
+	}
+	userID := cookie.Value
+
+	db := dbConn()
+	defer db.Close()
+
+	_, err = db.Exec("INSERT INTO reports (topic_id, user_id, reason, status) VALUES (?, ?, ?, 'pending')", topicID, userID, reason)
+	if err != nil {
+		log.Printf("Error inserting report: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/post?id="+topicID, http.StatusSeeOther)
 }
