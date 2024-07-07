@@ -21,6 +21,7 @@ func Server() {
 	http.HandleFunc("/block", BlockHandler)
 	http.HandleFunc("/login", loginUser)
 	http.HandleFunc("/addUser", addUser)
+	http.HandleFunc("/api/check-auth", CheckAuthHandler)
 
 	//logout
 	http.HandleFunc("/logout", logout)

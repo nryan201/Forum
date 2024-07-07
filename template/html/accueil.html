@@ -9,18 +9,15 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js"></script>
     <script src="/script/accueil.js"></script>
     <title>Le Forum</title>
-    <title>Forum</title>
+    <script src="/script/switch.js"></script>
+    </head>
 
 <body>
     
 <div class="container">
     <div class="profile-section">
         <div>
-            {{if .LoggedIn}}
-                <a class="profile" href="/profil">Profil</a>
-            {{else}}
-                <a class="connexion" href="/connexion">Connexion</a>
-            {{end}}
+            <a class="profile" id="auth-button" href="/connexion">Connexion</a>
         </div>
         <div class="star"></div>
         <div class="star1"></div>

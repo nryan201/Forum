@@ -2,13 +2,15 @@ package back
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
-	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -135,7 +137,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 
 		err = bcrypt.CompareHashAndPassword([]byte(dbPassword), []byte(password))
 		if err != nil {
-			http.Error(w, "Nom d'utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 
@@ -145,12 +147,37 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			Value:    userID,
 			Path:     "/",
 			HttpOnly: true,
+			
 		})
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 	} else {
 		tmpl.Execute(w, nil)
 	}
 }
+
+
+
+func CheckAuthHandler(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+    cookie, err := r.Cookie("user_id")
+    if err != nil {
+        if err == http.ErrNoCookie {
+            // not found cookie, user is not authenticated
+            json.NewEncoder(w).Encode(map[string]bool{"authenticated": false})
+            return
+        }
+        // error retrieving user_id cookie
+        log.Println("Error retrieving user_id cookie:", err)
+        w.WriteHeader(http.StatusBadRequest)
+        json.NewEncoder(w).Encode(map[string]string{"error": "Erreur lors de la récupération du cookie"})
+        return
+    }
+	// user_id cookie found, user is authenticated
+    authenticated := cookie.Value != ""
+    log.Printf("User authenticated: %v", authenticated)
+    json.NewEncoder(w).Encode(map[string]bool{"authenticated": authenticated})
+}
+
 
 func profilePage(w http.ResponseWriter, r *http.Request) {
 	log.Println("Entering profilePage function")
@@ -202,7 +229,6 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("User data retrieved: %+v\n", user)
 
 	// Rendre le template avec les données de l'utilisateur
 	tmplProfile := template.Must(template.ParseFiles("./template/html/profil.html"))
