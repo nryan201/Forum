@@ -77,32 +77,35 @@ func postDetailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Retrieve user_id from cookie
-	cookie, err := r.Cookie("user_id")
-	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusSeeOther) // Redirect to login page if not authenticated
-		return
-	}
-	userID := cookie.Value
-
 	db := dbConn()
 	defer db.Close()
 
-	var topic struct {
-		ID          int
-		Username    string
-		Title       string
-		Description string
-		IsOwner     bool
-	}
+	var topic TopicDetail
 
-	// Query to get the topic details along with the author's username and check ownership
+	// Query to get the topic details along with the author's username
 	query := `
-        SELECT t.id, u.username, t.title, t.description, (t.user_id = ?) AS is_owner
-        FROM topics t
-        JOIN users u ON t.user_id = u.id
-        WHERE t.id = ?
-    `
+		SELECT t.id, u.username, t.title, t.description, CASE WHEN t.user_id = ? THEN 1 ELSE 0 END AS is_owner
+		FROM topics t
+		JOIN users u ON t.user_id = u.id
+		WHERE t.id = ?
+	`
+
+	cookie, err := r.Cookie("user_id")
+	userID := ""
+	isAuthenticated := false
+	role := ""
+	if err == nil {
+		userID = cookie.Value
+		isAuthenticated = true
+
+		// Fetch user role
+		err = db.QueryRow("SELECT role FROM users WHERE id = ?", userID).Scan(&role)
+		if err != nil {
+			log.Printf("Error fetching user role: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+	}
 
 	err = db.QueryRow(query, userID, topicID).Scan(&topic.ID, &topic.Username, &topic.Title, &topic.Description, &topic.IsOwner)
 	if err != nil {
@@ -115,13 +118,44 @@ func postDetailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Set authentication status and role
+	topic.IsAuthenticated = isAuthenticated
+	topic.Role = role
+	log.Println("role", role)
+
+	// Query to get comments for the topic
+	commentQuery := `
+		SELECT c.id, u.username, c.content, c.created_at
+		FROM comments c
+		JOIN users u ON c.user_id = u.id
+		WHERE c.topic_id = ?
+		ORDER BY c.created_at ASC
+	`
+
+	rows, err := db.Query(commentQuery, topicID)
+	if err != nil {
+		log.Printf("Error retrieving comments: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var comment Comment
+		err := rows.Scan(&comment.ID, &comment.Username, &comment.Content, &comment.CreatedAt)
+		if err != nil {
+			log.Printf("Error scanning comment: %v", err)
+			continue
+		}
+		topic.Comments = append(topic.Comments, comment)
+	}
+
 	err = tmplPost.Execute(w, topic)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 }
-
 func editPostHandle(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/editpost" {
 		http.NotFound(w, r)
@@ -238,4 +272,40 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/post?id="+topicID, http.StatusSeeOther) // Redirect to the updated post's page
+}
+
+func addCommentHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Error parsing form", http.StatusBadRequest)
+		return
+	}
+
+	topicID := r.FormValue("topic_id")
+	content := r.FormValue("content")
+
+	// Retrieve user_id from cookie
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther) // Redirect to login page if not authenticated
+		return
+	}
+	userID := cookie.Value
+
+	db := dbConn()
+	defer db.Close()
+
+	_, err = db.Exec("INSERT INTO comments (topic_id, user_id, content) VALUES (?, ?, ?)", topicID, userID, content)
+	if err != nil {
+		log.Printf("Error inserting new comment: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/post?id="+topicID, http.StatusSeeOther) // Redirect back to the post's detail page
 }

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Forum</title>
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+<div class="container">
+    <h1>Administration</h1>
+    <div class="tab-container">
+        <button class="tab-button" onclick="openTab('users')">Utilisateurs</button>
+        <button class="tab-button" onclick="openTab('topics')">Topics</button>
+        <button class="tab-button" onclick="openTab('comments')">Commentaires</button>
+        <button class="tab-button" onclick="openTab('categories')">Categories</button>
+        <button class="tab-button" onclick="openTab('hashtags')">Hashtags</button>
+        <button class="tab-button" onclick="openTab('reports')">Reports</button>
+    </div>
+
+    <div id="users" class="tab-content">
+        <h2>Utilisateurs</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Users}}
+            <tr>
+                <td>{{.ID}}</td>
+                <td>{{.Username}}</td>
+                <td>{{.Name}}</td>
+                <td>{{.Email}}</td>
+                <td>{{.Role}}</td>
+                <td>
+                    <form method="POST" action="/admin/delete-user">
+                        <input type="hidden" name="user_id" value="{{.ID}}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="topics" class="tab-content">
+        <h2>Topics</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>UserID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Topics}}
+            <tr>
+                <td>{{.ID}}</td>
+                <td>{{.UserID}}</td>
+                <td>{{.Title}}</td>
+                <td>{{.Description}}</td>
+                <td>
+                    <form method="POST" action="/admin/delete-topic">
+                        <input type="hidden" name="topic_id" value="{{.ID}}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="comments" class="tab-content">
+        <h2>Commentaires</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>TopicID</th>
+                <th>UserID</th>
+                <th>Content</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Comments}}
+            <tr>
+                <td>{{.ID}}</td>
+                <td>{{.TopicID}}</td>
+                <td>{{.UserID}}</td>
+                <td>{{.Content}}</td>
+                <td>
+                    <form method="POST" action="/admin/delete-comment">
+                        <input type="hidden" name="comment_id" value="{{.ID}}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="categories" class="tab-content">
+        <h2>Categories</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Categories}}
+            <tr>
+                <td>{{.ID}}</td>
+                <td>{{.Name}}</td>
+                <td>
+                    <form method="POST" action="/admin/delete-category">
+                        <input type="hidden" name="category_id" value="{{.ID}}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="hashtags" class="tab-content">
+        <h2>Hashtags</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Hashtags}}
+            <tr>
+                <td>{{.ID}}</td>
+                <td>{{.Name}}</td>
+                <td>
+                    <form method="POST" action="/admin/delete-hashtag">
+                        <input type="hidden" name="hashtag_id" value="{{.ID}}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="reports" class="tab-content">
+        <h2>Reports</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>TopicID</th>
+                <th>CommentID</th>
+                <th>UserID</th>
+                <th>Reason</th>
+                <th>CreatedAt</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range .Reports}}
+            <tr>
+                <td>{{.ID}}</td>
+                <td>{{if .TopicID.Valid}}{{.TopicID.Int64}}{{end}}</td>
+                <td>{{if .CommentID.Valid}}{{.CommentID.Int64}}{{end}}</td>
+                <td>{{.UserID}}</td>
+                <td>{{.Reason}}</td>
+                <td>{{.CreatedAt}}</td>
+                <td>{{.Status}}</td>
+                <td>
+                    <form method="POST" action="/admin/handle-report">
+                        <input type="hidden" name="report_id" value="{{.ID}}">
+                        <button type="submit" name="action" value="ignore">Ignore</button>
+                        <button type="submit" name="action" value="delete">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function openTab(tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+    }
+    // Set default tab
+    document.getElementById("users").style.display = "block";
+</script>
+</body>
+</html>

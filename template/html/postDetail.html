@@ -40,6 +40,33 @@
                 {{end}}
             </div>
         </div>
+
+        <div class="comments">
+            <h3>Commentaires</h3>
+            {{range .Comments}}
+            <div class="comment">
+                <div class="comment-author">Auteur: <span class="author-name">{{.Username}}</span></div>
+                <p>{{.Content}}</p>
+                <div class="comment-date">Posté le: {{.CreatedAt}}</div>
+            </div>
+            {{end}}
+        </div>
+
+        {{if .IsAuthenticated}}
+        {{if or (eq .Role "admin") (eq .Role "moderator")}}
+        <form method="POST" action="/report-topic">
+            <input type="hidden" name="topic_id" value="{{.ID}}">
+            <button type="submit" class="report-Button">Signaler ce topic</button>
+        </form>
+        {{end}}
+        <form method="POST" action="/add-comment">
+            <input type="hidden" name="topic_id" value="{{.ID}}">
+            <div class="add-comment">
+                <textarea name="content" placeholder="Ajoutez un commentaire..." class="comment-text" required></textarea>
+                <button type="submit" class="comment-Button">Commenter</button>
+            </div>
+        </form>
+        {{end}}
     </div>
 
     <div class="side-section">
@@ -74,5 +101,8 @@
         </div>
     </div>
 </div>
+<script src="../script/category.js"></script>
+<script src="../script/hashtag.js"></script>
+<script src="../script/scroller.js"></script>
 </body>
 </html>

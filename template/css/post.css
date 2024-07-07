@@ -388,3 +388,50 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
+.comment {
+    padding: 10px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(3.5px);
+    -webkit-backdrop-filter: blur(3.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    text-align: left;
+}
+
+.comment .comment-author {
+    font-weight: bold;
+}
+
+.comment .comment-date {
+    font-size: 0.9em;
+    color: #888;
+    margin-top: 5px;
+}
+.report-Button {
+    align-items: center;
+    padding: 5px 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #f44336; /* Couleur rouge pour le bouton de signalement */
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.report-Button:hover {
+    background-color: #d32f2f;
+    transform: translateY(-3px);
+}
+.report-Button:active {
+    background-color: #c62828;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(0);
+}

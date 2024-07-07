@@ -43,10 +43,22 @@ func Server() {
 	//Handle Post
 	http.HandleFunc("/createpost", PostHandle) // celui sert a la creation de post
 	http.HandleFunc("/submit-post", postHandler)
-	http.HandleFunc("/post", postDetailHandler)  // celui sert a la visualisation de post
-	http.HandleFunc("/editpost", editPostHandle) // for editing posts
+	http.HandleFunc("/post", postDetailHandler)        // celui sert a la visualisation de post
+	http.HandleFunc("/add-comment", addCommentHandler) // celui sert a la creation de commentaire
+	http.HandleFunc("/editpost", editPostHandle)       // for editing posts
 	http.HandleFunc("/submit-edit", editHandler)
 
+	// Admin and moderation routes
+	http.HandleFunc("/admin", AdminHandle)
+	http.HandleFunc("/admin/delete-user", DeleteUserHandle)
+	http.HandleFunc("/admin/delete-topic", DeleteTopicHandle)
+	http.HandleFunc("/admin/delete-comment", DeleteCommentHandle)
+	http.HandleFunc("/admin/delete-category", DeleteCategoryHandle)
+	http.HandleFunc("/admin/delete-hashtag", DeleteHashtagHandle)
+	http.HandleFunc("/admin/handle-report", HandleReport)
+	http.HandleFunc("/moderator", ModeratorHandle)
+	http.HandleFunc("/moderator/handle-report", HandleReport)
+	http.HandleFunc("/report-topic", ReportTopicHandler)
 	// Path to your SSL certificate and key
 	certPath := "./permsHttps/cert.pem"
 	keyPath := "./permsHttps/key.pem"
@@ -117,7 +129,7 @@ func handleComment(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		GetComment(w, r, idStr)
 	case "POST":
-		CreateComment(w, r)
+		//CreateComment(w, r)
 	case "PUT":
 		UpdateComment(w, r, idStr)
 	case "DELETE":
@@ -157,7 +169,7 @@ func AccueilHandle(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	tmpl, err := template.ParseFiles("template/html/accueil.html") // return to accueil
+	tmpl, err := template.ParseFiles("template/html/accueil.html")
 	if err != nil {
 		log.Printf("Error parsing template %v", err)
 		http.Error(w, "internal server errror ", http.StatusInternalServerError)

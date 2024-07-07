@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 	"golang.org/x/crypto/bcrypt"
@@ -15,32 +16,70 @@ import (
 
 // Topic represents a topic
 type Topic struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	ID          int
+	UserID      string
+	Title       string
+	Description string
+	CreatedAt   string
+}
+type TopicDetail struct {
+	ID              int
+	Username        string
+	Title           string
+	Description     string
+	IsOwner         bool
+	IsAuthenticated bool
+	Comments        []Comment
+	Role            string
 }
 
 // Comment represents a comment
 type Comment struct {
-	ID      int    `json:"id"`
-	Content string `json:"content"`
-	TopicID int    `json:"topic_id"`
+	ID        int
+	TopicID   int
+	UserID    int
+	Content   string
+	CreatedAt time.Time
+	Username  string
 }
 
 // User represents a user
 type User struct {
-	ID       int    `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Mail     string `json:"mail"`
+	ID       int
+	Name     string
+	Username string
+	Password string
+	Email    string
+	Role     string
 }
 
 // Category represents a category
 type Category struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID   int
+	Name string
+}
+type Hashtag struct {
+	ID   int
+	Name string
 }
 
+type Report struct {
+	ID        int
+	TopicID   sql.NullInt64
+	CommentID sql.NullInt64
+	UserID    int
+	Reason    string
+	CreatedAt string
+	Status    string
+}
+type AdminData struct {
+	Users      []User
+	Topics     []Topic
+	Comments   []Comment
+	Categories []Category
+	Hashtags   []Hashtag
+	Reports    []Report
+}
 
 var (
 	db      *sql.DB
@@ -213,35 +252,6 @@ func DeleteTopic(w http.ResponseWriter, r *http.Request, idStr string) {
 }
 
 // Handle for create commment
-func CreateComment(w http.ResponseWriter, r *http.Request) {
-	// Logic for creating a comment
-	if r.Method != "POST" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var comment Comment
-	if err := json.NewDecoder(r.Body).Decode(&comment); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	statement, err := db.Prepare("INSERT INTO comments (content, topic_id) VALUES (?, ?)")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer statement.Close()
-
-	_, err = statement.Exec(comment.Content, comment.TopicID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(comment)
-}
 
 func GetComment(w http.ResponseWriter, r *http.Request, idStr string) {
 	// Logic for getting a comment
@@ -263,7 +273,7 @@ func GetComment(w http.ResponseWriter, r *http.Request, idStr string) {
 	}
 
 	var comment Comment
-	err = db.QueryRow("SELECT id, content, topic_id FROM comments WHERE id = ?", commentID).Scan(&comment.ID, &comment.Content, &comment.TopicID)
+	err = db.QueryRow("SELECT id, content, topic_id FROM comments WHERE id = ?", commentID).Scan(&comment.ID, &comment.Content)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "Not found", http.StatusNotFound)
@@ -298,7 +308,7 @@ func UpdateComment(w http.ResponseWriter, r *http.Request, idStr string) {
 
 	defer statement.Close()
 
-	_, err = statement.Exec(comment.Content, comment.TopicID, comment.ID)
+	_, err = statement.Exec(comment.Content, comment.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -364,7 +374,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	statement, err := db.Prepare("INSERT INTO users (username, password, mail) VALUES (?, ?, ?)")
+	statement, err := db.Prepare("INSERT INTO users (username, password, email) VALUES (?, ?, ?)")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -372,7 +382,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	defer statement.Close()
 
-	_, err = statement.Exec(user.Username, hashedPassword, user.Mail)
+	_, err = statement.Exec(user.Username, hashedPassword, user.Email)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -397,7 +407,7 @@ func GetUser(w http.ResponseWriter, r *http.Request, isStr string) {
 	}
 
 	var user User
-	err = db.QueryRow("SELECT id, username, password, mail FROM users WHERE id = ?", userID).Scan(&user.ID, &user.Username, &user.Password, &user.Mail)
+	err = db.QueryRow("SELECT id, username, password, email FROM users WHERE id = ?", userID).Scan(&user.ID, &user.Username, &user.Password, &user.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "User not found", http.StatusNotFound)
@@ -431,14 +441,14 @@ func UpdateUser(w http.ResponseWriter, r *http.Request, idStr string) {
 		return
 	}
 
-	statement, err := db.Prepare("UPDATE users SET username = ?, password = ?, mail = ? WHERE id = ?")
+	statement, err := db.Prepare("UPDATE users SET username = ?, password = ?, email = ? WHERE id = ?")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer statement.Close()
 
-	_, err = statement.Exec(user.Username, user.Password, user.Mail, userID)
+	_, err = statement.Exec(user.Username, user.Password, user.Email, userID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
