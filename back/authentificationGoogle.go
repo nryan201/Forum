@@ -5,9 +5,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/oauth2"
@@ -64,56 +66,130 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Nettoyer les valeurs pour éliminer les caractères invisibles
 	GoogleUser.ID = strings.TrimSpace(GoogleUser.ID)
 	GoogleUser.Name = strings.TrimSpace(GoogleUser.Name)
 	GoogleUser.Email = strings.TrimSpace(GoogleUser.Email)
 
-	// Validation des données pour s'assurer qu'il n'y a pas de caractères non visibles
 	if !isValidString(GoogleUser.ID) || !isValidString(GoogleUser.Name) || !isValidString(GoogleUser.Email) {
 		log.Printf("Invalid data found in user details: ID: %s, Name: %s, Email: %s\n", GoogleUser.ID, GoogleUser.Name, GoogleUser.Email)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
-	db, err := sql.Open("sqlite3", "./db.sqlite")
-	if err != nil {
-		log.Fatal("Failed to open database: ", err)
-	}
+	db := dbConn()
 	defer db.Close()
 
 	log.Println("Database opened successfully")
 
-	var userGoogleID string
-	err = db.QueryRow("SELECT id FROM users WHERE id = ?", GoogleUser.ID).Scan(&userGoogleID)
+	var userGoogleID, username, birthday sql.NullString
+	err = db.QueryRow("SELECT id, username, birthday FROM users WHERE id = ?", GoogleUser.ID).Scan(&userGoogleID, &username, &birthday)
 	if errors.Is(err, sql.ErrNoRows) {
 		log.Printf("Attempting to insert new user with ID: %s, Name: %s, Email: %s", GoogleUser.ID, GoogleUser.Name, GoogleUser.Email)
-		statement, err := db.Prepare("INSERT INTO users (id, username, email, role) VALUES (?, ?, ?, ?)")
+		statement, err := db.Prepare("INSERT INTO users (id, email, name, role) VALUES (?, ?, ?, ?)")
 		if err != nil {
 			log.Fatal("Failed to prepare statement: ", err)
 		}
 		defer statement.Close()
 
-		// Ajout de journaux pour vérifier les types de données
-		log.Printf("Inserting user with ID (type: %T): %s", GoogleUser.ID, GoogleUser.ID)
-		log.Printf("Inserting user with Name (type: %T): %s", GoogleUser.Name, GoogleUser.Name)
-		log.Printf("Inserting user with Email (type: %T): %s", GoogleUser.Email, GoogleUser.Email)
-
-		_, err = statement.Exec(GoogleUser.ID, GoogleUser.Name, GoogleUser.Email, "user")
+		_, err = statement.Exec(GoogleUser.ID, GoogleUser.Email, GoogleUser.Name, "user")
 		if err != nil {
 			log.Printf("Failed to insert new user: %s", err)
 		} else {
 			log.Println("New user inserted successfully")
-			log.Printf("Connexion réussie. Bienvenue %s! (ID utilisateur: %s)\n", GoogleUser.Name, GoogleUser.ID)
-			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
+
+		// Set cookie with the Google ID
+		http.SetCookie(w, &http.Cookie{
+			Name:     "user_id",
+			Value:    GoogleUser.ID,
+			Path:     "/",
+			HttpOnly: true,
+		})
+
+		// Redirect to the complete profile page
+		http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
 	} else if err != nil {
 		log.Fatal("Failed to query existing user: ", err)
 	} else {
-		log.Printf("User found with ID: %s", userGoogleID)
-		log.Printf("Welcome back %s!", GoogleUser.Name)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		log.Printf("User found with ID: %s", userGoogleID.String)
+		if !username.Valid || !birthday.Valid {
+			// Set cookie with the Google ID
+			http.SetCookie(w, &http.Cookie{
+				Name:     "user_id",
+				Value:    GoogleUser.ID,
+				Path:     "/",
+				HttpOnly: true,
+			})
+
+			http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
+		} else {
+			// Set the cookie with the user ID
+			http.SetCookie(w, &http.Cookie{
+				Name:     "user_id",
+				Value:    userGoogleID.String,
+				Path:     "/",
+				HttpOnly: true,
+			})
+
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		}
 	}
+}
+
+func completeProfile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		tmplCompleteProfile := template.Must(template.ParseFiles("./template/html/missingData.html"))
+		tmplCompleteProfile.Execute(w, nil)
+		return
+	}
+
+	username := r.FormValue("username")
+	birthday := r.FormValue("birthday")
+
+	_, err := time.Parse("2006-01-02", birthday)
+	if err != nil {
+		http.Error(w, "Format de date incorrect", http.StatusBadRequest)
+		return
+	}
+
+	var userID string
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Error(w, "Erreur lors de la lecture du cookie", http.StatusInternalServerError)
+		return
+	}
+	userID = cookie.Value
+
+	db := dbConn()
+	defer db.Close()
+
+	var existingUsername string
+	err = db.QueryRow("SELECT username FROM users WHERE username = ? AND id != ?", username, userID).Scan(&existingUsername)
+	if err != nil && err != sql.ErrNoRows {
+		log.Printf("Error checking username: %s", err)
+		http.Error(w, "Erreur lors de la vérification du nom d'utilisateur", http.StatusInternalServerError)
+		return
+	}
+	if existingUsername != "" {
+		http.Error(w, "Nom d'utilisateur déjà pris. Veuillez en choisir un autre.", http.StatusBadRequest)
+		return
+	}
+	_, err = db.Exec("UPDATE users SET username = ?, birthday = ? WHERE id = ?", username, birthday, userID)
+	if err != nil {
+		log.Printf("Failed to update user data: %s", err)
+		http.Error(w, "Erreur lors de la mise à jour des données utilisateur", http.StatusInternalServerError)
+		return
+	}
+
+	// Set the cookie with the updated user ID
+	http.SetCookie(w, &http.Cookie{
+		Name:     "user_id",
+		Value:    userID,
+		Path:     "/",
+		HttpOnly: true,
+	})
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func isValidString(str string) bool {

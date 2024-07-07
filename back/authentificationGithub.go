@@ -4,10 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
+	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/oauth2"
@@ -65,6 +67,8 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	githubUserID := strconv.Itoa(githubUser.ID) // Convertir l'ID en chaîne
+
 	if githubUser.Email == "" {
 		emailsResponse, err := client.Get("https://api.github.com/user/emails")
 		if err != nil {
@@ -78,11 +82,13 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 			Email   string `json:"email"`
 			Primary bool   `json:"primary"`
 		}
+
 		if err := json.NewDecoder(emailsResponse.Body).Decode(&emails); err != nil {
 			log.Printf("Could not decode emails response: %s\n", err.Error())
 			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 			return
 		}
+
 		for _, email := range emails {
 			if email.Primary {
 				githubUser.Email = email.Email
@@ -105,41 +111,98 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := sql.Open("sqlite3", "./db.sqlite")
-	if err != nil {
-		log.Fatal("Failed to open database: ", err)
-	}
+	db := dbConn()
 	defer db.Close()
 
-	log.Println("Database opened successfully")
-
-	var userID string
-	err = db.QueryRow("SELECT id FROM users WHERE id = ?", fmt.Sprint(githubUser.ID)).Scan(&userID)
+	var userID, username, birthday sql.NullString
+	err = db.QueryRow("SELECT id, username, birthday FROM users WHERE id = ?", githubUserID).Scan(&userID, &username, &birthday)
 	if err == sql.ErrNoRows {
-		log.Printf("Attempting to insert new user with ID: %d, Name: %s, Email: %s", githubUser.ID, githubUser.Name, githubUser.Email)
+		// Insérer un nouvel utilisateur
 		statement, err := db.Prepare("INSERT INTO users (id, username, email, role) VALUES (?, ?, ?, ?)")
 		if err != nil {
 			log.Fatal("Failed to prepare statement: ", err)
 		}
 		defer statement.Close()
 
-		log.Printf("Inserting user with ID (type: %T): %d", githubUser.ID, githubUser.ID)
-		log.Printf("Inserting user with Name (type: %T): %s", githubUser.Name, githubUser.Name)
-		log.Printf("Inserting user with Email (type: %T): %s", githubUser.Email, githubUser.Email)
-
-		_, err = statement.Exec(fmt.Sprint(githubUser.ID), githubUser.Name, githubUser.Email, "user")
+		_, err = statement.Exec(githubUserID, githubUser.Name, githubUser.Email, "user")
 		if err != nil {
 			log.Printf("Failed to insert new user: %s", err)
-		} else {
-			log.Println("New user inserted successfully")
-			log.Printf("User ID: %d", githubUser.ID)
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+			return
 		}
+		log.Println("New user inserted successfully")
+		http.SetCookie(w, &http.Cookie{
+			Name:     "user_id",
+			Value:    githubUserID,
+			Path:     "/",
+			HttpOnly: true,
+		})
+		http.Redirect(w, r, "/completeProfileGithub", http.StatusSeeOther)
 	} else if err != nil {
 		log.Fatal("Failed to query existing user: ", err)
 	} else {
-		log.Printf("User found with ID: %s", userID)
-		log.Printf("Welcome back %s!", githubUser.Name)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		log.Printf("User found with ID: %s, Username Valid: %v, Birthday Valid: %v", userID.String, username.Valid, birthday.Valid)
+		if !username.Valid || !birthday.Valid {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "user_id",
+				Value:    userID.String,
+				Path:     "/",
+				HttpOnly: true,
+			})
+			http.Redirect(w, r, "/completeProfileGithub", http.StatusSeeOther)
+		} else {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "user_id",
+				Value:    userID.String,
+				Path:     "/",
+				HttpOnly: true,
+			})
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		}
 	}
+}
+
+func completeProfileGithub(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		tmplCompleteProfile := template.Must(template.ParseFiles("./template/html/missingDataGithub.html"))
+		tmplCompleteProfile.Execute(w, nil)
+		return
+	}
+
+	name := r.FormValue("name")
+	birthday := r.FormValue("birthday")
+
+	_, err := time.Parse("2006-01-02", birthday)
+	if err != nil {
+		http.Error(w, "Format de date incorrect", http.StatusBadRequest)
+		return
+	}
+
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Error(w, "Erreur lors de la lecture du cookie GitHub", http.StatusInternalServerError)
+		return
+	}
+
+	userID := cookie.Value
+	log.Printf("User ID: %s\n", userID)
+	db := dbConn()
+	defer db.Close()
+
+	_, err = db.Exec("UPDATE users SET name = ?, birthday = ? WHERE id = ?", name, birthday, userID)
+	if err != nil {
+		log.Printf("Failed to update user data: %s", err)
+		http.Error(w, "Erreur lors de la mise à jour des données utilisateur", http.StatusInternalServerError)
+		return
+	}
+
+	// Set the cookie with the updated user ID
+	http.SetCookie(w, &http.Cookie{
+		Name:     "user_id",
+		Value:    userID,
+		Path:     "/",
+		HttpOnly: true,
+	})
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

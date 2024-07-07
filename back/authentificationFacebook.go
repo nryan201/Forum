@@ -72,40 +72,57 @@ func handleFacebookCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := sql.Open("sqlite3", "./db.sqlite")
-	if err != nil {
-		log.Fatal("Failed to open database: ", err)
-	}
+	db := dbConn()
 	defer db.Close()
 
-	log.Println("Database opened successfully")
-
-	var userID string
-	err = db.QueryRow("SELECT id FROM users WHERE id = ?", facebookUser.ID).Scan(&userID)
+	var userID, username, birthday sql.NullString
+	err = db.QueryRow("SELECT id, username, birthday FROM users WHERE id = ?", facebookUser.ID).Scan(&userID, &username, &birthday)
 	if err == sql.ErrNoRows {
-		log.Printf("Attempting to insert new user with ID: %s, Name: %s, Email: %s", facebookUser.ID, facebookUser.Name, facebookUser.Email)
-		statement, err := db.Prepare("INSERT INTO users (id, username, email, role) VALUES (?, ?, ?, ?)")
+		// Insert new user
+		statement, err := db.Prepare("INSERT INTO users (id, name, email, role) VALUES (?, ?, ?, ?)")
 		if err != nil {
 			log.Fatal("Failed to prepare statement: ", err)
 		}
 		defer statement.Close()
 
-		log.Printf("Inserting user with ID (type: %T): %s", facebookUser.ID, facebookUser.ID)
-		log.Printf("Inserting user with Name (type: %T): %s", facebookUser.Name, facebookUser.Name)
-		log.Printf("Inserting user with Email (type: %T): %s", facebookUser.Email, facebookUser.Email)
-
 		_, err = statement.Exec(facebookUser.ID, facebookUser.Name, facebookUser.Email, "user")
 		if err != nil {
 			log.Printf("Failed to insert new user: %s", err)
-		} else {
-			log.Println("New user inserted successfully")
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+			return
 		}
+
+		log.Println("New user inserted successfully")
+		// Set cookie with the Facebook ID
+		http.SetCookie(w, &http.Cookie{
+			Name:     "user_id",
+			Value:    facebookUser.ID,
+			Path:     "/",
+			HttpOnly: true,
+		})
+		// Redirect to the complete profile page only if user data is incomplete
+		http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
 	} else if err != nil {
 		log.Fatal("Failed to query existing user: ", err)
 	} else {
-		log.Printf("User found with ID: %s", userID)
-		log.Printf("Welcome back %s!", facebookUser.Name)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		log.Printf("User found with ID: %s, Username Valid: %t, Birthday Valid: %t", userID.String, username.Valid, birthday.Valid)
+		if !username.Valid || !birthday.Valid {
+			// Set cookie with the Facebook ID
+			http.SetCookie(w, &http.Cookie{
+				Name:     "user_id",
+				Value:    facebookUser.ID,
+				Path:     "/",
+				HttpOnly: true,
+			})
+			http.Redirect(w, r, "/completeProfile", http.StatusSeeOther)
+		} else {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "user_id",
+				Value:    facebookUser.ID,
+				Path:     "/",
+				HttpOnly: true,
+			})
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		}
 	}
 }

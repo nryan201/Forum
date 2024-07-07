@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS hashtags;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS topics;
 DROP TABLE IF EXISTS users;
-
+DROP TABLE IF EXISTS reports;
 -- Création des tables
 
 -- Table Users
@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     id TEXT PRIMARY KEY,
-    username TEXT NOT NULL,
+    username TEXT UNIQUE,
     name TEXT,
     birthday DATE,
     password TEXT ,
@@ -30,13 +30,24 @@ CREATE TABLE users (
 -- Table Topics
 CREATE TABLE topics (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
+    user_id TEXT,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
-
+CREATE TABLE reports (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    topic_id INTEGER,
+    comment_id INTEGER,
+    user_id INTEGER NOT NULL,
+    reason TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status TEXT DEFAULT 'waiting for a response',
+    FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES comments (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
 -- Table Comments
 CREATE TABLE comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -91,9 +102,10 @@ CREATE TABLE likes (
 -- Insertion des données
 
 -- Insertion dans la table Users
-INSERT INTO users (username,name, password, birthday, email, role) VALUES
-('user1','user1', '$2y$10$XU5kkL4flq14JpyK/wenDuSO4Jdqb.EMPgB8td3nW1PhacAtRjmg6', '1999-01-18', 'user1@example.com', 'admin'),
-('user2','user2', '$2y$10$3sisfsHwR92g6Jo9udd1TuIgoU3DPgL/9.Z0mkRsKGCxTd10Tlq5a', '1999-01-18', 'user2@example.com', 'user');
+INSERT INTO users (id,username,name, password, birthday, email, role) VALUES
+(1,'user1','user1', '$2y$10$XU5kkL4flq14JpyK/wenDuSO4Jdqb.EMPgB8td3nW1PhacAtRjmg6', '1999-01-18', 'user1@example.com', 'admin'),
+(2,'user2','user2', '$2y$10$3sisfsHwR92g6Jo9udd1TuIgoU3DPgL/9.Z0mkRsKGCxTd10Tlq5a', '1999-01-18', 'user2@example.com', 'moderator'),
+(3,'user3','user3', '$2y$10$3sisfsHwR92g6Jo9udd1TuIgoU3DPgL/9.Z0mkRsKGCxTd10Tlq5a', '1999-01-18', 'user3@exemple.com', 'admin');
 -- Insertion dans la table Topics
 INSERT INTO topics (user_id, title, description) VALUES
 (1, 'Topic Title 1', 'Description of topic 1'),
