@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS topics;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS reports;
+DROP TABLE IF EXISTS messenger;
 -- Création des tables
 
 -- Table Users
@@ -64,7 +65,15 @@ CREATE TABLE hashtags (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE
 );
-
+CREATE TABLE messenger (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sender_id INTEGER NOT NULL,
+    receiver_id INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES users (id) ON DELETE CASCADE
+);
 -- Table Topic_Hashtags
 CREATE TABLE topic_hashtags (
     topic_id INTEGER NOT NULL,

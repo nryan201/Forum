@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/conversation.css">
+    <title>Mes Messages</title>
+</head>
+<body>
+<div class="container">
+    <h1>Mes Messages</h1>
+    <div class="button-container">
+        <a href="/message">Commencer une nouvelle conversation</a>
+        <a href="/conversations">Voir les conversations existantes</a>
+    </div>
+    <div id="messages"></div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('/get-messages')
+            .then(response => response.json())
+            .then(messages => {
+                const messagesDiv = document.getElementById('messages');
+                messagesDiv.innerHTML = ''; // Clear previous messages
+                messages.forEach(message => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message');
+                    messageDiv.innerHTML = `
+                        <div class="meta">
+                            <strong>${message.username}</strong> <em>${new Date(message.created_at).toLocaleString()}</em>
+                        </div>
+                        <div class="content">${message.content}</div>
+                    `;
+                    messagesDiv.appendChild(messageDiv);
+                });
+            })
+            .catch(error => console.error('Error fetching messages:', error));
+    });
+</script>
+</body>
+</html>

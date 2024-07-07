@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envoyer un Message</title>
+    <link rel="stylesheet" type="text/css" href="/css/messages.css">
+</head>
+<body>
+<div class="container">
+    <h1>Envoyer un Message</h1>
+    <div class="form-group">
+        <div id="userId" style="display:none;">{{.CurrentUsername}}</div>
+        <label for="receiver">Nom d'utilisateur du Destinataire</label>
+        <input type="text" id="receiver" name="receiver" list="usernames" required>
+        <datalist id="usernames"></datalist>
+    </div>
+    <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5"></textarea>
+    </div>
+    <div class="form-group">
+        <button id="send">Envoyer</button>
+    </div>
+    <div class="form-group">
+        <button onclick="window.location.href='/conversations'">Voir Mes Conversations</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const receiverInput = document.getElementById('receiver');
+        const dataList = document.getElementById('usernames');
+        const sendButton = document.getElementById('send');
+        const messagesDiv = document.getElementById('messages');
+        var currentUser = document.getElementById('userId').textContent;
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/get-users');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const users = await response.json();
+                dataList.innerHTML = ''; // Clear previous options
+                users.forEach(user => {
+                    if (user.Username !== currentUser) { // Exclut le nom d'utilisateur actuel
+                        const option = document.createElement('option');
+                        option.value = user.Username;
+                        dataList.appendChild(option);
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        sendButton.addEventListener('click', function () {
+            const receiverUsername = receiverInput.value;
+            const messageContent = document.getElementById('message').value;
+
+            if (!receiverUsername || !messageContent) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+
+            fetch('/send-message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    receiverUsername: receiverUsername,
+                    content: messageContent
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Message envoyé avec succès');
+                        document.getElementById('message').value = '';
+                    } else {
+                        alert('Erreur lors de l\'envoi du message');
+                    }
+                })
+                .catch(error => console.error('Error sending message:', error));
+        });
+
+        fetchUsers();
+    });
+</script>
+</body>
+</html>

@@ -16,7 +16,7 @@ func Server() {
 	http.Handle("/script/", http.StripPrefix("/script/", http.FileServer(http.Dir("template/script/"))))
 
 	http.HandleFunc("/", routeHandler)
-	http.HandleFunc("/block", BlockHandler)
+	//http.HandleFunc("/block", BlockHandler)
 	http.HandleFunc("/login", loginUser)
 	http.HandleFunc("/addUser", addUser)
 	http.HandleFunc("/addTopic", addTopicHandler) // Add this for creating new topics
@@ -48,20 +48,28 @@ func Server() {
 	http.HandleFunc("/editpost", editPostHandle)       // for editing posts
 	http.HandleFunc("/submit-edit", editHandler)
 
-	// Admin and moderation routes
+	// Admin routes
 	http.HandleFunc("/admin", AdminHandle)
 	http.HandleFunc("/admin/delete-user", DeleteUserHandle)
-	http.HandleFunc("/admin/promote-user", PromoteUserHandle)
 	http.HandleFunc("/admin/delete-topic", DeleteTopicHandle)
 	http.HandleFunc("/admin/delete-comment", DeleteCommentHandle)
 	http.HandleFunc("/admin/delete-category", DeleteCategoryHandle)
 	http.HandleFunc("/admin/delete-hashtag", DeleteHashtagHandle)
 	http.HandleFunc("/admin/handle-report", HandleReport)
-	http.HandleFunc("/moderator", ModeratorHandle)
-	http.HandleFunc("/moderator/handle-report", HandleReport)
+
+	// Report routes
 	http.HandleFunc("/report-topic", reportTopicDetailHandler)
 	http.HandleFunc("/submit-report", submitReportHandler)
 
+	// Message routes
+	http.HandleFunc("/get-users", getUsers)
+	http.HandleFunc("/message", messagePage)
+	http.HandleFunc("/send-message", sendMessage)
+	http.HandleFunc("/get-messages", getMessages)
+	http.HandleFunc("/get-conversations", getConversations)
+	http.HandleFunc("/conversation/", conversationDetailPage)
+	http.HandleFunc("/conversation/messages/", getConversationMessages)
+	http.HandleFunc("/conversations", conversationsPage)
 	// Path to your SSL certificate and key
 	certPath := "./permsHttps/cert.pem"
 	keyPath := "./permsHttps/key.pem"
@@ -127,32 +135,32 @@ func handleTopic(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleComment(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/comment/")
+	//	idStr := strings.TrimPrefix(r.URL.Path, "/comment/")
 	switch r.Method {
 	case "GET":
-		GetComment(w, r, idStr)
+		//GetComment(w, r, idStr)
 	case "POST":
 		//CreateComment(w, r)
 	case "PUT":
-		UpdateComment(w, r, idStr)
+		//UpdateComment(w, r, idStr)
 	case "DELETE":
-		DeleteComment(w, r, idStr)
+		//DeleteComment(w, r, idStr)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
 func handleUser(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/user/")
+	//	idStr := strings.TrimPrefix(r.URL.Path, "/user/")
 	switch r.Method {
 	case "GET":
-		GetUser(w, r, idStr)
+		//GetUser(w, r, idStr)
 	case "POST":
-		CreateUser(w, r)
+		//CreateUser(w, r)
 	case "PUT":
-		UpdateUser(w, r, idStr)
+		//UpdateUser(w, r, idStr)
 	case "DELETE":
-		DeleteUser(w, r, idStr)
+	//	DeleteUser(w, r, idStr)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -172,7 +180,7 @@ func AccueilHandle(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	tmpl, err := template.ParseFiles("template/html/accueil.html")
+	tmpl, err := template.ParseFiles("template/html/accueil.html") // return to accueil
 	if err != nil {
 		log.Printf("Error parsing template %v", err)
 		http.Error(w, "internal server errror ", http.StatusInternalServerError)

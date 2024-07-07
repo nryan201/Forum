@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Conversations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"> <!-- For the plus icon -->
+    <link rel="stylesheet" type="text/css" href="/css/conversations.css">
+
+</head>
+<body>
+<div class="container">
+    <h1>Mes Conversations</h1>
+    <div id="conversations"></div>
+    <button class="add-button" onclick="window.location.href='/message'"><i class="fas fa-plus"></i></button>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function fetchConversations() {
+            fetch('/get-conversations')
+                .then(response => response.json())
+                .then(conversations => {
+                    const conversationsDiv = document.getElementById('conversations');
+                    conversationsDiv.innerHTML = '';
+                    conversations.forEach(conversation => {
+                        const conversationDiv = document.createElement('div');
+                        conversationDiv.classList.add('conversation');
+                        conversationDiv.textContent = 'Conversation avec ' + conversation;
+                        conversationDiv.addEventListener('click', function () {
+                            window.location.href = `/conversation/${conversation}`;
+                        });
+                        conversationsDiv.appendChild(conversationDiv);
+                    });
+                })
+                .catch(error => console.error('Error fetching conversations:', error));
+        }
+
+        fetchConversations();
+    });
+</script>
+</body>
+</html>

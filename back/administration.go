@@ -167,44 +167,6 @@ func AdminHandle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ModeratorHandle(w http.ResponseWriter, r *http.Request) {
-	db := dbConn()
-	defer db.Close()
-
-	// Fetch all reports
-	reportRows, err := db.Query("SELECT id, topic_id, comment_id, user_id, reason, created_at, status FROM reports")
-	if err != nil {
-		log.Printf("Error fetching reports: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	defer reportRows.Close()
-
-	var reports []Report
-	for reportRows.Next() {
-		var report Report
-		if err := reportRows.Scan(&report.ID, &report.TopicID, &report.CommentID, &report.UserID, &report.Reason, &report.CreatedAt, &report.Status); err != nil {
-			log.Printf("Error scanning report: %v", err)
-			continue
-		}
-		reports = append(reports, report)
-	}
-
-	data := struct {
-		Reports []Report
-	}{
-		Reports: reports,
-	}
-
-	err = tmplModerator.Execute(w, data)
-	if err != nil {
-		log.Printf("Error executing template: %v", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-	}
-}
-
-// Handlers for deleting items
-
 func DeleteUserHandle(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -221,7 +183,6 @@ func DeleteUserHandle(w http.ResponseWriter, r *http.Request) {
 	}
 	currentUserID := cookie.Value
 
-	// Prevent the current user from deleting themselves
 	if currentUserID == userID {
 		http.Error(w, "You cannot delete your own account", http.StatusForbidden)
 		return

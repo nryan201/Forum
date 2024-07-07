@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+}
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    text-align: center;
+}
+.message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.message .meta {
+    font-size: 0.9em;
+    color: #555;
+}
+.message .content {
+    margin-top: 5px;
+}
+.button-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.button-container a {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.button-container a:hover {
+    background-color: #218838;
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/conversation_detail.css">
+</head>
+<body>
+<div class="container">
+    <h1>Conversation avec <span id="conversation-with">{{.ReceiverID}}</span></h1>
+    <div id="userId" style="display:none;">{{.UserID}}</div>
+    <div id="messages"></div>
+    <div class="form-group">
+        <label for="reply">Votre message</label>
+        <textarea id="reply" name="reply" rows="5"></textarea>
+    </div>
+    <div class="form-group">
+        <button id="send-reply">Envoyer</button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var currentUser = document.getElementById('userId').textContent;
+        const conversationWith = document.getElementById('conversation-with').textContent;
+
+        function fetchMessages() {
+            fetch(`/conversation/messages/${conversationWith}`)
+                .then(response => response.json())
+                .then(messages => {
+                    const messagesDiv = document.getElementById('messages');
+                    messagesDiv.innerHTML = '';
+                    if (messages && messages.length > 0) {
+                        messages.forEach(message => {
+                            const messageDiv = document.createElement('div');
+                            messageDiv.classList.add('message');
+                            const senderId = String(message.sender_id);
+                            const userId = String(currentUser);
+
+                            if (senderId === userId) {
+                                messageDiv.classList.add('right');
+                            } else {
+                                messageDiv.classList.add('left');
+                            }
+                            messageDiv.innerHTML = `
+                                <div class="meta">
+                                    <strong>${message.Username}</strong> <em>${new Date(message.created_at).toLocaleString()}</em>
+                                </div>
+                                <div class="content">${message.content}</div>
+                            `;
+                            messagesDiv.appendChild(messageDiv);
+                        });
+                    } else {
+                        messagesDiv.innerHTML = '<p>No messages found.</p>';
+                    }
+                })
+                .catch(error => console.error('Error fetching messages:', error));
+        }
+
+        document.getElementById('send-reply').addEventListener('click', function () {
+            const messageContent = document.getElementById('reply').value;
+            if (!messageContent) {
+                alert('Veuillez entrer un message');
+                return;
+            }
+
+            fetch('/send-message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    receiverUsername: conversationWith,
+                    content: messageContent
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('reply').value = '';
+                        fetchMessages();
+                    } else {
+                        alert('Erreur lors de l\'envoi du message');
+                    }
+                })
+                .catch(error => console.error('Error sending reply:', error));
+        });
+
+        fetchMessages();
+    });
+</script>
+</body>
+</html>

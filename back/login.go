@@ -138,7 +138,8 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			Name:     "user_id",
 			Value:    userID,
 			Path:     "/",
-			HttpOnly: true,
+			HttpOnly: false,
+			Secure:   true,
 		})
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 	} else {

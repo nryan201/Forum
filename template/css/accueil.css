@@ -17,7 +17,46 @@ body {
     justify-content: space-between;
 }
 
+.Search-Container{
+    display: flex;
+    justify-content: center;
+}
 
+.Search-Container #SearchBar{
+    display: flex;
+    margin-top: 15px;
+    padding: 10px 10px;
+    font-size: 14px;
+    font-weight: normal;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    margin-bottom: 8px;
+    top: 1px;
+    position: relative;
+    z-index: 2;
+}
+
+
+.profile-section {
+    width: 10%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(1.1px);
+    -webkit-backdrop-filter: blur(1.1px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
 .star,.star1,.star2,.star3,.star4 {
     position: absolute;
     width: 20px;
@@ -33,15 +72,43 @@ body {
     clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
 
-.profile {
-    background-color: #85aefa;
-    border-radius: 10px;
-    padding: 10px;
+.profile{
+    align-items: center;
+    padding: 15px 40px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
-    width: 100%;
-    margin-bottom: 10px;
-    position: relative; /* Nécessaire pour le z-index */
-    z-index: 2; /* Met le contenu au-dessus de l'image de fond */
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    margin-bottom: 8px;
+    top: 30px;
+    position: relative;
+    z-index: 2;
+}
+.connexion{
+    align-items: center;
+    padding: 10px 25px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    margin-bottom: 8px;
+    top: 30px;
+    position: relative;
+    z-index: 2;
 }
 
 .contact{
@@ -142,7 +209,7 @@ body {
     border-radius: 8px;
 }
 
-.categories, .hashtags {
+.categories, .hashtags, .Search-Container {
     padding: 10px;
     margin-bottom: 10px;
     background: rgba(255, 255, 255, 0.15);
@@ -186,6 +253,24 @@ body {
     cursor: pointer;
     border-bottom: 1px solid #85aefa;
 }
+#searchInput{
+    display: inline-block;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    border-bottom: 1px solid #85aefa;
+}
 
 .createCategory::placeholder, .createHashtags::placeholder {
     color: #fff;
@@ -207,7 +292,7 @@ body {
     cursor: pointer;
     margin-bottom: 8px;
 }
-.contact:hover, .profile:hover{
+.contact:hover, .profile:hover, .connexion:hover{
     background-color: #8e004e;
     transform: translateY(-3px);
 }
@@ -222,4 +307,3 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
-
