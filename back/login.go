@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -237,17 +237,24 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+
 func clearCookie(w http.ResponseWriter, name string) {
 	log.Println("Clearing cookie", name)
 	http.SetCookie(w, &http.Cookie{
 		Name:    name,
 		Value:   "",
 		Path:    "/",
+		MaxAge: -1,
 		Expires: time.Unix(0, 0),
+		HttpOnly: true,
 	})
 }
+
+
 func logout(w http.ResponseWriter, r *http.Request) {
-	log.Println("Logging out user")
+	
 	clearCookie(w, "username")
+	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+	w.Write([]byte("Logged out"))
 }

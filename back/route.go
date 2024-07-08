@@ -119,3 +119,15 @@ func HomeHandle(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error executing template: %v", err)
 	}
 }
+
+// Handle for topic
+func BlockHandler(w http.ResponseWriter, r *http.Request) {
+
+	if r.URL.Path != "/block" {
+		http.NotFound(w, r)
+		return
+	}
+
+	http.Redirect(w, r, "https://www.minecraft.net/fr-fr", http.StatusFound)
+
+}

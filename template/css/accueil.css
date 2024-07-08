@@ -42,8 +42,6 @@ body {
     position: relative;
     z-index: 2;
 }
-
-
 .profile-section {
     width: 10%;
     padding: 15px;
@@ -89,6 +87,27 @@ body {
     margin-bottom: 8px;
     top: 30px;
     position: relative;
+    margin-top: auto;
+        z-index: 2;
+    }
+    
+    .postCreation {
+        align-items: center;
+        padding: 15px 30px;
+        font-size: 15px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #4181f8;
+        border: none;
+        border-radius: 50px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s, transform 0.3s;
+        cursor: pointer;
+        margin-bottom: 8px;
+        top: 80px;
+        position: relative;
     z-index: 2;
 }
 .connexion{
@@ -108,14 +127,16 @@ body {
     margin-bottom: 8px;
     top: 30px;
     position: relative;
+    margin-top: auto;
     z-index: 2;
 }
 
 .log-out {
-    margin-top: auto; 
-    padding: 20px;
+    margin-top: auto;
+        /* Pousse cet élément en bas du container */
+        padding: 20px;
+        /* Ajoute du padding pour un meilleur espacement */
 }
-
 
 .log-out .LogOut-link {
     display: flex;
@@ -138,10 +159,10 @@ body {
 }
 
 .log-out .LogOut-link i {
-    margin-right: 10px; 
+    margin-right: 10px;
+        /* Espace entre l'icône et le texte */
     color: white;
 }
-
 .contact{
     align-items: center;
     padding: 15px 30px;
@@ -159,8 +180,12 @@ body {
     top: 3483%;
     position: relative;
     z-index: 2;
+    margin-top: auto;
 }
 .side-section {
+    display: flex;
+        flex-direction: column;
+        height: 100vh;
     width: 20%;
     padding: 10px;
     background: rgba(255, 255, 255, 0.15);
@@ -284,7 +309,6 @@ body {
     cursor: pointer;
     border-bottom: 1px solid #85aefa;
 }
-
 #searchInput{
     display: inline-block;
     align-items: center;
@@ -329,7 +353,9 @@ body {
     transform: translateY(-3px);
 }
 
-.categoryBtn:hover, .hashtagsBtn:hover {
+.categoryBtn:hover,
+.hashtagsBtn:hover,
+.postCreation:hover {
     background-color: #45a049;
     transform: translateY(-3px);
 }
@@ -339,7 +365,6 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
-
 .LogOut-link:hover{
     background-color: red;
 }

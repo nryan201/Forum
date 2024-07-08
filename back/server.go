@@ -19,7 +19,7 @@ func Server() {
 
 	http.HandleFunc("/", routeHandler)
 
-	//http.HandleFunc("/block", BlockHandler)
+	http.HandleFunc("/block", BlockHandler)
 	http.HandleFunc("/login", loginUser)
 	http.HandleFunc("/addUser", addUser)
 	http.HandleFunc("/addTopic", addTopicHandler) // Add this for creating new topics

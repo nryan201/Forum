@@ -1,18 +1,25 @@
-document.getElementById("commentForm").onsubmit = function(event) {
-    event.preventDefault();
-    let formData = new FormData(this);
-    let imageFile = document.getElementById("imageUpload").files[0];
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById("commentForm").onsubmit = function (event) {
+        event.preventDefault();
 
-    // Check if the image file is too large (more than 20 MB)
-    if (imageFile && imageFile.size > 20971520) {
-        alert("Image trop lourde");
-        return;
-    }
+        let formData = new FormData(this);
+        let imageFile = document.getElementById("imageUpload").files[0];
 
-    fetch("api/commentaire", {
-        method: "POST",
-        body: formData,
-    })
+        // Check if the image file is too large (more than 20 MB)
+        if (imageFile && imageFile.size > 20971520) {
+            alert("Image trop lourde");
+            return;
+        }
+
+        // Append the image file to the form data if it exists
+        if (imageFile) {
+            formData.append("image", imageFile);
+        }
+
+        fetch("api/commentaire", {
+            method: "POST",
+            body: formData,
+        })
         .then(response => {
             if (!response.ok) {
                 throw new Error("Erreur lors du téléchargement");
@@ -28,4 +35,5 @@ document.getElementById("commentForm").onsubmit = function(event) {
             console.error("Erreur lors de l'ajout du commentaire", error);
             alert("Erreur lors de l'ajout du commentaire");
         });
-};
+    };
+});
