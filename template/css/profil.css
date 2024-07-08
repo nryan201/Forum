@@ -4,13 +4,11 @@ body {
     margin: 0;
     padding: 0;
     background-image: url('/image/fond-ecran-forum.jpg');
-<<<<<<< HEAD
-        background-size: cover;
+    background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         height: 100vh;
-        overflow: hidden;
-        position: relative;
+    position: relative;
 }
 
 .header {
@@ -18,33 +16,28 @@ body {
     padding: 20px;
     text-align: center;
     background: rgba(255, 255, 255, 0.31);
-        border-radius: 16px;
+    border-radius: 16px;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(6.5px);
         -webkit-backdrop-filter: blur(6.5px);
         border: 1px solid rgba(255, 255, 255, 0.55);
-=======
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     height: 100vh;
-    overflow: hidden;
     position: relative;
-    overflow: auto; /* Permet le défilement vertical */
->>>>>>> FrontRoutes
 }
 
 .profile-wrapper {
     display: flex;
     flex-direction: column;
-<<<<<<< HEAD
         /* Changer de ligne pour une disposition verticale */
-        justify-content: flex-start;
+    justify-content: flex-start;
         align-items: center;
         position: absolute;
     margin-top: 50px;
     margin-left: 45vh;
-        /* Converti de 17% à 17vh */
+    /* Converti de 17% à 17vh */
         width: 100vh;
         /* Converti de 65% à 65vh */
         background: rgba(255, 255, 255, 0.31);
@@ -53,7 +46,6 @@ body {
         backdrop-filter: blur(6.5px);
         -webkit-backdrop-filter: blur(6.5px);
         border: 1px solid rgba(255, 255, 255, 0.55);
-=======
     justify-content: flex-start;
     align-items: center;
     position: absolute;
@@ -67,7 +59,6 @@ body {
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
     border: 1px solid rgba(255, 255, 255, 0.55);
->>>>>>> FrontRoutes
 }
 
 .profile-container {
@@ -75,21 +66,6 @@ body {
     flex-direction: column;
     align-items: center;
     padding-top: 10px;
-<<<<<<< HEAD
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 16px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(1.1px);
-        -webkit-backdrop-filter: blur(1.1px);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        flex-shrink: 0;
-        /* Empêche la réduction */
-        width: 80vh;
-        /* Converti de 80% à 80vh */
-        margin-bottom: 20px;
-        /* Ajouter de l'espace entre les sections */
-        margin-top: 2.5vh;
-=======
     background: rgba(255, 255, 255, 0.15);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -100,7 +76,6 @@ body {
     width: 80vh;
     margin-bottom: 20px;
     margin-top: 2.5vh;
->>>>>>> FrontRoutes
 }
 
 .profile-pic {
@@ -119,11 +94,7 @@ body {
     padding: 20px;
     border-radius: 10px;
     width: 30vh;
-<<<<<<< HEAD
-        /* Converti de 300px à 30vh pour plus de cohérence */
-=======
     /* Converti de 300px à 30vh pour plus de cohérence */
->>>>>>> FrontRoutes
 }
 
 .info-section .info-item {
@@ -150,18 +121,16 @@ body {
 }
 
 .links-section a {
-<<<<<<< HEAD
     color: #FFFFFF;
     padding: 5px;
     text-decoration: none;
     margin: 0 5px;
-        background: rgba(255, 255, 255, 0.31);
+    background: rgba(255, 255, 255, 0.31);
         border-radius: 16px;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(6.5px);
         -webkit-backdrop-filter: blur(6.5px);
         border: 1px solid rgba(255, 255, 255, 0.55);
-=======
     display: flex;
     justify-content: center;
     align-items: center;
@@ -179,7 +148,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.55);
     width: calc(100% / 4 - 10px); /* Ajustez selon le nombre de liens et l'espacement souhaité */
     transition: 0.3s;
->>>>>>> FrontRoutes
 }
 
 .links-section i {
@@ -208,11 +176,7 @@ body {
     color: #000000;
     padding: 10px;
     width: 20vh;
-<<<<<<< HEAD
-        /* Converti de 200px à 20vh pour plus de cohérence */
-=======
     /* Converti de 200px à 20vh pour plus de cohérence */
->>>>>>> FrontRoutes
     position: absolute;
     right: 0;
     top: 50px;
@@ -249,7 +213,6 @@ body {
         /* Empêche la réduction */
         width: 80vh;
         /* Converti de 80% à 80vh */
-=======
     background: rgba(255, 255, 255, 0.31);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -300,7 +263,6 @@ body {
     backdrop-filter: blur(4.7px);
     -webkit-backdrop-filter: blur(4.7px);
     border: 1px solid rgba(44, 152, 155, 0.3);
->>>>>>> FrontRoutes
 }
 
 .profile-section {

@@ -291,6 +291,42 @@ body {
     position: relative;
     z-index: 2;
 }
+.returnHome{
+    align-items: center;
+    padding: 15px 40px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    top: 60px;
+    position: relative;
+    z-index: 2;
+}
+.Edit-Post, .edit-button{
+    align-items: center;
+    padding: 5px 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 30%; /* Ajustez la largeur selon votre mise en page */
+    margin-left: 88%;
+}
 
 .comment-Button{
     align-items: center;
@@ -353,7 +389,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
-.comment {
+.comments {
     padding: 10px;
     margin-top: 15px;
     margin-bottom: 10px;

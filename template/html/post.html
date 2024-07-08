@@ -16,9 +16,6 @@
         <div>
             <a class="returnHome" href="/accueil">Home</a>
         </div>
-        <div>
-            <a class="contact" href="/contact">Contact</a>
-        </div>
         <div class="star"></div>
         <div class="star1"></div>
         <div class="star2"></div>
@@ -33,7 +30,7 @@
                 <div class="post-content">
                     <input type="text" name="title" class="post-title" placeholder="Titre du Post" required>
                     <textarea name="description" class="post-description" placeholder="Description détaillée du post." required></textarea>
-                    <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
+                    <div class="post-author">Auteur: <span class="author-name">{{.Username}}</span></div>
                     <button type="submit" class="post-Button">POSTEZ !</button>
                 </div>
             </div>
@@ -54,9 +51,9 @@
             </form>
             <h3>Categories</h3>
             <ul id="categoriesList">
-                <li>Granny</li>
-                <li>Granny</li>
-                <li>Granny</li>
+                <li>Politique</li>
+                <li>Actu</li>
+                <li>Animaux</li>
             </ul>
         </div>
         <div class="hashtags">
@@ -66,8 +63,9 @@
             </form>
             <h3>Hashtags</h3>
             <ul id="hashtagsList">
-                <li>#mesboules</li>
-                <li>#mesboules</li>
+                <li>#Nature</li>
+                <li>#BaigneToiDansLaSeine</li>
+                <li>#Films</li>
             </ul>
         </div>
     </div>

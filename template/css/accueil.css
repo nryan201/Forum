@@ -111,6 +111,37 @@ body {
     z-index: 2;
 }
 
+.log-out {
+    margin-top: auto; 
+    padding: 20px;
+}
+
+
+.log-out .LogOut-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: normal;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+}
+
+.log-out .LogOut-link i {
+    margin-right: 10px; 
+    color: white;
+}
+
 .contact{
     align-items: center;
     padding: 15px 30px;
@@ -235,7 +266,7 @@ body {
     margin-bottom: 5px;
 }
 
-.createCategory, .createHashtags {
+.createCategory, .createHashtags, .SearchInput {
     display: inline-block;
     align-items: center;
     margin-bottom: 8px;
@@ -253,6 +284,7 @@ body {
     cursor: pointer;
     border-bottom: 1px solid #85aefa;
 }
+
 #searchInput{
     display: inline-block;
     align-items: center;
@@ -272,11 +304,11 @@ body {
     border-bottom: 1px solid #85aefa;
 }
 
-.createCategory::placeholder, .createHashtags::placeholder {
+.createCategory::placeholder, .createHashtags::placeholder, .SearchInput::placeholder {
     color: #fff;
 }
 
-.categoryBtn, .hashtagsBtn {
+.categoryBtn, .hashtagsBtn, #SearchButton {
     align-items: center;
     padding: 5px 20px;
     font-size: 13px;
@@ -306,4 +338,8 @@ body {
     background-color: #3e8e41;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
+}
+
+.LogOut-link:hover{
+    background-color: red;
 }
