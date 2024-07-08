@@ -48,6 +48,12 @@ func Server() {
 	http.HandleFunc("/editpost", editPostHandle)       // for editing posts
 	http.HandleFunc("/submit-edit", editHandler)
 
+	//Handle Category and Hashtag
+	http.HandleFunc("/addHashtag", addHashtagHandler(db))
+	http.HandleFunc("/hashtags", listHashtagsHandler(db))
+	http.HandleFunc("/addCategory", addCategoryHandler(db))
+	http.HandleFunc("/categories", listCategoriesHandler(db))
+
 	// Admin and moderation routes
 	http.HandleFunc("/admin", AdminHandle)
 	http.HandleFunc("/admin/delete-user", DeleteUserHandle)
