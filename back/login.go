@@ -250,11 +250,20 @@ func clearCookie(w http.ResponseWriter, name string) {
 	})
 }
 
+func ClearAllCookies(w http.ResponseWriter, r *http.Request) {
+	clearCookie(w, "user_id")
+	clearCookie(w, "username")
+	clearCookie(w, "role")
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
+
 
 func logout(w http.ResponseWriter, r *http.Request) {
 	
-	clearCookie(w, "username")
+	ClearAllCookies(w, r)
 	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	w.Write([]byte("Logged out"))
+	
 }

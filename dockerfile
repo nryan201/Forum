@@ -24,3 +24,5 @@ EXPOSE 8080
 
 # Commande pour lancer l'application
 CMD ["./main"]
+
+#docker-compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot --email your-email@domain.com --agree-tos --no-eff-email -d yourdomain.com
