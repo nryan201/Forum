@@ -18,6 +18,7 @@ func Server() {
 	http.Handle("/script/", http.StripPrefix("/script/", http.FileServer(http.Dir("template/script/"))))
 
 	http.HandleFunc("/", routeHandler)
+
 	//http.HandleFunc("/block", BlockHandler)
 	http.HandleFunc("/login", loginUser)
 	http.HandleFunc("/addUser", addUser)
@@ -41,6 +42,9 @@ func Server() {
 	http.HandleFunc("/accueil", AccueilHandle)
 	http.HandleFunc("/contact", ContactHandle)
 	http.HandleFunc("/profil", profilePage)
+	http.HandleFunc(("/connexion"), ConnexionHandle)
+	http.HandleFunc("/topic", TopicHandle)
+	http.HandleFunc("/api/check-auth", CheckAuthHandler)
 
 	//Handle Post
 	http.HandleFunc("/createpost", PostHandle) // celui sert a la creation de post
