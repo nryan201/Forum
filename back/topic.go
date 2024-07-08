@@ -34,7 +34,8 @@ func addTopicHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-
+	log.Printf("New topic added: %s", title)
+	log.Println("userID", userID)
 	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 }
 

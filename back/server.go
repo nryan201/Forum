@@ -334,5 +334,5 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther) // Redirect to home or confirmation page
+	http.Redirect(w, r, "/accueil", http.StatusSeeOther) // Redirect to home or confirmation page
 }

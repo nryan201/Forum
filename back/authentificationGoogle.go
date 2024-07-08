@@ -131,7 +131,7 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 				HttpOnly: true,
 			})
 
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		}
 	}
 }
@@ -189,7 +189,7 @@ func completeProfile(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 	})
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 }
 
 func isValidString(str string) bool {

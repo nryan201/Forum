@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS topics;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS reports;
 DROP TABLE IF EXISTS messenger;
+DROP TABLE IF EXISTS dislikes;
 -- Création des tables
 
 -- Table Users

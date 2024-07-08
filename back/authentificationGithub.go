@@ -157,7 +157,7 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 				Path:     "/",
 				HttpOnly: true,
 			})
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 		}
 	}
 }
@@ -204,5 +204,5 @@ func completeProfileGithub(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 	})
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 }

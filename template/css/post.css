@@ -389,19 +389,22 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
-.comments {
+.comment {
+    margin-bottom: 20px;
     padding: 10px;
-    margin-top: 15px;
-    margin-bottom: 10px;
-    background: rgba(255, 255, 255, 0.31);
-    border-radius: 12px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(3.5px);
-    -webkit-backdrop-filter: blur(3.5px);
-    border: 1px solid rgba(255, 255, 255, 0.55);
-    text-align: left;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.comments {
+    padding: 20px;
+    margin-top: 25px;
+    background: rgba(0, 0, 50, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 .comment .comment-author {
     font-weight: bold;
 }
@@ -436,3 +439,4 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
+
