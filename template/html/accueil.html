@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/css/accueil.css">
     <link rel="icon" type="image/vnd.icon" href="/ressource/image/maga.JPG">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js"></script>
     <script src="/script/accueil.js"></script>
     <title>Le Forum</title>
@@ -19,8 +20,13 @@
         <div>
             <a class="profile" id="auth-button" href="/connexion">Connexion</a>
         </div>
+        <div class="messages-container">
+            <div class="Write-It">
+                <a class="Open-Messages" id="Messages" href="/message" style="display: none;">Messagerie</a>
+            </div>
+        </div>
         <div>
-            <a class="postCreation" id="Creation-button" href="/createpost">Create</a>
+            <a class="postCreation" id="creation-button" href="/createpost" style="display: none;">Create</a>
         </div>
         <div class="star"></div>
         <div class="star1"></div>
@@ -93,4 +99,6 @@
 <script src="../script/hashtag.js"></script>
 <script src="../script/topic.js"></script>
 </body>
+
+
 </html>

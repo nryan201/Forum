@@ -8,7 +8,7 @@ Ce projet est un forum web développé en Go (Golang) pour le backend, avec des 
 
 - Création de compte utilisateur
 - Connexion et déconnexion
-- Connexion et inscription via GitHub, Google et Facebook
+- Connexion et inscription via GitHub, Google et Meta
 - Publication de sujets et de commentaires
 - Gestion des hashtags
 - Messagerie privée entre utilisateurs
@@ -47,6 +47,9 @@ Ce projet est un forum web développé en Go (Golang) pour le backend, avec des 
     ```sh
     docker-compose up --build
     ```
+
+5. Installer un compilateur pour la base de données : 
+
 
 ## Utilisation
 

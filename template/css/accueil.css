@@ -6,23 +6,24 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
     position: relative;
 }
 
 .container {
     display: flex;
+    flex-direction: column;
     height: 100vh;
     justify-content: space-between;
 }
 
-.Search-Container{
+.Search-Container {
     display: flex;
     justify-content: center;
 }
 
-.Search-Container #SearchBar{
+.Search-Container #SearchBar {
     display: flex;
     margin-top: 15px;
     padding: 10px 10px;
@@ -42,8 +43,9 @@ body {
     position: relative;
     z-index: 2;
 }
+
 .profile-section {
-    width: 10%;
+    width: 250px;
     padding: 15px;
     display: flex;
     flex-direction: column;
@@ -55,115 +57,16 @@ body {
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
 }
-.star,.star1,.star2,.star3,.star4 {
+
+.star, .star1, .star2, .star3, .star4, .star5, .star6, .star7, .star8, .star9 {
     position: absolute;
     width: 20px;
     height: 20px;
     background: yellow;
     clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
-.star5,.star6,.star7,.star8,.star9 {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: yellow;
-    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-}
 
-.profile{
-    align-items: center;
-    padding: 15px 40px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #4181f8;
-    border: none;
-    border-radius: 50px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s, transform 0.3s;
-    cursor: pointer;
-    margin-bottom: 8px;
-    top: 30px;
-    position: relative;
-    margin-top: auto;
-        z-index: 2;
-    }
-    
-    .postCreation {
-        align-items: center;
-        padding: 15px 30px;
-        font-size: 15px;
-        font-weight: bold;
-        color: #fff;
-        background-color: #4181f8;
-        border: none;
-        border-radius: 50px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        text-decoration: none;
-        transition: background-color 0.3s, transform 0.3s;
-        cursor: pointer;
-        margin-bottom: 8px;
-        top: 80px;
-        position: relative;
-    z-index: 2;
-}
-.connexion{
-    align-items: center;
-    padding: 10px 25px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #4181f8;
-    border: none;
-    border-radius: 50px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s, transform 0.3s;
-    cursor: pointer;
-    margin-bottom: 8px;
-    top: 30px;
-    position: relative;
-    margin-top: auto;
-    z-index: 2;
-}
-
-.log-out {
-    margin-top: auto;
-        /* Pousse cet élément en bas du container */
-        padding: 20px;
-        /* Ajoute du padding pour un meilleur espacement */
-}
-
-.log-out .LogOut-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 20px;
-    font-size: 15px;
-    font-weight: normal;
-    color: #fff;
-    background-color: #4181f8;
-    border: none;
-    border-radius: 50px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s, transform 0.3s;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
-}
-
-.log-out .LogOut-link i {
-    margin-right: 10px;
-        /* Espace entre l'icône et le texte */
-    color: white;
-}
-.contact{
+.profile, .postCreation, .connexion, .log-out .LogOut-link, .Open-Messages, .contact {
     align-items: center;
     padding: 15px 30px;
     font-size: 15px;
@@ -177,16 +80,37 @@ body {
     text-decoration: none;
     transition: background-color 0.3s, transform 0.3s;
     cursor: pointer;
-    top: 3483%;
+    margin-bottom: 8px;
     position: relative;
     z-index: 2;
+}
+
+.postCreation {
+    top: 250px;
+}
+
+.connexion {
+    top: 30px;
     margin-top: auto;
 }
+
+.log-out {
+    margin-top: auto;
+    padding: 20px;
+}
+
+.Open-Messages {
+    top: 230px;
+}
+
+.contact {
+    top: 80vh;
+    margin-top: auto;
+}
+
 .side-section {
-    display: flex;
-        flex-direction: column;
-        height: 100vh;
-    width: 20%;
+    width: 250px;
+    height: 100%;
     padding: 10px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 16px;
@@ -198,7 +122,6 @@ body {
 
 .main-section {
     flex-grow: 1;
-    padding: 10px;
     text-align: center;
 }
 
@@ -309,7 +232,8 @@ body {
     cursor: pointer;
     border-bottom: 1px solid #85aefa;
 }
-#searchInput{
+
+#searchInput {
     display: inline-block;
     align-items: center;
     margin-bottom: 8px;
@@ -328,7 +252,7 @@ body {
     border-bottom: 1px solid #85aefa;
 }
 
-.createCategory::placeholder, .createHashtags::placeholder, .SearchInput::placeholder {
+.createCategory::placeholder, .createHashtags::placeholder, #searchInput::placeholder {
     color: #fff;
 }
 
@@ -348,14 +272,13 @@ body {
     cursor: pointer;
     margin-bottom: 8px;
 }
-.contact:hover, .profile:hover, .connexion:hover{
+
+.contact:hover, .profile:hover, .connexion:hover {
     background-color: #8e004e;
     transform: translateY(-3px);
 }
 
-.categoryBtn:hover,
-.hashtagsBtn:hover,
-.postCreation:hover {
+.categoryBtn:hover, .hashtagsBtn:hover, .postCreation:hover {
     background-color: #45a049;
     transform: translateY(-3px);
 }
@@ -365,6 +288,24 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
-.LogOut-link:hover{
+
+.LogOut-link:hover {
     background-color: red;
+}
+
+.Open-Messages:hover {
+    background-color: #FBBC05;
+}
+
+/* Media Queries for responsiveness */
+@media (min-width: 768px) {
+    .container {
+        flex-direction: row; /* Row direction for larger screens */
+    }
+    .profile-section {
+        width: 15%; /* Specific width for larger screens */
+    }
+    .side-section {
+        width: 25%; /* Specific width for larger screens */
+    }
 }

@@ -1,28 +1,40 @@
 document.addEventListener("DOMContentLoaded", function () {
     fetch("/api/check-auth")
-        .then(function (response) {
-            console.log("Received response from /api/check-auth");
-            return response.json();
-        })
-        .then(function (data) {
-            console.log("Data received from /api/check-auth:", data);
-            const button = document.getElementById('auth-button');
-            if (button) {
-                console.log("Auth button found:", button);
-                if (data.authenticated) {
-                    console.log("User is authenticated");
-                    button.textContent = "Profile";
-                    button.href = "/profil";
-                } else {
-                    console.log("User is not authenticated");
-                    button.textContent = "Connexion";
-                    button.href = "/connexion";
+        .then(response => response.json())
+        .then(data => {
+            const authButton = document.getElementById('auth-button');
+            const createPostButton = document.getElementById('creation-button');
+            const messageButton = document.getElementById('Messages');
+
+            if (data.authenticated) {
+                // Mise à jour du bouton d'authentification
+                if (authButton) {
+                    authButton.textContent = "Profile";
+                    authButton.href = "/profil";
+                }
+                // Afficher le bouton de création de post
+                if (createPostButton) {
+                    createPostButton.style.display = 'inline-block';
+                }
+                // Afficher le bouton de messagerie
+                if (messageButton) {
+                    messageButton.style.display = 'inline-block';
                 }
             } else {
-                console.error("Auth button not found");
+                // Mise à jour du bouton d'authentification
+                if (authButton) {
+                    authButton.textContent = "Connexion";
+                    authButton.href = "/connexion";
+                }
+                // Masquer le bouton de création de post
+                if (createPostButton) {
+                    createPostButton.style.display = 'none';
+                }
+                // Masquer le bouton de messages
+                if (messageButton) {
+                    messageButton.style.display = 'none';
+                }
             }
         })
-        .catch(function (error) {
-            console.error("Error fetching /api/check-auth:", error);
-        });
+        .catch(error => console.error("Erreur lors de la vérification d'authentification:", error));
 });
