@@ -36,35 +36,28 @@ func addHashtagHandler(db *sql.DB) http.HandlerFunc {
 
 func listHashtagsHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		rows, err := db.Query("SELECT id, name FROM hashtags")
+		rows, err := db.Query("SELECT name FROM hashtags")
 		if err != nil {
-			log.Printf("Error querying hashtags: %v", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 		defer rows.Close()
 
-		var hashtags []struct {
-			ID   int    `json:"id"`
-			Name string `json:"name"`
-		}
-
+		var hashtags []string
 		for rows.Next() {
-			var hashtag struct {
-				ID   int    `json:"id"`
-				Name string `json:"name"`
+			var name string
+			if err := rows.Scan(&name); err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				return
 			}
-			if err := rows.Scan(&hashtag.ID, &hashtag.Name); err != nil {
-				log.Printf("Error scanning hashtag: %v", err)
-				continue
-			}
-			hashtags = append(hashtags, hashtag)
+			hashtags = append(hashtags, name)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(hashtags)
 	}
 }
+
 func addCategoryHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
@@ -92,29 +85,21 @@ func addCategoryHandler(db *sql.DB) http.HandlerFunc {
 
 func listCategoriesHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		rows, err := db.Query("SELECT id, name FROM categories")
+		rows, err := db.Query("SELECT name FROM categories")
 		if err != nil {
-			log.Printf("Error querying categories: %v", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 		defer rows.Close()
 
-		var categories []struct {
-			ID   int    `json:"id"`
-			Name string `json:"name"`
-		}
-
+		var categories []string
 		for rows.Next() {
-			var category struct {
-				ID   int    `json:"id"`
-				Name string `json:"name"`
+			var name string
+			if err := rows.Scan(&name); err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				return
 			}
-			if err := rows.Scan(&category.ID, &category.Name); err != nil {
-				log.Printf("Error scanning category: %v", err)
-				continue
-			}
-			categories = append(categories, category)
+			categories = append(categories, name)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
