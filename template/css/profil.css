@@ -208,6 +208,11 @@ body {
     color: #000000;
     padding: 10px;
     width: 20vh;
+<<<<<<< HEAD
+        /* Converti de 200px à 20vh pour plus de cohérence */
+=======
+    /* Converti de 200px à 20vh pour plus de cohérence */
+>>>>>>> FrontRoutes
     position: absolute;
     right: 0;
     top: 50px;
@@ -228,8 +233,31 @@ body {
     backdrop-filter: blur(6.5px);
     -webkit-backdrop-filter: blur(6.5px);
     border: 1px solid rgba(255, 255, 255, 0.55);
+    }
+
+    .topic-content {
+        padding: 10px;
+        margin: 20px;
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(1.1px);
+        -webkit-backdrop-filter: blur(1.1px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        flex-shrink: 0;
+        /* Empêche la réduction */
+        width: 80vh;
+        /* Converti de 80% à 80vh */
+=======
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
 }
-    
+
 .topic-content {
     padding: 10px;
     margin: 20px;
@@ -240,10 +268,11 @@ body {
     backdrop-filter: blur(1.1px);
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
-    flex-shrink: 0; /* Empêche la réduction */
-    width: 80vh /* Converti de 80% à 80vh */
+    flex-shrink: 0;
+    /* Empêche la réduction */
+    width: 80vh;
+    /* Converti de 80% à 80vh */
 }
-
 
 .profile-section {
     background: rgba(255, 255, 255, 0.31);
@@ -271,6 +300,7 @@ body {
     backdrop-filter: blur(4.7px);
     -webkit-backdrop-filter: blur(4.7px);
     border: 1px solid rgba(44, 152, 155, 0.3);
+>>>>>>> FrontRoutes
 }
 
 .profile-section {
@@ -281,3 +311,22 @@ body {
     -webkit-backdrop-filter: blur(6.5px);
     border: 1px solid rgba(255, 255, 255, 0.55);
 }
+.admin-button {
+    font-size: 20px;
+    color: #FFFFFF;
+    padding: 10px;
+    text-decoration: none;
+    margin: 20px;
+    display: inline-block;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    position: absolute;
+    top: 95px;
+    right: 20px;
+}
+

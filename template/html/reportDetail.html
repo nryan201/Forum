@@ -1,28 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/css/accueil.css">
-    <link rel="icon" type="image/vnd.icon" href="/ressource/image/maga.JPG">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js"></script>
-    <script src="/script/accueil.js"></script>
-    <title>Le Forum</title>
-    <script src="/script/switch.js"></script>
-    </head>
-
+    <title>Signaler un Topic</title>
+    <link rel="stylesheet" href="../css/report.css">
+</head>
 <body>
-    <form id="searchForm">
-        <input type="text" id="searchInput" placeholder="Search topics or users...">
-        <button type="submit">Search</button>
-    </form>
-    <div id="searchResults"></div>
-
 <div class="container">
     <div class="profile-section">
         <div>
-            <a class="profile" id="auth-button" href="/connexion">Connexion</a>
+            <a class="profileBtn" href="/profil">Profil</a>
+        </div>
+        <div>
+            <a class="returnHome" href="/accueil">Home</a>
+        </div>
+        <div>
+            <a class="contact" href="/contact">Contact</a>
         </div>
         <div class="star"></div>
         <div class="star1"></div>
@@ -30,21 +24,20 @@
         <div class="star3"></div>
         <div class="star4"></div>
         <script src="../script/Star.js"></script>
-        <div>
-            <a class="contact" href="/contact">Contact</a>
-        </div>
     </div>
     <div class="main-section">
-        <div class="title">Bienvenue sur le Forum</div>
-        <div id="topic-container">
-            {{range .}}
-            <div class="topic" id="#topic">
-                <h3>{{.Title}}</h3>
-                <p>{{.Description}}</p>
-            </div>
-            {{end}}
+        <div class="title">Signaler un Topic</div>
+        <div class="post-detail">
+            <form method="POST" action="/submit-report">
+                <input type="hidden" name="topic_id" value="{{.TopicID}}">
+                <div class="form-group">
+                    <textarea id="reason" name="reason" placeholder="Décrivez la raison du signalement..." required></textarea>
+                </div>
+                <button type="submit" class="report-button">Envoyer le signalement</button>
+            </form>
         </div>
     </div>
+
     <div class="side-section">
         <div class="categories">
             <div class="star5"></div>
@@ -55,7 +48,7 @@
             <script src="../script/Star2.js"></script>
             <form id="createCategoryForm" method="POST" action="/CreateCategory">
                 <input type="text" class="createCategory" name="categoryName" placeholder="Enter new category">
-                <button class="categoryBtn" type="submit">Create</button>
+                <button class="categoryBtn" type="submit" formmethod="post">Create</button>
             </form>
             <h3>Categories</h3>
             <ul id="categoriesList">
@@ -67,7 +60,7 @@
         <div class="hashtags">
             <form id="createHashtagForm" method="POST" action="/Create#">
                 <input type="text" class="createHashtags" name="hashtagsName" placeholder="Enter new hashtags">
-                <button class="hashtagsBtn" type="submit">Create</button>
+                <button class="hashtagsBtn" type="submit" formmethod="post">Create</button>
             </form>
             <h3>Hashtags</h3>
             <ul id="hashtagsList">
@@ -75,19 +68,10 @@
                 <li>#mesboules</li>
             </ul>
         </div>
-        <div class="Search-Container">
-            <form id="searchForm">
-                <input type="text" id="searchInput" placeholder="Search topics or users...">
-                <button type="submit" id="SearchBar">Search</button>
-            </form>
-            <div id="searchResults"></div>
-        </div>
     </div>
 </div>
 <script src="../script/category.js"></script>
 <script src="../script/hashtag.js"></script>
-<script src="../script/topic.js"></script>
+<script src="../script/scroller.js"></script>
 </body>
-
-
 </html>

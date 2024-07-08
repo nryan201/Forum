@@ -18,10 +18,11 @@ func Server() {
 	http.Handle("/script/", http.StripPrefix("/script/", http.FileServer(http.Dir("template/script/"))))
 
 	http.HandleFunc("/", routeHandler)
-	http.HandleFunc("/block", BlockHandler)
+	//http.HandleFunc("/block", BlockHandler)
 	http.HandleFunc("/login", loginUser)
 	http.HandleFunc("/addUser", addUser)
-	http.HandleFunc("/api/check-auth", CheckAuthHandler)
+	http.HandleFunc("/addTopic", addTopicHandler) // Add this for creating new topics
+	http.HandleFunc("/topics", getTopicsHandler)  // Add this to fetch and display topics on the homepage
 
 	//logout
 	http.HandleFunc("/logout", logout)
@@ -40,11 +41,37 @@ func Server() {
 	http.HandleFunc("/accueil", AccueilHandle)
 	http.HandleFunc("/contact", ContactHandle)
 	http.HandleFunc("/profil", profilePage)
-	http.HandleFunc("/post", PostHandle)
-	http.HandleFunc("/connexion", ConnexionHandle)
-	http.HandleFunc("/topic", TopicHandle)
-	
 
+	//Handle Post
+	http.HandleFunc("/createpost", PostHandle) // celui sert a la creation de post
+	http.HandleFunc("/submit-post", postHandler)
+	http.HandleFunc("/post", postDetailHandler)        // celui sert a la visualisation de post
+	http.HandleFunc("/add-comment", addCommentHandler) // celui sert a la creation de commentaire
+	http.HandleFunc("/editpost", editPostHandle)       // for editing posts
+	http.HandleFunc("/submit-edit", editHandler)
+
+	// Admin routes
+	http.HandleFunc("/admin", AdminHandle)
+	http.HandleFunc("/admin/delete-user", DeleteUserHandle)
+	http.HandleFunc("/admin/delete-topic", DeleteTopicHandle)
+	http.HandleFunc("/admin/delete-comment", DeleteCommentHandle)
+	http.HandleFunc("/admin/delete-category", DeleteCategoryHandle)
+	http.HandleFunc("/admin/delete-hashtag", DeleteHashtagHandle)
+	http.HandleFunc("/admin/handle-report", HandleReport)
+
+	// Report routes
+	http.HandleFunc("/report-topic", reportTopicDetailHandler)
+	http.HandleFunc("/submit-report", submitReportHandler)
+
+	// Message routes
+	http.HandleFunc("/get-users", getUsers)
+	http.HandleFunc("/message", messagePage)
+	http.HandleFunc("/send-message", sendMessage)
+	http.HandleFunc("/get-messages", getMessages)
+	http.HandleFunc("/get-conversations", getConversations)
+	http.HandleFunc("/conversation/", conversationDetailPage)
+	http.HandleFunc("/conversation/messages/", getConversationMessages)
+	http.HandleFunc("/conversations", conversationsPage)
 	// Path to your SSL certificate and key
 	certPath := "./permsHttps/cert.pem"
 	keyPath := "./permsHttps/key.pem"
@@ -110,32 +137,32 @@ func handleTopic(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleComment(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/comment/")
+	//	idStr := strings.TrimPrefix(r.URL.Path, "/comment/")
 	switch r.Method {
 	case "GET":
-		GetComment(w, r, idStr)
+		//GetComment(w, r, idStr)
 	case "POST":
-		CreateComment(w, r)
+		//CreateComment(w, r)
 	case "PUT":
-		UpdateComment(w, r, idStr)
+		//UpdateComment(w, r, idStr)
 	case "DELETE":
-		DeleteComment(w, r, idStr)
+		//DeleteComment(w, r, idStr)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
 func handleUser(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/user/")
+	//	idStr := strings.TrimPrefix(r.URL.Path, "/user/")
 	switch r.Method {
 	case "GET":
-		GetUser(w, r, idStr)
+		//GetUser(w, r, idStr)
 	case "POST":
-		CreateUser(w, r)
+		//CreateUser(w, r)
 	case "PUT":
-		UpdateUser(w, r, idStr)
+		//UpdateUser(w, r, idStr)
 	case "DELETE":
-		DeleteUser(w, r, idStr)
+	//	DeleteUser(w, r, idStr)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
@@ -237,14 +264,14 @@ func ProfilHandle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func PostHandle(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/post" {
+	if r.URL.Path != "/createpost" {
 		http.NotFound(w, r)
 		return
 	}
-	tmpl, err := template.ParseFiles("template/html/post.html") // return to post
+	tmpl, err := template.ParseFiles("template/html/post.html") // Update to the path of your create post template
 	if err != nil {
 		log.Printf("Error parsing template %v", err)
-		http.Error(w, "internal server errror ", http.StatusInternalServerError)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -252,4 +279,50 @@ func PostHandle(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
 	}
+}
+func postHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Error parsing form", http.StatusBadRequest)
+		return
+	}
+
+	title := r.FormValue("title")
+	description := r.FormValue("description")
+
+	// Retrieve user_id from cookie
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther) // Redirect to login page if not authenticated
+		return
+	}
+	userID := cookie.Value
+
+	db := dbConn()
+	defer db.Close()
+
+	// Generate the next topic ID by counting existing entries
+	var topicID int
+	err = db.QueryRow("SELECT COUNT(*) FROM topics").Scan(&topicID)
+	if err != nil {
+		log.Printf("Error counting topics: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	topicID++ // Increment to get the new topic ID
+
+	// Insert the new topic
+	_, err = db.Exec("INSERT INTO topics (id, user_id, title, description) VALUES (?, ?, ?, ?)", topicID, userID, title, description)
+	if err != nil {
+		log.Printf("Error inserting new topic: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther) // Redirect to home or confirmation page
 }

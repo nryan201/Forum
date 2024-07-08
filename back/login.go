@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -75,14 +75,8 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Générer un nouvel ID unique
-		var count int
-		err = tx.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
-		if err != nil {
-			tx.Rollback()
-			log.Fatal(err)
-		}
-		newID := strconv.Itoa(count + 1)
+		// Générer un nouvel UUID unique
+		newID := uuid.New().String()
 
 		// Insérer le nouvel utilisateur avec le rôle par défaut "user"
 		_, err = tx.Exec("INSERT INTO users(id, username, name, birthday, password, email, role) VALUES(?, ?, ?, ?, ?, ?, ?)", newID, username, name, birthday, hashedPassword, email, "user")
@@ -146,8 +140,8 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 			Name:     "user_id",
 			Value:    userID,
 			Path:     "/",
-			HttpOnly: true,
-			
+			HttpOnly: false,
+			Secure:   true,
 		})
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 	} else {
@@ -185,15 +179,9 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 	// Lire le cookie
 	cookie, err := r.Cookie("user_id")
 	if err != nil {
-		if err == http.ErrNoCookie {
-			// Pas de cookie, utilisateur non connecté
-			log.Println("No cookie found, redirecting to login page")
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
-		}
-		// Autre erreur
-		log.Println("Error reading cookie:", err)
-		http.Error(w, "Erreur lors de la lecture du cookie", http.StatusInternalServerError)
+		// Handle no cookie or cookie read error by redirecting to login page
+		log.Printf("Error reading cookie or no cookie found: %v", err)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
@@ -210,18 +198,22 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 		Firstname string
 		Birthdate string
 		Email     string
+		Role      string
+		IsAdmin   bool
 	}
 	user.Username = "-"
 	user.Name = "-"
 	user.Firstname = "-"
 	user.Birthdate = "-"
 	user.Email = "-"
+	user.Role = "-"
+	user.IsAdmin = false
 
-	err = db.QueryRow("SELECT username, name, strftime('%Y-%m-%d', birthday), email FROM users WHERE id = ?", userID).Scan(&user.Username, &user.Name, &user.Birthdate, &user.Email)
+	err = db.QueryRow("SELECT username, name, strftime('%Y-%m-%d', birthday), email, role FROM users WHERE id = ?", userID).Scan(&user.Username, &user.Name, &user.Birthdate, &user.Email, &user.Role)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Println("No user found with id:", userID)
-			http.Error(w, "Utilisateur non trouvé", http.StatusNotFound)
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
 		log.Println("Error retrieving user data:", err)
@@ -229,6 +221,12 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Vérifier si l'utilisateur est un administrateur
+	if user.Role == "admin" {
+		user.IsAdmin = true
+	}
+
+	log.Printf("User data retrieved: %+v\n", user)
 
 	// Rendre le template avec les données de l'utilisateur
 	tmplProfile := template.Must(template.ParseFiles("./template/html/profil.html"))

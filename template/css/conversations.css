@@ -1,0 +1,63 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('/image/fond-ecran-forum.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+.container {
+    position: relative;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px 20px 80px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+h1 {
+    text-align: center;
+    color: #fff;
+}
+.conversation {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.31);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.conversation:hover {
+    background-color: rgba(255, 255, 255, 0.45);
+}
+.add-button {
+    position: absolute;
+    right: 50%; /* Centers the button horizontally */
+    bottom: 20px; /* Distance from the bottom of the container */
+    transform: translateX(50%); /* Corrects the centering by shifting half its width back */
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+}
+.add-button:hover {
+    background-color: #45a049;
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum</title>
+    <title>{{.Title}} - Forum</title>
     <link rel="stylesheet" href="../css/post.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js"></script>
 </head>
@@ -27,17 +27,46 @@
         <script src="../script/Star.js"></script>
     </div>
     <div class="main-section">
-        <div class="title">Forum</div>
-        <form method="POST" action="/submit-post">
-            <div class="post-detail">
-                <div class="post-content">
-                    <input type="text" name="title" class="post-title" placeholder="Titre du Post" required>
-                    <textarea name="description" class="post-description" placeholder="Description détaillée du post." required></textarea>
-                    <div class="post-author">Auteur: <span class="author-name">Nom de l'utilisateur</span></div>
-                    <button type="submit" class="post-Button">POSTEZ !</button>
+        <div class="title">{{.Title}}</div>
+        <div class="post-detail">
+            <div class="post-content">
+                <h2>{{.Title}}</h2>
+                <p>{{.Description}}</p>
+                <div class="post-author">Auteur: <span class="author-name">{{.Username}}</span></div>
+                {{if .IsOwner}}
+                <div>
+                    <a href="/editpost?id={{.ID}}" class="edit-button">Edit Post</a>
                 </div>
+                {{end}}
+            </div>
+        </div>
+
+        <div class="comments">
+            <h3>Commentaires</h3>
+            {{range .Comments}}
+            <div class="comment">
+                <div class="comment-author">Auteur: <span class="author-name">{{.Username}}</span></div>
+                <p>{{.Content}}</p>
+                <div class="comment-date">Posté le: {{.CreatedAt}}</div>
+            </div>
+            {{end}}
+        </div>
+
+        {{if .IsAuthenticated}}
+        {{if or (eq .Role "admin") (eq .Role "moderator")}}
+        <form method="GET" action="/report-topic">
+            <input type="hidden" name="topic_id" value="{{.ID}}">
+            <button type="submit" class="report-Button">Signaler ce topic</button>
+        </form>
+        {{end}}
+        <form method="POST" action="/add-comment">
+            <input type="hidden" name="topic_id" value="{{.ID}}">
+            <div class="add-comment">
+                <textarea name="content" placeholder="Ajoutez un commentaire..." class="comment-text" required></textarea>
+                <button type="submit" class="comment-Button">Commenter</button>
             </div>
         </form>
+        {{end}}
     </div>
 
     <div class="side-section">
