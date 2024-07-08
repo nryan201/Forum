@@ -108,6 +108,15 @@ CREATE TABLE likes (
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
+CREATE TABLE dislikes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    topic_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (topic_id) REFERENCES topics (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
 -- Insertion des données
 
 -- Insertion dans la table Users
@@ -150,6 +159,12 @@ INSERT INTO topic_categories (topic_id, category_id) VALUES
 
 -- Insertion dans la table Likes
 INSERT INTO likes (topic_id, user_id) VALUES
+(1, 1),
+(1, 2),
+(2, 1);
+
+-- Insertion dans la table Dislikes
+INSERT INTO dislikes (topic_id, user_id) VALUES
 (1, 1),
 (1, 2),
 (2, 1);
