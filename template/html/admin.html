@@ -199,7 +199,7 @@
             {{range .Reports}}
             <tr>
                 <td>{{.ID}}</td>
-                <td>{{if .TopicID.Valid}}{{.TopicID.Int64}}{{end}}</td>
+                <td>{{.TopicID}}</td>
                 <td>{{if .CommentID.Valid}}{{.CommentID.Int64}}{{end}}</td>
                 <td>{{.UserID}}</td>
                 <td>{{.Reason}}</td>

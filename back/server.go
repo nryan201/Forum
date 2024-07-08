@@ -1,6 +1,7 @@
 package back
 
 import (
+	"github.com/google/uuid"
 	"html/template"
 	"log"
 	"net/http"
@@ -56,6 +57,7 @@ func Server() {
 	http.HandleFunc("/admin/delete-category", DeleteCategoryHandle)
 	http.HandleFunc("/admin/delete-hashtag", DeleteHashtagHandle)
 	http.HandleFunc("/admin/handle-report", HandleReport)
+	http.HandleFunc("/admin/promote-user", PromoteUserHandle)
 
 	// Report routes
 	http.HandleFunc("/report-topic", reportTopicDetailHandler)
@@ -269,18 +271,16 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
 	defer db.Close()
 
-	// Generate the next topic ID by counting existing entries
-	var topicID int
-	err = db.QueryRow("SELECT COUNT(*) FROM topics").Scan(&topicID)
+	// Generate a new UUID for the topic ID
+	topicUUID, err := uuid.NewRandom()
 	if err != nil {
-		log.Printf("Error counting topics: %v", err)
+		log.Printf("Error generating UUID: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	topicID++ // Increment to get the new topic ID
 
-	// Insert the new topic
-	_, err = db.Exec("INSERT INTO topics (id, user_id, title, description) VALUES (?, ?, ?, ?)", topicID, userID, title, description)
+	// Insert the new topic using the UUID
+	_, err = db.Exec("INSERT INTO topics (id, user_id, title, description) VALUES (?, ?, ?, ?)", topicUUID, userID, title, description)
 	if err != nil {
 		log.Printf("Error inserting new topic: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

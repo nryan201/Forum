@@ -30,7 +30,7 @@ CREATE TABLE users (
 
 -- Table Topics
 CREATE TABLE topics (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id TEXT PRIMARY KEY ,
     user_id TEXT,
     title TEXT NOT NULL,
     description TEXT NOT NULL,
@@ -116,9 +116,9 @@ INSERT INTO users (id,username,name, password, birthday, email, role) VALUES
 (2,'user2','user2', '$2y$10$3sisfsHwR92g6Jo9udd1TuIgoU3DPgL/9.Z0mkRsKGCxTd10Tlq5a', '1999-01-18', 'user2@example.com', 'moderator'),
 (3,'user3','user3', '$2y$10$3sisfsHwR92g6Jo9udd1TuIgoU3DPgL/9.Z0mkRsKGCxTd10Tlq5a', '1999-01-18', 'user3@exemple.com', 'admin');
 -- Insertion dans la table Topics
-INSERT INTO topics (user_id, title, description) VALUES
-(1, 'Topic Title 1', 'Description of topic 1'),
-(2, 'Topic Title 2', 'Description of topic 2');
+INSERT INTO topics (id,user_id, title, description) VALUES
+('a93a7a42-3d98-48f7-85c6-e3b6c93d6109',1, 'Topic Title 1', 'Description of topic 1'),
+('a93a7a42-3d98-48f7-85c6',2, 'Topic Title 2', 'Description of topic 2');
 
 -- Insertion dans la table Comments
 INSERT INTO comments (topic_id, user_id, content) VALUES

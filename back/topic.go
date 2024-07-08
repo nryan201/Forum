@@ -49,14 +49,14 @@ func getTopicsHandler(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	var topics []struct {
-		ID          int    `json:"id"`
+		ID          string `json:"id"`
 		Title       string `json:"title"`
 		Description string `json:"description"`
 	}
 
 	for rows.Next() {
 		var t struct {
-			ID          int    `json:"id"`
+			ID          string `json:"id"`
 			Title       string `json:"title"`
 			Description string `json:"description"`
 		}
@@ -70,6 +70,7 @@ func getTopicsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(topics)
 }
+
 func postDetailHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the topic ID from the query parameters
 	topicID := r.URL.Query().Get("id")
@@ -173,7 +174,7 @@ func editPostHandle(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	var topic struct {
-		ID          int
+		ID          string
 		Title       string
 		Description string
 		Username    string
@@ -202,7 +203,7 @@ func editPostHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		ID          int
+		ID          string
 		Title       string
 		Description string
 		Username    string

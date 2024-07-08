@@ -297,15 +297,16 @@ func HandleReport(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
 	defer db.Close()
 
-	if action == "ignore" {
+	switch action {
+	case "ignore":
 		_, err := db.Exec("UPDATE reports SET status = 'ignored' WHERE id = ?", reportID)
 		if err != nil {
 			log.Printf("Error ignoring report: %v", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-	} else if action == "delete" {
-		var topicID sql.NullInt64
+	case "delete":
+		var topicID string
 		var commentID sql.NullInt64
 		err := db.QueryRow("SELECT topic_id, comment_id FROM reports WHERE id = ?", reportID).Scan(&topicID, &commentID)
 		if err != nil {
@@ -313,8 +314,8 @@ func HandleReport(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-		if topicID.Valid {
-			_, err = db.Exec("DELETE FROM topics WHERE id = ?", topicID.Int64)
+		if topicID != "" {
+			_, err = db.Exec("DELETE FROM topics WHERE id = ?", topicID)
 			if err != nil {
 				log.Printf("Error deleting topic: %v", err)
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -327,7 +328,7 @@ func HandleReport(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
-	} else if action == "deleteReport" {
+	case "deleteReport":
 		_, err := db.Exec("DELETE FROM reports WHERE id = ?", reportID)
 		if err != nil {
 			log.Printf("Error deleting report: %v", err)

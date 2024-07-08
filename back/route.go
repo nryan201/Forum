@@ -12,14 +12,14 @@ import (
 
 // Topic represents a topic
 type Topic struct {
-	ID          int
+	ID          string
 	UserID      string
 	Title       string
 	Description string
 	CreatedAt   string
 }
 type TopicDetail struct {
-	ID              int
+	ID              string
 	Username        string
 	Title           string
 	Description     string
@@ -72,7 +72,7 @@ type Hashtag struct {
 
 type Report struct {
 	ID        int
-	TopicID   sql.NullInt64
+	TopicID   string
 	CommentID sql.NullInt64
 	UserID    int
 	Reason    string
