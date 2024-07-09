@@ -61,6 +61,11 @@ func Server() {
 	http.HandleFunc("/addHashtag", addHashtagHandler)
 	http.HandleFunc("/category/", categoryHandler)
 	http.HandleFunc("/hashtag/", hashtagHandler)
+
+	// Like and Dislike routes
+	http.HandleFunc("/like", addLikeHandler)
+	http.HandleFunc("/dislike", addDislikeHandler)
+
 	// Admin routes
 	http.HandleFunc("/admin", AdminHandle)
 	http.HandleFunc("/admin/delete-user", DeleteUserHandle)
