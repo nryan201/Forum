@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}} - Forum</title>
     <link rel="stylesheet" href="../css/post.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
@@ -35,6 +36,26 @@
                     <a href="/editpost?id={{.ID}}" class="edit-button">Edit Post</a>
                 </div>
                 {{end}}
+            </div>
+            <div class="interaction-buttons">
+                <div class="like-button">
+                    <i id="like" class='bx bxs-like'></i>
+                <div class="Count">
+                    <span class="like-count">0</span>
+                </div>
+                </div>
+                <div class="dislike-button">
+                    <i id="disLike" class='bx bxs-dislike' ></i>
+                <div class="Count">
+                    <span class="dislike-count">0</span>
+                </div>
+                </div>
+                <div class="share-button">
+                    <i id="share" class='bx bx-share-alt'></i>
+                <div class="Count">
+                    <span class="share-count">0</span>
+                </div>
+                </div>
             </div>
         </div>
 

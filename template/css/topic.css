@@ -339,59 +339,7 @@ body {
     flex-shrink: 0; /* Empêche la réduction */
 }
 
-.interaction-buttons{
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 50px 0;
-    gap: 10px;
-    width: 180px;
-    height: 55px;
-    padding: 5px;
-}
-.like-button, .dislike-button, .share-button{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-    width: 90px;
-    height: 30px;
-    padding: 5px;
-    margin: 0 auto 5px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 15px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(8.3px);
-    -webkit-backdrop-filter: blur(8.3px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-}
-.like-button #like{
-    color: rgba(42, 41, 41, 0.15);
-    font-size:25px;
-    -webkit-text-stroke: 0.5px black; /* for WebKit browsers */
-}
-.like-button:hover #like{
-    color: blue;
-}
-.dislike-button #disLike{
-    color: rgba(42, 41, 41, 0.15);
-    font-size:25px ;
-    -webkit-text-stroke: 0.5px black; /* for WebKit browsers */
-}
-.dislike-button #disLike:hover{
-    color: red;
-}
-.share-button #share{
-    color: rgba(42, 41, 41, 0.15);
-    font-size:25px ;
-    -webkit-text-stroke: 0.5px black; /* for WebKit browsers */
-}
-.share-button #share:hover{
-    color: green;
-}
+
 
 .categoryBtn:hover, .hashtagsBtn:hover,.profileBtn:hover {
     background-color: #45a049;

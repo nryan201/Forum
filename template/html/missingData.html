@@ -4,17 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Missing Data</title>
+    <link rel="stylesheet" href="../css/missingData.css">
 </head>
 <body>
-<h1>Complete Your Profile</h1>
-<form action="/completeProfile" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <br>
-    <label for="birthday">Birthday (YYYY-MM-DD):</label>
-    <input type="date" id="birthday" name="birthday" required>
-    <br>
-    <input type="submit" value="Submit">
-</form>
+<div class="wrapper">
+    <h1>Complete Your Profile</h1>
+    <form action="/completeProfile" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required placeholder="Enter username">
+            <label for="birthday">Birthday (YYYY-MM-DD):</label>
+            <input type="date" id="birthday" name="birthday" required>
+            <input type="submit" value="Submit">
+    </form>
+</div>
 </body>
 </html>
