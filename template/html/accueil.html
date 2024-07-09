@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +10,8 @@
     <script src="/script/accueil.js"></script>
     <title>Le Forum</title>
     <script src="/script/switch.js"></script>
-    </head>
-
+</head>
 <body>
-
 <div class="container">
     <div class="profile-section">
         <div>
@@ -41,7 +38,7 @@
     <div class="main-section">
         <div class="title">Bienvenue sur le Forum</div>
         <div id="topic-container">
-            {{range .}}
+            {{range .Topics}}
             <div class="topic" id="#topic">
                 <h3>{{.Title}}</h3>
                 <p>{{.Description}}</p>
@@ -57,27 +54,27 @@
             <div class="star8"></div>
             <div class="star9"></div>
             <script src="../script/Star2.js"></script>
-            <form id="createCategoryForm" method="POST" action="/CreateCategory">
+            <form id="createCategoryForm" method="POST" action="/addCategory">
                 <input type="text" class="createCategory" name="categoryName" placeholder="Enter new category">
                 <button class="categoryBtn" type="submit">Create</button>
             </form>
             <h3>Categories</h3>
             <ul id="categoriesList">
-                <li>Politique</li>
-                <li>Actu</li>
-                <li>Animaux</li>
+                {{range .Categories}}
+                <li>{{.Name}}</li>
+                {{end}}
             </ul>
         </div>
         <div class="hashtags">
-            <form id="createHashtagForm" method="POST" action="/Create#">
+            <form id="createHashtagForm" method="POST" action="/addHashtag">
                 <input type="text" class="createHashtags" name="hashtagsName" placeholder="Enter new hashtags">
                 <button class="hashtagsBtn" type="submit">Create</button>
             </form>
             <h3>Hashtags</h3>
             <ul id="hashtagsList">
-                <li>#Nature</li>
-                <li>#BaigneToiDansLaSeine</li>
-                <li>#Films</li>
+                {{range .Hashtags}}
+                <li>{{.Name}}</li>
+                {{end}}
             </ul>
         </div>
         <div class="Search-Container">
@@ -95,10 +92,6 @@
         </div>
     </div>
 </div>
-<script src="../script/category.js"></script>
-<script src="../script/hashtag.js"></script>
 <script src="../script/topic.js"></script>
 </body>
-
-
 </html>

@@ -16,6 +16,7 @@ func Server() {
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("template/css/"))))
 	http.Handle("/image/", http.StripPrefix("/image/", http.FileServer(http.Dir("template/ressource/image/"))))
 	http.Handle("/script/", http.StripPrefix("/script/", http.FileServer(http.Dir("template/script/"))))
+	http.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir("uploads/"))))
 
 	http.HandleFunc("/", routeHandler)
 
@@ -42,6 +43,7 @@ func Server() {
 	http.HandleFunc("/accueil", AccueilHandle)
 	http.HandleFunc("/contact", ContactHandle)
 	http.HandleFunc("/profil", profilePage)
+	http.HandleFunc("/uploadProfilePic", uploadProfilePictureHandler)
 	http.HandleFunc(("/connexion"), ConnexionHandle)
 	http.HandleFunc("/topic", TopicHandle)
 	http.HandleFunc("/api/check-auth", CheckAuthHandler)
@@ -55,11 +57,8 @@ func Server() {
 	http.HandleFunc("/submit-edit", editHandler)
 
 	//Handle Category and Hashtag
-	http.HandleFunc("/addHashtag", addHashtagHandler(db))
-	http.HandleFunc("/hashtags", listHashtagsHandler(db))
-	http.HandleFunc("/addCategory", addCategoryHandler(db))
-	http.HandleFunc("/categories", listCategoriesHandler(db))
-
+	http.HandleFunc("/addCategory", addCategoryHandler)
+	http.HandleFunc("/addHashtag", addHashtagHandler)
 	// Admin routes
 	http.HandleFunc("/admin", AdminHandle)
 	http.HandleFunc("/admin/delete-user", DeleteUserHandle)
@@ -192,14 +191,33 @@ func AccueilHandle(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	tmpl, err := template.ParseFiles("template/html/accueil.html") // return to accueil
+	tmpl, err := template.ParseFiles("template/html/accueil.html")
 	if err != nil {
 		log.Printf("Error parsing template %v", err)
-		http.Error(w, "internal server errror ", http.StatusInternalServerError)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	err = tmpl.Execute(w, nil)
+	categories, err := listCategories()
+	if err != nil {
+		log.Printf("Error listing categories: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	hashtags, err := listHashtags()
+	if err != nil {
+		log.Printf("Error listing hashtags: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	data := Data{
+		Categories: categories,
+		Hashtags:   hashtags,
+	}
+
+	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
 	}

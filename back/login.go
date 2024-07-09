@@ -40,7 +40,6 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Name: %s\n", name)
 		log.Printf("Date de naissance (originale): %s\n", birthday)
 
-		// Vérifier le format de la date
 		_, err := time.Parse("2006-01-02", birthday)
 		if err != nil {
 			http.Error(w, "Format de date incorrect", http.StatusBadRequest)
@@ -63,7 +62,6 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 
 		var existingUsername string
 
-		// Vérifier si le nom d'utilisateur est déjà pris
 		err = tx.QueryRow("SELECT username FROM users WHERE username = ?", username).Scan(&existingUsername)
 		if err != nil && err != sql.ErrNoRows {
 			tx.Rollback()
@@ -91,8 +89,6 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			tx.Rollback()
 			log.Fatal(err)
 		}
-
-		// Créer un cookie de session pour l'utilisateur nouvellement ajouté avec user_id
 		http.SetCookie(w, &http.Cookie{
 			Name:     "user_id",
 			Value:    newID,
@@ -100,7 +96,6 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 			HttpOnly: true,
 		})
 
-		// Rediriger vers la page d'accueil
 		log.Printf("Nouvel utilisateur ajouté : %s\n", username)
 		http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 	} else {
@@ -149,37 +144,31 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-
-func CheckAuthHandler(w http.ResponseWriter, r *http.Request){
+func CheckAuthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-    cookie, err := r.Cookie("user_id")
-    if err != nil {
-        if err == http.ErrNoCookie {
-            // not found cookie, user is not authenticated
-            json.NewEncoder(w).Encode(map[string]bool{"authenticated": false})
-            return
-        }
-        // error retrieving user_id cookie
-        log.Println("Error retrieving user_id cookie:", err)
-        w.WriteHeader(http.StatusBadRequest)
-        json.NewEncoder(w).Encode(map[string]string{"error": "Erreur lors de la récupération du cookie"})
-        return
-    }
-	// user_id cookie found, user is authenticated
-    authenticated := cookie.Value != ""
-    log.Printf("User authenticated: %v", authenticated)
-    json.NewEncoder(w).Encode(map[string]bool{"authenticated": authenticated})
-}
+	cookie, err := r.Cookie("user_id")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			json.NewEncoder(w).Encode(map[string]bool{"authenticated": false})
+			return
+		}
 
+		log.Println("Error retrieving user_id cookie:", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Erreur lors de la récupération du cookie"})
+		return
+	}
+
+	authenticated := cookie.Value != ""
+	log.Printf("User authenticated: %v", authenticated)
+	json.NewEncoder(w).Encode(map[string]bool{"authenticated": authenticated})
+}
 
 func profilePage(w http.ResponseWriter, r *http.Request) {
 	log.Println("Entering profilePage function")
 
-	// Lire le cookie
 	cookie, err := r.Cookie("user_id")
 	if err != nil {
-		// Handle no cookie or cookie read error by redirecting to login page
 		log.Printf("Error reading cookie or no cookie found: %v", err)
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
@@ -188,7 +177,6 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 	userID := cookie.Value
 	log.Println("Cookie found, user_id:", userID)
 
-	// Récupérer les informations de l'utilisateur depuis la base de données
 	db := dbConn()
 	defer db.Close()
 
@@ -198,6 +186,7 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 		Firstname string
 		Birthdate string
 		Email     string
+		ProfilImg string
 		Role      string
 		IsAdmin   bool
 	}
@@ -208,8 +197,11 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 	user.Email = "-"
 	user.Role = "-"
 	user.IsAdmin = false
+	user.ProfilImg = "/image/fondblanc.png"
 
-	err = db.QueryRow("SELECT username, name, strftime('%Y-%m-%d', birthday), email, role FROM users WHERE id = ?", userID).Scan(&user.Username, &user.Name, &user.Birthdate, &user.Email, &user.Role)
+	var profileImg sql.NullString
+
+	err = db.QueryRow("SELECT username, name, strftime('%Y-%m-%d', birthday), profile_image, email, role FROM users WHERE id = ?", userID).Scan(&user.Username, &user.Name, &user.Birthdate, &profileImg, &user.Email, &user.Role)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Println("No user found with id:", userID)
@@ -221,6 +213,13 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Gérer le cas où profile_image est NULL
+	if profileImg.Valid {
+		user.ProfilImg = profileImg.String
+	} else {
+		user.ProfilImg = "/image/fondblanc.png"
+	}
+
 	// Vérifier si l'utilisateur est un administrateur
 	if user.Role == "admin" {
 		user.IsAdmin = true
@@ -228,7 +227,6 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("User data retrieved: %+v\n", user)
 
-	// Rendre le template avec les données de l'utilisateur
 	tmplProfile := template.Must(template.ParseFiles("./template/html/profil.html"))
 	err = tmplProfile.Execute(w, user)
 	if err != nil {
@@ -237,15 +235,14 @@ func profilePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 func clearCookie(w http.ResponseWriter, name string) {
 	log.Println("Clearing cookie", name)
 	http.SetCookie(w, &http.Cookie{
-		Name:    name,
-		Value:   "",
-		Path:    "/",
-		MaxAge: -1,
-		Expires: time.Unix(0, 0),
+		Name:     name,
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
 	})
 }
@@ -257,13 +254,11 @@ func ClearAllCookies(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
-
-
 func logout(w http.ResponseWriter, r *http.Request) {
-	
+
 	ClearAllCookies(w, r)
 	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	w.Write([]byte("Logged out"))
-	
+
 }

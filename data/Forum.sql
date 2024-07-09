@@ -24,6 +24,7 @@ CREATE TABLE users (
     birthday DATE,
     password TEXT ,
     email TEXT,
+    profile_image TEXT,
     role TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );

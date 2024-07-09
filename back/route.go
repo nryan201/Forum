@@ -41,13 +41,14 @@ type Comment struct {
 
 // User represents a user
 type User struct {
-	ID       string `json:"id"`
-	Username string `json:"Username"`
-	Name     string
-	Password string
-	Birthday string
-	Email    string
-	Role     string
+	ID        string `json:"id"`
+	Username  string `json:"Username"`
+	Name      string
+	Password  string
+	Birthday  string
+	ProfilImg string
+	Email     string
+	Role      string
 }
 
 type Message struct {
@@ -69,7 +70,11 @@ type Hashtag struct {
 	ID   int
 	Name string
 }
-
+type Data struct {
+	Topics     []Topic
+	Categories []Category
+	Hashtags   []Hashtag
+}
 type Report struct {
 	ID        int
 	TopicID   sql.NullInt64
