@@ -56,6 +56,7 @@ body {
     backdrop-filter: blur(1.1px);
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
+    position: relative;
 }
 
 .star, .star1, .star2, .star3, .star4, .star5, .star6, .star7, .star8, .star9 {
@@ -66,9 +67,9 @@ body {
     clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
 
-.profile, .postCreation, .connexion, .log-out .LogOut-link, .Open-Messages, .contact {
+.postCreation, .connexion, .log-out .LogOut-link, .Open-Messages, .contact {
     align-items: center;
-    padding: 15px 30px;
+    padding: 20px 40px; /* Enlarged buttons */
     font-size: 15px;
     font-weight: bold;
     color: #fff;
@@ -85,8 +86,48 @@ body {
     z-index: 2;
 }
 
+.profile{
+    align-items: center;
+    padding: 20px 40px; /* Enlarged buttons */
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4181f8;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+    margin-top: 5px;
+}
+
+.postCreation, .Open-Messages {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 .postCreation {
-    top: 250px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.Open-Messages {
+    top: calc(50% + 60px); /* Adjust as needed to space buttons */
+    transform: translate(-50%, -50%);
+    margin-top: 8px;
+}
+
+.contact {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .connexion {
@@ -96,16 +137,8 @@ body {
 
 .log-out {
     margin-top: auto;
+    margin-bottom: 5px;
     padding: 20px;
-}
-
-.Open-Messages {
-    top: 230px;
-}
-
-.contact {
-    top: 80vh;
-    margin-top: auto;
 }
 
 .side-section {
@@ -118,6 +151,14 @@ body {
     backdrop-filter: blur(1.1px);
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
+    position: relative;
+}
+
+.log-out .LogOut-link {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    margin-bottom: 5px;
 }
 
 .main-section {
@@ -273,14 +314,20 @@ body {
     margin-bottom: 8px;
 }
 
-.contact:hover, .profile:hover, .connexion:hover {
+.profile:hover, .connexion:hover {
     background-color: #8e004e;
     transform: translateY(-3px);
 }
+.contact:hover{
+    background-color: #8e004e;
+}
 
-.categoryBtn:hover, .hashtagsBtn:hover, .postCreation:hover {
+.categoryBtn:hover, .hashtagsBtn:hover{
     background-color: #45a049;
     transform: translateY(-3px);
+}
+.postCreation:hover {
+    background-color: #45a049;
 }
 
 .categoryBtn:active, .hashtagsBtn:active {
@@ -308,39 +355,4 @@ body {
     .side-section {
         width: 25%; /* Specific width for larger screens */
     }
-}
-#hashtagsList a {
-    color: black; /* Ensures text is black */
-    text-decoration: none; /* No underline */
-    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
-}
-
-/* Ensuring the color and decoration don't change on hover or when active */
-#hashtagsList a:hover, #hashtagsList a:active, #hashtagsList a:focus {
-    color: black; /* Keeps text black on hover */
-    text-decoration: none; /* No underline on hover */
-}
-/* Style for category links */
-.topic a {
-    color: black; /* Ensures text is black */
-    text-decoration: none; /* No underline */
-    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
-}
-.topic a:hover, .topic a:active, .topic a:focus {
-    color: black; /* Keeps text black on hover */
-    text-decoration: none; /* No underline on hover */
-}
-#categoriesList a {
-    color: black; /* Ensures text is black */
-    text-decoration: none; /* No underline */
-    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
-}
-#categoriesList a:hover, #categoriesList a:active, #categoriesList a:focus {
-    color: black; /* Keeps text black on hover */
-    text-decoration: none; /* No underline on hover */
-}
-.search-results-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 }

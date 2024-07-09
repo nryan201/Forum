@@ -35,7 +35,10 @@
             </div>
             <i class='bx bxs-lock'></i>
         </div>
-
+        <div class="remember-forgot">
+            <label><input type="checkbox" onclick="setCookies()">Remember me</label>
+            <a href="#ForgotPassword">Forgot Password? </a>
+        </div>
         <button id="LoginButton" type="submit" class="btn">Login</button>
         <div class="register-link">
             <p>Don't have an account ?
@@ -44,7 +47,7 @@
         </div>
         <div class="Connexion-Container">
             <div class="other-connexion">
-                <a href="/loginGithub" id="github-link"><i class='bx bxl-github'></i></a>
+                <a href="#" id="github-link"><i class='bx bxl-github'></i></a>
                 <a href="/loginGoogle" id="google-link"><i class='bx bxl-google'></i></a>
                 <a href="/loginFacebook" id="facebook-link"><i class='bx bxl-meta'></i></a>
             </div>
@@ -60,6 +63,26 @@
                     input.type = "password";
                     showBtn.classList.remove('active');
                 }
+            }
+            function setCookies() {
+                var u = document.getElementById('userName').value;
+                var p = document.getElementById('passWord').value;
+            }
+
+            function getCookieData() {
+                var cookies = document.cookie.split("; ");
+                var userName = "";
+                var passWord = "";
+
+                cookies.forEach(cookie => {
+                    var [name, value] = cookie.split("=");
+                    if (name === "userName") {
+                        userName = value;
+                    } else if (name === "passWord") {
+                        passWord = value;
+                    }
+                });
+                console.log(document.cookie);
             }
         </script>
     </form>

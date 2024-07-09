@@ -13,7 +13,8 @@ body {
     height: 100%;
     overflow: auto; /* Permet le défilement vertical */
 }
-.returnHome-container{
+
+.returnHome-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -62,6 +63,7 @@ body {
     -webkit-backdrop-filter: blur(1.1px);
     border: 1px solid rgba(255, 255, 255, 0.25);
 }
+
 /* Ajustement de la base flexible pour les cartes supérieures */
 .card1, .card2 {
     flex-basis: calc(50% - 20px); /* Assure que les deux premières cartes prennent la moitié de la largeur du conteneur */
@@ -133,7 +135,30 @@ button:hover, a:hover {
     opacity: 0.7;
 }
 
-.returnHome:hover{
+.returnHome:hover {
     background-color: #8e004e;
     transform: translateY(-3px);
+}
+
+/* Media Queries pour la réactivité */
+@media (max-width: 1024px) {
+    .card-container {
+        width: 90%;
+    }
+
+    .card1, .card2, .card3, .card4, .card5 {
+        width: calc(100% / 2 - 20px); /* Deux colonnes pour les écrans moyens */
+        max-width: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-container {
+        width: 95%;
+    }
+
+    .card1, .card2, .card3, .card4, .card5 {
+        width: 100%; /* Une colonne pour les petits écrans */
+        max-width: none;
+    }
 }

@@ -55,7 +55,7 @@
             <h3>Categories</h3>
             <ul id="categoriesList">
                 {{range .Categories}}
-                <li><a href="/category/{{.ID}}">{{.Name}}</a></li>
+                    <li><a href="/category/{{.ID}}">{{.Name}}</a></li>
                 {{end}}
             </ul>
         </div>
@@ -67,7 +67,7 @@
             <h3>Hashtags</h3>
             <ul id="hashtagsList">
                 {{range .Hashtags}}
-                <li><a href="/hashtag/{{.ID}}">{{.Name}}</a></li>
+                    <li><a href="/hashtag/{{.ID}}">{{.Name}}</a></li>
                 {{end}}
             </ul>
         </div>
@@ -76,9 +76,6 @@
                 <input type="text" id="searchInput" name="search" placeholder="Search a topic"  >
                 <button type="submit" id="SearchBar">Search</button>
             </form>
-
-
-
 
         </div>
         <div class="log-out">

@@ -16,9 +16,6 @@
         <div>
             <a class="returnHome" href="/accueil">Home</a>
         </div>
-        <div>
-            <a class="contact" href="/contact">Contact</a>
-        </div>
         <div class="star"></div>
         <div class="star1"></div>
         <div class="star2"></div>
@@ -38,22 +35,6 @@
                     <a href="/editpost?id={{.ID}}" class="edit-button">Edit Post</a>
                 </div>
                 {{end}}
-            </div>
-            <div class="post-categories" id="post-categories">
-                <h4>Catégories:</h4>
-                <ul>
-                    {{range .Categories}}
-                    <li><a href="/category/{{.ID}}">{{.Name}}</a></li>
-                    {{end}}
-                </ul>
-            </div>
-            <div class="post-hashtags" id="post-hashtags">
-                <h4>Hashtags:</h4>
-                <ul>
-                    {{range .Hashtags}}
-                    <li><a href="/hashtag/{{.ID}}">#{{.Name}}</a></li>
-                    {{end}}
-                </ul>
             </div>
         </div>
 
@@ -99,9 +80,9 @@
             </form>
             <h3>Categories</h3>
             <ul id="categoriesList">
-                {{range .Categories}}
-                <li><a href="/category/{{.ID}}">{{.Name}}</a></li>
-                {{end}}
+                <li>Politique</li>
+                <li>Actu</li>
+                <li>Animaux</li>
             </ul>
         </div>
         <div class="hashtags">
@@ -111,9 +92,9 @@
             </form>
             <h3>Hashtags</h3>
             <ul id="hashtagsList">
-                {{range .Hashtags}}
-                <li><a href="/hashtag/{{.ID}}">#{{.Name}}</a></li>
-                {{end}}
+                <li>#Nature</li>
+                <li>#BaigneToiDansLaSeine</li>
+                <li>#Films</li>
             </ul>
         </div>
     </div>

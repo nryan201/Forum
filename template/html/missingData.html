@@ -1,22 +1,20 @@
+<!-- template/html/complete_profile.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Your Profile</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/missingData.css">
+    <title>Missing Data</title>
 </head>
 <body>
-<div class="wrapper">
-    <h1>Complete Your Profile</h1>
-    <form action="/completeProfile" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required placeholder="Enter username">
-        <label for="birthday">Birthday (YYYY-MM-DD):</label>
-        <input type="date" id="birthday" name="birthday" required>
-        <input type="submit" value="Submit">
-    </form>
-</div>
+<h1>Complete Your Profile</h1>
+<form action="/completeProfile" method="post">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+    <label for="birthday">Birthday (YYYY-MM-DD):</label>
+    <input type="date" id="birthday" name="birthday" required>
+    <br>
+    <input type="submit" value="Submit">
+</form>
 </body>
 </html>

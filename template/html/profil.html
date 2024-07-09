@@ -15,32 +15,23 @@
 {{end}}
 <div class="profile-wrapper">
     <div class="profile-container">
-        <div class="profile-pic" id="profile-pic" style="position: relative;">
-            <img id="profile-image" src="{{.ProfilImg}}" alt="Profile Picture">
-            <form id="upload-form" enctype="multipart/form-data">
-                <label for="profile-upload" style="display: block; position: absolute; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); opacity: 0;">
-                    <input type="file" id="profile-upload" name="profile" accept="image/*" >
-                    <img src='/image/téléchargement.jpg' alt="Download Icon" id="download-icon" style="position: absolute; bottom: 10px; right: 10px; display: none;">
-                </label>
-            </form>
-        </div>
-    </div>
-    <script src="../script/profil.js"></script>
+        <div class="profile-pic" id="profile-pic">pp du profil</div>
+        <div class="info-section">
+            <div class="info-item"><span id="username">Username :</span><p>{{.Username}}</p></div>
+            <div class="info-item"><span id="name">Name :</span><p>{{.Name}}</p></div>
+            <div class="info-item"><span id="birthdate-section">Birthdate :</span><p>{{.Birthdate}}</p></div>
+            <div class="info-item"><span id="email">Mail :</span><p>{{.Email}}</p></div>
 
-    <div class="info-section">
-        <div class="info-item"><span id="username">Username :</span><p>{{.Username}}</p></div>
-        <div class="info-item"><span id="name">Name :</span><p>{{.Name}}</p></div>
-        <div class="info-item"><span id="birthdate-section">Birthdate :</span><p>{{.Birthdate}}</p></div>
-        <div class="info-item"><span id="email">Mail :</span><p>{{.Email}}</p></div>
-
-        <div class="links-section">
-            <a href="#" id="google-link"><i class='bx bxl-google'></i></a>
-            <a href="#" id="github-link"><i class='bx bxl-github'></i></a>
-            <a href="#" id="facebook-link"><i class='bx bxl-meta'></i></a>
+            <div class="links-section">
+                <a href="#" id="google-link"><i class='bx bxl-google'></i></a>
+                <a href="#" id="github-link"><i class='bx bxl-github'></i></a>
+                <a href="#" id="facebook-link"><i class='bx bxl-meta' ></i></a>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Script -->
 <script src="../script/profil.js"></script>
 </body>
 </html>
