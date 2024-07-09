@@ -315,7 +315,7 @@ body {
 }
 
 .profile:hover, .connexion:hover {
-    background-color: #8e004e;
+    background-color: #1dc5fa;
     transform: translateY(-3px);
 }
 .contact:hover{
@@ -341,7 +341,7 @@ body {
 }
 
 .Open-Messages:hover {
-    background-color: #FBBC05;
+    background-color: #ab8e2c;
 }
 
 /* Media Queries for responsiveness */
