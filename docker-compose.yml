@@ -1,4 +1,4 @@
-version: '3'
+version: "3.9"
 services:
   app:
     build:
@@ -11,14 +11,19 @@ services:
       - ./template/ressource/images:/app/template/ressource/images
 
   nginx:
-    build:
-      context: .
-      dockerfile: nginx.Dockerfile
+    image: nginx:latest
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/sites-available:/etc/nginx/sites-available
+      - ./nginx/sites-available/default:/etc/nginx/sites-enabled/default
+      - ./permsHttps/selfsigned.crt:/etc/nginx/ssl/selfsigned.crt
+      - ./permsHttps/selfsigned.key:/etc/nginx/ssl/selfsigned.key
     depends_on:
       - app
-    volumes:
-      - ./template/ressource/images:/app/template/ressource/images
-      - ./data:/data
+
+volumes:
+  certbot-etc:
+  certbot-www:

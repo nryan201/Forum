@@ -13,11 +13,14 @@ COPY go.mod go.sum ./
 # Télécharger les dépendances
 RUN go mod download
 
+# Copier les fichiers du projet
+COPY . .
+
 # Construire l'application
-RUN go build  ./main.go
+RUN go build  -o main .
 
 # Exposer le port utilisé par l'application
-EXPOSE 8080
+EXPOSE 443
 
 # Commande pour lancer l'application
 CMD ["./main"]
