@@ -152,6 +152,58 @@ func postDetailHandler(w http.ResponseWriter, r *http.Request) {
 		topic.Comments = append(topic.Comments, comment)
 	}
 
+	// Query to get categories for the topic
+	categoryQuery := `
+		SELECT c.id, c.name
+		FROM categories c
+		JOIN topic_categories tc ON c.id = tc.category_id
+		WHERE tc.topic_id = ?
+	`
+
+	categoryRows, err := db.Query(categoryQuery, topicID)
+	if err != nil {
+		log.Printf("Error retrieving categories: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer categoryRows.Close()
+
+	for categoryRows.Next() {
+		var category Category
+		err := categoryRows.Scan(&category.ID, &category.Name)
+		if err != nil {
+			log.Printf("Error scanning category: %v", err)
+			continue
+		}
+		topic.Categories = append(topic.Categories, category)
+	}
+
+	// Query to get hashtags for the topic
+	hashtagQuery := `
+		SELECT h.id, h.name
+		FROM hashtags h
+		JOIN topic_hashtags th ON h.id = th.hashtag_id
+		WHERE th.topic_id = ?
+	`
+
+	hashtagRows, err := db.Query(hashtagQuery, topicID)
+	if err != nil {
+		log.Printf("Error retrieving hashtags: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer hashtagRows.Close()
+
+	for hashtagRows.Next() {
+		var hashtag Hashtag
+		err := hashtagRows.Scan(&hashtag.ID, &hashtag.Name)
+		if err != nil {
+			log.Printf("Error scanning hashtag: %v", err)
+			continue
+		}
+		topic.Hashtags = append(topic.Hashtags, hashtag)
+	}
+
 	err = tmplPost.Execute(w, topic)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)

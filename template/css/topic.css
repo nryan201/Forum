@@ -413,3 +413,33 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
+#hashtagsList a {
+    color: black; /* Ensures text is black */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+}
+
+/* Ensuring the color and decoration don't change on hover or when active */
+#hashtagsList a:hover, #hashtagsList a:active, #hashtagsList a:focus {
+    color: black; /* Keeps text black on hover */
+    text-decoration: none; /* No underline on hover */
+}
+/* Style for category links */
+.topic a {
+    color: black; /* Ensures text is black */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+}
+.topic a:hover, .topic a:active, .topic a:focus {
+    color: black; /* Keeps text black on hover */
+    text-decoration: none; /* No underline on hover */
+}
+#categoriesList a {
+    color: black; /* Ensures text is black */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+}
+#categoriesList a:hover, #categoriesList a:active, #categoriesList a:focus {
+    color: black; /* Keeps text black on hover */
+    text-decoration: none; /* No underline on hover */
+}

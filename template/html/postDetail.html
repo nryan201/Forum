@@ -39,6 +39,22 @@
                 </div>
                 {{end}}
             </div>
+            <div class="post-categories" id="post-categories">
+                <h4>Catégories:</h4>
+                <ul>
+                    {{range .Categories}}
+                    <li><a href="/category/{{.ID}}">{{.Name}}</a></li>
+                    {{end}}
+                </ul>
+            </div>
+            <div class="post-hashtags" id="post-hashtags">
+                <h4>Hashtags:</h4>
+                <ul>
+                    {{range .Hashtags}}
+                    <li><a href="/hashtag/{{.ID}}">#{{.Name}}</a></li>
+                    {{end}}
+                </ul>
+            </div>
         </div>
 
         <div class="comments">
@@ -83,9 +99,9 @@
             </form>
             <h3>Categories</h3>
             <ul id="categoriesList">
-                <li>Politique</li>
-                <li>Actu</li>
-                <li>Animaux</li>
+                {{range .Categories}}
+                <li><a href="/category/{{.ID}}">{{.Name}}</a></li>
+                {{end}}
             </ul>
         </div>
         <div class="hashtags">
@@ -95,9 +111,9 @@
             </form>
             <h3>Hashtags</h3>
             <ul id="hashtagsList">
-                <li>#Nature</li>
-                <li>#BaigneToiDansLaSeine</li>
-                <li>#Films</li>
+                {{range .Hashtags}}
+                <li><a href="/hashtag/{{.ID}}">#{{.Name}}</a></li>
+                {{end}}
             </ul>
         </div>
     </div>

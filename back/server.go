@@ -59,6 +59,8 @@ func Server() {
 	//Handle Category and Hashtag
 	http.HandleFunc("/addCategory", addCategoryHandler)
 	http.HandleFunc("/addHashtag", addHashtagHandler)
+	http.HandleFunc("/category/", categoryHandler)
+	http.HandleFunc("/hashtag/", hashtagHandler)
 	// Admin routes
 	http.HandleFunc("/admin", AdminHandle)
 	http.HandleFunc("/admin/delete-user", DeleteUserHandle)
@@ -81,6 +83,8 @@ func Server() {
 	http.HandleFunc("/conversation/", conversationDetailPage)
 	http.HandleFunc("/conversation/messages/", getConversationMessages)
 	http.HandleFunc("/conversations", conversationsPage)
+	http.HandleFunc("/search", searchTopicsHandler)
+
 	// Path to your SSL certificate and key
 	certPath := "./permsHttps/cert.pem"
 	keyPath := "./permsHttps/key.pem"
@@ -212,9 +216,17 @@ func AccueilHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	topics, err := listTopics()
+	if err != nil {
+		log.Printf("Error listing topics: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
 	data := Data{
 		Categories: categories,
 		Hashtags:   hashtags,
+		Topics:     topics,
 	}
 
 	err = tmpl.Execute(w, data)
@@ -296,14 +308,36 @@ func PostHandle(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	tmpl, err := template.ParseFiles("template/html/post.html") // Update to the path of your create post template
+	tmpl, err := template.ParseFiles("template/html/post.html")
 	if err != nil {
 		log.Printf("Error parsing template %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	err = tmpl.Execute(w, nil)
+	categories, err := listCategories()
+	if err != nil {
+		log.Printf("Error listing categories: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	hashtags, err := listHashtags()
+	if err != nil {
+		log.Printf("Error listing hashtags: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	username := "ExampleUser"
+
+	data := Data{
+		Categories: categories,
+		Hashtags:   hashtags,
+		Username:   username,
+	}
+
+	err = tmpl.Execute(w, data)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
 	}
@@ -322,11 +356,12 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 
 	title := r.FormValue("title")
 	description := r.FormValue("description")
+	categoryID := r.FormValue("category")
+	hashtagIDs := r.Form["hashtags"]
 
-	// Retrieve user_id from cookie
 	cookie, err := r.Cookie("user_id")
 	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusSeeOther) // Redirect to login page if not authenticated
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 	userID := cookie.Value
@@ -334,23 +369,53 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
 	defer db.Close()
 
-	// Generate the next topic ID by counting existing entries
-	var topicID int
-	err = db.QueryRow("SELECT COUNT(*) FROM topics").Scan(&topicID)
+	tx, err := db.Begin()
 	if err != nil {
-		log.Printf("Error counting topics: %v", err)
+		log.Printf("Error beginning transaction: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	topicID++ // Increment to get the new topic ID
 
-	// Insert the new topic
-	_, err = db.Exec("INSERT INTO topics (id, user_id, title, description) VALUES (?, ?, ?, ?)", topicID, userID, title, description)
+	result, err := tx.Exec("INSERT INTO topics (user_id, title, description) VALUES (?, ?, ?)", userID, title, description)
 	if err != nil {
+		tx.Rollback()
 		log.Printf("Error inserting new topic: %v", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	http.Redirect(w, r, "/accueil", http.StatusSeeOther) // Redirect to home or confirmation page
+	topicID, err := result.LastInsertId()
+	if err != nil {
+		tx.Rollback()
+		log.Printf("Error getting last insert id: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = tx.Exec("INSERT INTO topic_categories (topic_id, category_id) VALUES (?, ?)", topicID, categoryID)
+	if err != nil {
+		tx.Rollback()
+		log.Printf("Error inserting topic category: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	for _, hashtagID := range hashtagIDs {
+		_, err = tx.Exec("INSERT INTO topic_hashtags (topic_id, hashtag_id) VALUES (?, ?)", topicID, hashtagID)
+		if err != nil {
+			tx.Rollback()
+			log.Printf("Error inserting topic hashtag: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Printf("Error committing transaction: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/accueil", http.StatusSeeOther)
 }

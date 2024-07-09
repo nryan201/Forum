@@ -439,4 +439,85 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(0);
 }
+/* Style for the form elements in your category and hashtag sections */
+.select-container {
+    margin-bottom: 20px; /* Space between form elements */
+    background: rgba(255, 255, 255, 0.15); /* Semi-transparent background */
+    padding: 10px; /* Padding around the content */
+    border-radius: 8px; /* Rounded corners */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Light white border for visibility */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+label {
+    display: block; /* Makes label take the full width */
+    color: #fff; /* White text color */
+    margin-bottom: 5px; /* Space below the label */
+    font-size: 16px; /* Slightly larger font size for readability */
+    font-weight: bold; /* Bold font for labels */
+}
+
+select {
+    width: 100%; /* Makes select box take up all available width */
+    padding: 8px; /* Padding inside the select box */
+    border-radius: 8px; /* Rounded corners for the select box */
+    background-color: #4181f8; /* Background color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Inner shadow for some depth */
+    cursor: pointer; /* Cursor indicates this is a clickable item */
+}
+
+select option {
+    background-color: #fff; /* Light background for options for better readability */
+    color: #333; /* Dark text color for options */
+}
+#hashtagsList a {
+    color: black; /* Ensures text is black */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+}
+
+/* Ensuring the color and decoration don't change on hover or when active */
+#hashtagsList a:hover, #hashtagsList a:active, #hashtagsList a:focus {
+    color: black; /* Keeps text black on hover */
+    text-decoration: none; /* No underline on hover */
+}
+/* Style for category links */
+.topic a {
+    color: black; /* Ensures text is black */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+}
+.topic a:hover, .topic a:active, .topic a:focus {
+    color: black; /* Keeps text black on hover */
+    text-decoration: none; /* No underline on hover */
+}
+#categoriesList a {
+    color: black; /* Ensures text is black */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+}
+#categoriesList a:hover, #categoriesList a:active, #categoriesList a:focus {
+    color: black; /* Keeps text black on hover */
+    text-decoration: none; /* No underline on hover */
+}
+#post-categories a {
+    color: black; /* Ensures text is black */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+}
+#post-categories a:hover, #post-categories a:active, #post-categories a:focus {
+    color: black; /* Keeps text black on hover */
+    text-decoration: none; /* No underline on hover */
+}
+#post-hashtags a {
+    color: black; /* Ensures text is black */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+}
+#post-hashtags a:hover, #post-hashtags a:active, #post-hashtags a:focus {
+    color: black; /* Keeps text black on hover */
+    text-decoration: none; /* No underline on hover */
+}
 

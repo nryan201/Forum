@@ -31,6 +31,25 @@
                     <input type="text" name="title" class="post-title" placeholder="Titre du Post" required>
                     <textarea name="description" class="post-description" placeholder="Description détaillée du post." required></textarea>
                     <div class="post-author">Auteur: <span class="author-name">{{.Username}}</span></div>
+                    <div>
+                        <label for="category">Category:</label>
+                        <select name="category" id="category">
+                            <option value=""> </option>
+                            {{range .Categories}}
+                            <option value="{{.ID}}">{{.Name}}</option>
+                            {{end}}
+                        </select>
+
+                    </div>
+                    <div>
+                        <label for="hashtags">Hashtags:</label>
+                        <select name="hashtags" id="hashtags">
+                            <option value="" selected> </option>
+                            {{range .Hashtags}}
+                            <option value="{{.ID}}">{{.Name}}</option>
+                            {{end}}
+                        </select>
+                    </div>
                     <button type="submit" class="post-Button">POSTEZ !</button>
                 </div>
             </div>
@@ -45,27 +64,33 @@
             <div class="star8"></div>
             <div class="star9"></div>
             <script src="../script/Star2.js"></script>
-            <form id="createCategoryForm" method="POST" action="/CreateCategory">
+            <form id="createCategoryForm" method="POST" action="/addCategory">
                 <input type="text" class="createCategory" name="categoryName" placeholder="Enter new category">
                 <button class="categoryBtn" type="submit" formmethod="post">Create</button>
             </form>
             <h3>Categories</h3>
             <ul id="categoriesList">
-                <li>Politique</li>
-                <li>Actu</li>
-                <li>Animaux</li>
+                <li><a href="/category/1">Politique</a></li>
+                <li><a href="/category/2">Actu</a></li>
+                <li><a href="/category/3">Animaux</a></li>
+                {{range .Categories}}
+                <li><a href="/category/{{.ID}}">{{.Name}}</a></li>
+                {{end}}
             </ul>
         </div>
         <div class="hashtags">
-            <form id="createHashtagForm" method="POST" action="/Create#">
+            <form id="createHashtagForm" method="POST" action="/addHashtag">
                 <input type="text" class="createHashtags" name="hashtagsName" placeholder="Enter new hashtags">
                 <button class="hashtagsBtn" type="submit" formmethod="post">Create</button>
             </form>
             <h3>Hashtags</h3>
             <ul id="hashtagsList">
-                <li>#Nature</li>
-                <li>#BaigneToiDansLaSeine</li>
-                <li>#Films</li>
+                <li><a href="/hashtag/1">#Nature</a></li>
+                <li><a href="/hashtag/2">#BaigneToiDansLaSeine</a></li>
+                <li><a href="/hashtag/3">#Films</a></li>
+                {{range .Hashtags}}
+                <li><a href="/hashtag/{{.ID}}">{{.Name}}</a></li>
+                {{end}}
             </ul>
         </div>
     </div>

@@ -3,27 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/css/accueil.css">
-    <link rel="icon" type="image/vnd.icon" href="/ressource/image/maga.JPG">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1/dist/confetti.browser.min.js"></script>
-    <script src="/script/accueil.js"></script>
-    <title>Le Forum</title>
-    <script src="/script/switch.js"></script>
+    <title>Topics in Category: {{.CategoryName}}</title>
+    <link rel="stylesheet" href="../css/category.css">
 </head>
 <body>
 <div class="container">
     <div class="profile-section">
         <div>
-            <a class="profile" id="auth-button" href="/connexion">Connexion</a>
-        </div>
-        <div class="messages-container">
-            <div class="Write-It">
-                <a class="Open-Messages" id="Messages" href="/message" style="display: none;">Messagerie</a>
-            </div>
+            <a class="profileBtn" href="/profil">Profil</a>
         </div>
         <div>
-            <a class="postCreation" id="creation-button" href="/createpost" style="display: none;">Create</a>
+            <a class="returnHome" href="/accueil">Home</a>
+        </div>
+        <div>
+            <a class="contact" href="/contact">Contact</a>
         </div>
         <div class="star"></div>
         <div class="star1"></div>
@@ -31,14 +24,17 @@
         <div class="star3"></div>
         <div class="star4"></div>
         <script src="../script/Star.js"></script>
-        <div>
-            <a class="contact" href="/contact">Contact</a>
-        </div>
     </div>
     <div class="main-section">
-        <div class="title">Bienvenue sur le Forum</div>
-        <div id="topic-container"></div>
-        <div id="searchResults"></div>
+        <div class="title">Topics in Category: {{.CategoryName}}</div>
+        <div id="topic-container">
+            {{range .Topics}}
+            <div class="topic" id="topic">
+                <h3><a href="/post?id={{.ID}}">{{.Title}}</a></h3>
+                <p>{{.Description}}</p>
+            </div>
+            {{end}}
+        </div>
     </div>
     <div class="side-section">
         <div class="categories">
@@ -71,24 +67,8 @@
                 {{end}}
             </ul>
         </div>
-        <div class="Search-Container">
-            <form id="searchForm">
-                <input type="text" id="searchInput" name="search" placeholder="Search a topic"  >
-                <button type="submit" id="SearchBar">Search</button>
-            </form>
-
-
-
-
-        </div>
-        <div class="log-out">
-            <a href="/logout" class="LogOut-link">
-                <i class='bx bx-log-out'></i>
-                Log-Out
-            </a>
-        </div>
     </div>
 </div>
-<script src="../script/topic.js"></script>
+<script src="../script/scroller.js"></script>
 </body>
 </html>

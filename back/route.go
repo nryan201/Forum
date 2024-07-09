@@ -17,6 +17,8 @@ type Topic struct {
 	Title       string
 	Description string
 	CreatedAt   string
+	Categories  []string
+	Hashtags    []string
 }
 type TopicDetail struct {
 	ID              int
@@ -27,6 +29,8 @@ type TopicDetail struct {
 	IsAuthenticated bool
 	Comments        []Comment
 	Role            string
+	Categories      []Category
+	Hashtags        []Hashtag
 }
 
 // Comment represents a comment
@@ -71,10 +75,12 @@ type Hashtag struct {
 	Name string
 }
 type Data struct {
-	Topics     []Topic
 	Categories []Category
 	Hashtags   []Hashtag
+	Topics     []Topic
+	Username   string
 }
+
 type Report struct {
 	ID        int
 	TopicID   sql.NullInt64

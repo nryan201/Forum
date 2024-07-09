@@ -1,39 +1,53 @@
 package back
 
 import (
-	"database/sql"
+	"encoding/json"
+	"log"
+	"net/http"
+	"strings"
 )
 
-type Result struct {
-	ID    int
-	Title string
-}
-
-
-func SearchDatabase(query string) ([]Result, error) {
-	// Open the database
-	db, err := sql.Open("sqlite3", "./db.sqlite")
-	if err != nil {
-		return nil, err
+// searchTopicsHandler handles the AJAX request and returns JSON data.
+func searchTopicsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
 	}
-	defer db.Close()
 
-	// Execute the query
-	rows, err := db.Query("SELECT id, title FROM topics WHERE title LIKE ? UNION SELECT id, username AS title FROM users WHERE username LIKE ?", "%"+query+"%", "%"+query+"%")
+	query := r.URL.Query().Get("search")
+	if query == "" {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
+	}
+
+	dbQuery := `SELECT id, title, description FROM topics WHERE title LIKE ? OR description LIKE ?`
+	rows, err := db.Query(dbQuery, "%"+strings.ToLower(query)+"%", "%"+strings.ToLower(query)+"%")
 	if err != nil {
-		return nil, err
+		log.Printf("Error querying topics: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
 	}
 	defer rows.Close()
 
-	// Fetch the results
-	var results []Result
-	for rows.Next() {
-		var result Result
-		err = rows.Scan(&result.ID, &result.Title)
-		if err != nil {
-			return nil, err
-		}
-		results = append(results, result)
+	var topics []struct {
+		ID          int    `json:"id"`
+		Title       string `json:"title"`
+		Description string `json:"description"`
 	}
-	return results, nil
+
+	for rows.Next() {
+		var t struct {
+			ID          int    `json:"id"`
+			Title       string `json:"title"`
+			Description string `json:"description"`
+		}
+		if err := rows.Scan(&t.ID, &t.Title, &t.Description); err != nil {
+			log.Printf("Error scanning topics: %v", err)
+			continue
+		}
+		topics = append(topics, t)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(topics)
 }
