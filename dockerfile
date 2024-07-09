@@ -8,16 +8,13 @@ RUN apk add --no-cache git
 WORKDIR /app
 
 # Copier les fichiers go.mod et go.sum pour le téléchargement des dépendances
-COPY src/go.mod src/go.sum ./
+COPY go.mod go.sum ./
 
 # Télécharger les dépendances
 RUN go mod download
 
-# Copier les fichiers du projet
-COPY src/ .
-
 # Construire l'application
-RUN go build -o main .
+RUN go build  ./main.go
 
 # Exposer le port utilisé par l'application
 EXPOSE 8080
