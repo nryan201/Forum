@@ -291,4 +291,34 @@ body {
     top: 95px;
     right: 20px;
 }
+.profile-pic {
+    width: 150px; /* Taille réduite de l'image de profil */
+    height: 150px; /* Hauteur ajustée pour correspondre à la largeur */
+    border-radius: 50%; /* Rendre l'image circulaire */
+    position: relative; /* Position relative pour contenir absolument l'icône de téléchargement */
+    overflow: hidden; /* Cacher les débordements pour maintenir les formes rondes */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff; /* Arrière-plan blanc pour l'image de profil par défaut */
+}
+
+#download-icon {
+    width: 150px; /* Taille réduite de l'icône */
+    height: 150px; /* Hauteur correspondante à la largeur */
+    left: 1px;
+    top: 1px;
+    display: none; /* Masquée par défaut jusqu'au survol */
+}
+
+
+.profile-pic label {
+    width: 100%; /* Largeur complète de profile-pic */
+    height: 100%; /* Hauteur complète de profile-pic */
+    position: absolute; /* S'assurer que le label couvre toute la zone pour les clics */
+    top: 0;
+    left: 0;
+    cursor: pointer; /* Indiquer que la zone est cliquable */
+}
+
 

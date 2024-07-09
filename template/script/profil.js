@@ -1,24 +1,19 @@
 
-// Exemple de récupération de données depuis le backend Go (utilisation de fetch pour simplifier)
-fetch('/api/user/profile') // Assurez-vous d'adapter l'URL à votre API backend
-    .then(response => response.json())
-    .then(data => {
-        // Remplir les éléments HTML avec les données récupérées
-        document.getElementById('profile-pic').innerText = data.profilePicUrl; // Exemple de champ profilePicUrl dans les données
-        document.getElementById('username').innerText = `Username: ${data.username}`;
-        document.getElementById('name').innerText = `Name: ${data.name}`;
-        document.getElementById('firstname').innerText = `Firstname: ${data.firstname}`;
-        document.getElementById('email').innerText = `Mail: ${data.email}`;
-        document.getElementById('other-link').innerText = `Other link: ${data.otherLink}`;
+function uploadProfilePic(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('profile-pic').style.backgroundImage = 'url(' + e.target.result + ')';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+document.getElementById('profile-pic').addEventListener('mouseover', function() {
+    document.getElementById('download-icon').style.display = 'block';
+    this.querySelector('label').style.opacity = 1; // Make the label fully visible
+});
 
-        // Exemple pour les liens supplémentaires
-        document.getElementById('discord-link').href = data.discordLink; // Assurez-vous que data.discordLink contient l'URL correcte
-        document.getElementById('steam-link').href = data.steamLink;
-        document.getElementById('riot-client-link').href = data.riotClientLink;
-        document.getElementById('psn-link').href = data.psnLink;
-
-        document.getElementById('birthdate-section').innerText = `Date de naissance: ${data.birthdate}`;
-    })
-    .catch(error => {
-        console.error('Error fetching profile data:', error);
-    });
+document.getElementById('profile-pic').addEventListener('mouseout', function() {
+    document.getElementById('download-icon').style.display = 'none';
+    this.querySelector('label').style.opacity = 0; // Make the label transparent again
+});
