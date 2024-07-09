@@ -85,3 +85,24 @@ button {
 button:hover {
     background-color: #8e004e;
 }
+.mid-btn {
+    display: grid;
+    place-items: center; /* Center both horizontally and vertically */
+    height: 70vh; /* Make the container full height of the viewport */
+}
+
+.back-button {
+    font-size: 20px;
+    color: #FFFFFF;
+    padding: 10px;
+    text-decoration: none;
+    margin: 20px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.31);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    width: 300px;
+}

@@ -31,6 +31,25 @@
                     <input type="text" name="title" class="post-title" placeholder="Titre du Post" required>
                     <textarea name="description" class="post-description" placeholder="Description détaillée du post." required></textarea>
                     <div class="post-author">Auteur: <span class="author-name">{{.Username}}</span></div>
+                    <div>
+                        <label for="category">Category:</label>
+                        <select name="category" id="category">
+                            <option value=""> </option>
+                            {{range .Categories}}
+                            <option value="{{.ID}}">{{.Name}}</option>
+                            {{end}}
+                        </select>
+
+                    </div>
+                    <div>
+                        <label for="hashtags">Hashtags:</label>
+                        <select name="hashtags" id="hashtags">
+                            <option value="" selected> </option>
+                            {{range .Hashtags}}
+                            <option value="{{.ID}}">{{.Name}}</option>
+                            {{end}}
+                        </select>
+                    </div>
                     <button type="submit" class="post-Button">POSTEZ !</button>
                 </div>
             </div>
@@ -51,9 +70,12 @@
             </form>
             <h3>Categories</h3>
             <ul id="categoriesList">
-                <li>Politique</li>
-                <li>Actu</li>
-                <li>Animaux</li>
+                <li><a href="/category/1">Politique</a></li>
+                <li><a href="/category/2">Actu</a></li>
+                <li><a href="/category/3">Animaux</a></li>
+                {{range .Categories}}
+                <li><a href="/category/{{.ID}}">{{.Name}}</a></li>
+                {{end}}
             </ul>
         </div>
         <div class="hashtags">
@@ -63,9 +85,9 @@
             </form>
             <h3>Hashtags</h3>
             <ul id="hashtagsList">
-                <li>#Nature</li>
-                <li>#BaigneToiDansLaSeine</li>
-                <li>#Films</li>
+                {{range .Hashtags}}
+                <li><a href="/hashtag/{{.ID}}">{{.Name}}</a></li>
+                {{end}}
             </ul>
         </div>
     </div>
